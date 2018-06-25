@@ -6,7 +6,7 @@ import 'element-ui/lib/theme-default/index.css'
 import App from './App'
 import router from './router'
 import $ from 'jquery'
-// import axios from 'axios'
+//import axios from 'axios'    //后端用的jsonp解决跨域问题，而axios不支持jsonp
 import ajax from './assets/ajaxWebApiMethod.js'
 import config from './config.js'
 import Vuex from 'vuex'
@@ -25,5 +25,7 @@ new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: {
+    App
+  }
 })
