@@ -130,751 +130,607 @@
 </template>
 
 <script>
-  import { BasicUrl,IMG,ajaxUrl} from '../../config'
-var vm=this
-  export default {
-    name: 'navheader',
-    props:[
-      'SocketAllData','criminalList','toolList','receiveDataMsgType30','receiveDataMsgType32','receiveDataMsgType33'
-    ],
-    beforeCreate () {
-      /* Coding By YanM */
+import { BasicUrl, IMG, ajaxUrl } from "../../config";
+var vm = this;
+export default {
+  name: "navheader",
+  props: [
+    "SocketAllData",
+    "criminalList",
+    "toolList",
+    "receiveDataMsgType30",
+    "receiveDataMsgType32",
+    "receiveDataMsgType33"
+  ],
+  beforeCreate() {
+    /* Coding By YanM */
+    /* Coding By YanM */
+    /*Coding By Qianjf */
+    /*Coding By Qianjf */
+  },
+  data() {
+    return {
+      // 柜外工具
+      alertText: "",
+      outCriminals: [],
+      isShow1: true,
+      isShow2: false,
+      isB1: true,
+      isB2: false,
+      records: [],
+      recordPage: 0,
+      recordIsLastPage: false,
+      recordCount: 0,
+      toolCalledCount: 0, //已点工具总数
 
-      /* Coding By YanM */
-      /*Coding By Qianjf */
+      inTool: [], // 柜内工具
+      inPages: 1, //柜内未点总页数
+      inNowPage: 1, //柜内未点当前页
+      inListAll: 0, //柜内未点总数
+      inChoose: [], //柜内选中人员
+      inA: 1,
+      inB: 24,
 
+      outTool: [], // 柜外工具
+      outPages: 1, //柜外未点总页数
+      outNowPage: 1, //柜外未点当前页
+      outListAll: 0, //柜外未点总数
+      outChoose: [], //柜外选中人员
+      outA: 1,
+      outB: 12,
+      a: 1
+    };
+  },
 
-      /*Coding By Qianjf */
-
+  methods: {
+    toggle1: function() {
+      this.isShow1 = true;
+      this.isShow2 = false;
+      this.isB1 = true;
+      this.isB2 = false;
+      this.recordPage = 0;
     },
-    data () {
-      return {
-
-        // 柜外工具
-        alertText:"",
-        outCriminals: [
-
-        ],
-        isShow1: true,
-        isShow2: false,
-        isB1: true,
-        isB2: false,
-        records:[],
-        recordPage:0,
-        recordIsLastPage:false,
-        recordCount:0,
-        toolCalledCount:0,//已点工具总数
-
-
-        inTool: [],// 柜内工具
-        inPages:1,//柜内未点总页数
-        inNowPage:1,//柜内未点当前页
-        inListAll:0,//柜内未点总数
-        inChoose:[],//柜内选中人员
-        inA:1,
-        inB:24,
-
-        outTool: [],// 柜外工具
-        outPages:1,//柜外未点总页数
-        outNowPage:1,//柜外未点当前页
-        outListAll:0,//柜外未点总数
-        outChoose:[],//柜外选中人员
-        outA:1,
-        outB:12,
-        a:1
-      }
+    toggle2: function() {
+      this.isShow1 = false;
+      this.isShow2 = true;
+      this.isB1 = false;
+      this.isB2 = true;
     },
-
-    methods: {
-      toggle1: function () {
-        this.isShow1 = true
-        this.isShow2 =false
-        this.isB1 =  true
-        this.isB2 = false
-        this.recordPage=0
-      },
-      toggle2: function () {
-        this.isShow1 = false
-        this.isShow2 = true
-        this.isB1 = false
-        this.isB2 = true
-      },
-      getRecordGo:function () {
-        var vm = this
-        if(!vm.recordIsLastPage){
-          vm.recordPage=vm.recordPage+1
-          $.ajax({
-            type: "get",
-            contentType: "application/json; charset=utf-8",
-            dataType: "jsonp",
-            jsonp: "callback",
-            async: false,
-            data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
-            success: function (result) {
-                if(result.length!=20){
-                    vm.recordIsLastPage=true
-                }else {
-                  vm.recordIsLastPage=false
-                }
-              vm.records=result
-            },
-            error: function (err) {
-//              alert("请求异常")
-            },
-            complete: function (XHR, TS) {
-              XHR = null;  //回收资源
+    getRecordGo: function() {
+      var vm = this;
+      if (!vm.recordIsLastPage) {
+        vm.recordPage = vm.recordPage + 1;
+        vm.$ajax({
+          data: {
+            OrgID: localStorage.getItem("OrgID"),
+            PageIndex: vm.recordPage,
+            PageSize: 20
+          },
+          url: BasicUrl + "ToolCnt/GetToolCntRecord" + "?callback=?",
+          success: function(result) {
+            if (result.length != 20) {
+              vm.recordIsLastPage = true;
+            } else {
+              vm.recordIsLastPage = false;
             }
-          });
-        }else {
-            alert("已经到了最后一页了")
-        }
-//      获取总条数
-        $.ajax({
-          type: "get",
-          contentType: "application/json; charset=utf-8",
-          dataType: "jsonp",
-          jsonp: "callback",
-          async: false,
-          data:{"OrgID":localStorage.getItem("OrgID")},
-          url:  BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
-          success: function (result) {
-            vm.recordCount=result
-          },
-          error: function (err) {
-//            alert("请求异常")
-          },
-          complete: function (XHR, TS) {
-            XHR = null;  //回收资源
+            vm.records = result;
           }
         });
-
-      },
-      getRecordback:function () {
-        var vm = this
-        if(vm.recordPage==0){
-//            alert("已经是第一页了")
-        }else {
-          vm.recordPage=vm.recordPage-1
-          $.ajax({
-            type: "get",
-            contentType: "application/json; charset=utf-8",
-            dataType: "jsonp",
-            jsonp: "callback",
-            async: false,
-            data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":vm.recordPage,"PageSize":20},
-            url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
-            success: function (result) {
-              if(result.length!=20){
-                vm.recordIsLastPage=true
-              }else {
-                vm.recordIsLastPage=false
-              }
-              vm.records=result
-            },
-            error: function (err) {
-//              alert("请求异常")
-            },
-            complete: function (XHR, TS) {
-              XHR = null;  //回收资源
-            }
-          });
-          //      获取总条数
-          $.ajax({
-            type: "get",
-            contentType: "application/json; charset=utf-8",
-            dataType: "jsonp",
-            jsonp: "callback",
-            async: false,
-            data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
-            success: function (result) {
-              vm.recordCount=result
-            },
-            error: function (err) {
-//              alert("请求异常")
-            },
-            complete: function (XHR, TS) {
-              XHR = null;  //回收资源
-            }
-          });
-        }
-
-
-      },
-      inGo:function () {
-        if(this.inNowPage<this.inPages){
-          this.inNowPage=this.inNowPage+1
-          this.inA=this.inA+24
-          this.inB=this.inB+24
-        }else {
-//          alert("已经最后一页了")
-        }
-      },
-      inBack:function () {
-        if(this.inNowPage==1){
-//          alert("已经是第一页了")
-        }else {
-          this.inNowPage=this.inNowPage-1
-          this.inA=this.inA-24
-          this.inB=this.inB-24
-        }
-      },
-      chooseIn:function (index){
-        var ToolID =this.inTool[index+this.inA-1]["ToolID"]
-        if(this.inChoose.indexOf(ToolID)==-1){
-          this.inChoose.push(ToolID)
-          this.inTool[index+this.outA-1].ischoose=true
-        }else {
-          this.inTool[index+this.outA-1].ischoose=false
-          this.inChoose.splice(this.inChoose.indexOf(ToolID),1)
-        }
+      } else {
+        alert("已经到了最后一页了");
       }
-      ,
-      chooseOut:function (index){
-        var ToolID =this.outTool[index+this.outA-1]["ToolID"]
-        if(this.outChoose.indexOf(ToolID)==-1){
-          this.outTool[index+this.outA-1].ischoose=true
-          this.outChoose.push(ToolID)
-        }else {
-          this.outTool[index+this.outA-1].ischoose=false
-          this.outChoose.splice(this.outChoose.indexOf(ToolID),1)
+      //      获取总条数
+      vm.$ajax({
+        data: { OrgID: localStorage.getItem("OrgID") },
+        url: BasicUrl + "ToolCnt/GetToolCntRecordsCount" + "?callback=?",
+        success: function(result) {
+          vm.recordCount = result;
         }
-      },
-      submitTool:function () {
-
-        var vm=this
-        vm.$emit('openLogin',true)
-        var allTools=this.outChoose.concat(this.inChoose);
-        var subTools=""
-        for (var i=0;i<allTools.length;i++){
-          if(i==0){
-            subTools=allTools[i]
-          }else {
-            subTools=subTools+","+allTools[i]
-          }
-        }
-        var send = {
-          Header: {
-            MsgID:"201501260000000034",
-            MsgType:30
+      });
+    },
+    getRecordback: function() {
+      var vm = this;
+      if (vm.recordPage == 0) {
+        //            alert("已经是第一页了")
+      } else {
+        vm.recordPage = vm.recordPage - 1;
+        vm.$ajax({
+          data: {
+            OrgID: localStorage.getItem("OrgID"),
+            PageIndex: vm.recordPage,
+            PageSize: 20
           },
-          Body: JSON.stringify({
-            OrgID : localStorage.getItem('OrgID'),
-            Type:1,
-            ObjectID:subTools
-          })
-        }
-          var submitToolSet=setInterval(function () {
-            if(localStorage.getItem("placemanID")==0){
-              /*民警还未刷卡*/
-            }else if(localStorage.getItem("placemanID")==1){
-              /* 点击登录框关闭按钮停止检测民警登录情况*/
-              clearInterval(submitToolSet)
-            }else {
-              clearInterval(submitToolSet)
-              //发送数据
-              $.ajax({
-                type: "get",
-                contentType: "application/json; charset=utf-8",
-                dataType: "jsonp",
-                jsonp: "callback",
-                async: false,
-                url: ajaxUrl,
-                data:JSON.stringify(send),
-                success: function (result) {
-                  if(result.RET==1){
-
-//                      vm.outTool=[]
-//                      vm.inTool=[]
-                      vm.inChoose=[]
-                      vm.outChoose=[]
-//      获取第一页记录数据
-                    $.ajax({
-                      type: "get",
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "jsonp",
-                      jsonp: "callback",
-                      async: false,
-                      data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-                      url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
-                      success: function (result) {
-                        if(result.length!=20){
-                          vm.recordIsLastPage=true
-                        }else {
-                          vm.recordIsLastPage=false
-
-                        }
-                        vm.records=result
-                      },
-                      error: function (err) {
-//          alert("请求异常")
-                      },
-                      complete: function (XHR, TS) {
-                        XHR = null;  //回收资源
-                      }
-                    });
-//      获取总记录条数
-                    $.ajax({
-                      type: "get",
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "jsonp",
-                      jsonp: "callback",
-                      async: false,
-                      data:{"OrgID":localStorage.getItem("OrgID")},
-                      url: BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
-                      success: function (result) {
-                        vm.recordCount=result
-                      },
-                      error: function (err) {
-//          alert("请求异常")
-                      },
-                      complete: function (XHR, TS) {
-                        XHR = null;  //回收资源
-                      }
-                    });
-                    localStorage.setItem("placemanID","0")
-                    vm.alertText="手动确定成功"
-                    setTimeout(function () {
-                      vm.alertText=""
-                    },2000)
-
-                  }else {
-                    localStorage.setItem("placemanID","0")
-                    vm.alertText="手动确定失败"
-                    setTimeout(function () {
-                      vm.alertText=""
-                    },2000)
-                  }
-                },
-                complete: function (XHR, TS) {
-                  XHR = null;  //回收资源
-                }
-              })
-
+          url: BasicUrl + "ToolCnt/GetToolCntRecord" + "?callback=?",
+          success: function(result) {
+            if (result.length != 20) {
+              vm.recordIsLastPage = true;
+            } else {
+              vm.recordIsLastPage = false;
             }
-          },1000)
-
-
-      },
-      cancel:function () {
-        var vm=this
-        localStorage.setItem("canRouter",0)
-        vm.$emit('openLogin',true)
-        var send = {
-          Header: {
-            MsgID:"201501260000000034",
-            MsgType:33
-          },
-          Body: JSON.stringify({
-            OrgID : localStorage.getItem('OrgID'),
-            CountType:1
-          })
-        }
-        var cancelSet=setInterval(function () {
-          if(localStorage.getItem("placemanID")==0){
-
-          }else if(localStorage.getItem("placemanID")==1){
-            /* 点击登录框关闭按钮停止检测民警登录情况*/
-            clearInterval(cancelSet)
-          }else {
-            clearInterval(cancelSet)
-            //发送数据
-            $.ajax({
-              type: "get",
-              contentType: "application/json; charset=utf-8",
-              dataType: "jsonp",
-              jsonp: "callback",
-              async: false,
-              url: ajaxUrl,
-              data:JSON.stringify(send),
-              success: function (result) {
-                if(result.RET==1){
-                  vm.inChoose.length=0
-                  vm.outChoose.length=0
-                  vm.outTool.length=0
-                  vm.inTool.length=0
-                      vm.outTool=[]
-                      vm.inTool=[]
-                      vm.inChoose=[]
-                      vm.outChoose=[]
-
-//      获取第一页记录数据
-                  $.ajax({
-                    type: "get",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "jsonp",
-                    jsonp: "callback",
-                    async: false,
-                    data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-                    url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
-                    success: function (result) {
-                      if(result.length!=20){
-                        vm.recordIsLastPage=true
-                      }else {
-                        vm.recordIsLastPage=false
-
-                      }
-                      vm.records=result
-                    },
-                    error: function (err) {
-//          alert("请求异常")
-                    },
-                    complete: function (XHR, TS) {
-                      XHR = null;  //回收资源
-                    }
-                  });
-//      获取总记录条数
-                  $.ajax({
-                    type: "get",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "jsonp",
-                    jsonp: "callback",
-                    async: false,
-                    data:{"OrgID":localStorage.getItem("OrgID")},
-                    url: BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
-                    success: function (result) {
-                      vm.recordCount=result
-                    },
-                    error: function (err) {
-//          alert("请求异常")
-                    },
-                    complete: function (XHR, TS) {
-                      XHR = null;  //回收资源
-                    }
-                  });
-                  localStorage.setItem("placemanID","0")
-                  vm.alertText="手动结束成功"
-                  setTimeout(function () {
-                    vm.alertText=""
-                    vm.$router.push({ path: '/' })
-
-                  },2000)
-                }else {
-
-                  vm.alertText="手动结束失败"
-                  localStorage.setItem("placemanID","0")
-                  setTimeout(function () {
-                    vm.alertText=""
-                  },2000)
-                }
-              },
-              complete: function (XHR, TS) {
-                XHR = null;  //回收资源
-              }
-            })
+            vm.records = result;
           }
-        },500)
-
-
+        });
+        //      获取总条数
+        vm.$ajax({
+          data: { OrgID: localStorage.getItem("OrgID") },
+          url: BasicUrl + "ToolCnt/GetToolCntRecordsCount" + "?callback=?",
+          success: function(result) {
+            vm.recordCount = result;
+          }
+        });
       }
     },
-    mounted () {
-      /* Coding By YanM */
-
-      /* Coding By YanM */
-      /* Coding By Qianjf */
-      var vm = this
-      localStorage.setItem("placemanID","0")
-      localStorage.setItem("toolClean","1")
-
+    inGo: function() {
+      if (this.inNowPage < this.inPages) {
+        this.inNowPage = this.inNowPage + 1;
+        this.inA = this.inA + 24;
+        this.inB = this.inB + 24;
+      } else {
+        //          alert("已经最后一页了")
+      }
+    },
+    inBack: function() {
+      if (this.inNowPage == 1) {
+        //          alert("已经是第一页了")
+      } else {
+        this.inNowPage = this.inNowPage - 1;
+        this.inA = this.inA - 24;
+        this.inB = this.inB - 24;
+      }
+    },
+    chooseIn: function(index) {
+      var ToolID = this.inTool[index + this.inA - 1]["ToolID"];
+      if (this.inChoose.indexOf(ToolID) == -1) {
+        this.inChoose.push(ToolID);
+        this.inTool[index + this.outA - 1].ischoose = true;
+      } else {
+        this.inTool[index + this.outA - 1].ischoose = false;
+        this.inChoose.splice(this.inChoose.indexOf(ToolID), 1);
+      }
+    },
+    chooseOut: function(index) {
+      var ToolID = this.outTool[index + this.outA - 1]["ToolID"];
+      if (this.outChoose.indexOf(ToolID) == -1) {
+        this.outTool[index + this.outA - 1].ischoose = true;
+        this.outChoose.push(ToolID);
+      } else {
+        this.outTool[index + this.outA - 1].ischoose = false;
+        this.outChoose.splice(this.outChoose.indexOf(ToolID), 1);
+      }
+    },
+    submitTool: function() {
+      var vm = this;
+      vm.$emit("openLogin", true);
+      var allTools = this.outChoose.concat(this.inChoose);
+      var subTools = "";
+      for (var i = 0; i < allTools.length; i++) {
+        if (i == 0) {
+          subTools = allTools[i];
+        } else {
+          subTools = subTools + "," + allTools[i];
+        }
+      }
       var send = {
         Header: {
-          MsgID:"201501260000000032",
-          MsgType:32
+          MsgID: "201501260000000034",
+          MsgType: 30
         },
         Body: JSON.stringify({
-          OrgID : localStorage.getItem('OrgID'),
+          OrgID: localStorage.getItem("OrgID"),
+          Type: 1,
+          ObjectID: subTools
         })
-      }
-      var toolClean1=setInterval(function () {
-          if(localStorage.getItem("toolClean")==0){
-              clearInterval(toolClean1)
-          }else {
-            //发送数据
-            if(vm.ws.readyState == WebSocket.OPEN){
-              vm.ws.send(JSON.stringify(send))
-            }
-//        接收数据
-            var receiveData=vm.receiveDataMsgType32
-
-//          if(receiveData!=""||receiveData!=null){
-            var hasNotCall=[] //柜内未点1
-            var outHasNotCall=[] //柜外未点0
-
-            for (var i=0;i<receiveData.length;i++){
-              if(receiveData[i].Status=="2502"){
-                if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==1){
-                  var hasNotCall_B=receiveData[i]
-                  hasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
-                  hasNotCall_B["ToolName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"]
-                  hasNotCall_B["ToolIDName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"]
-                  for (var m=0;m<vm.inChoose.length;m++){
-                    if(vm.inChoose[m]==hasNotCall_B["ToolID"]){
-                      hasNotCall_B["ischoose"]=true
+      };
+      var submitToolSet = setInterval(function() {
+        if (localStorage.getItem("placemanID") == 0) {
+          /*民警还未刷卡*/
+        } else if (localStorage.getItem("placemanID") == 1) {
+          /* 点击登录框关闭按钮停止检测民警登录情况*/
+          clearInterval(submitToolSet);
+        } else {
+          clearInterval(submitToolSet);
+          //发送数据
+          vm.$ajax({
+            url: ajaxUrl,
+            data: JSON.stringify(send),
+            success: function(result) {
+              if (result.RET == 1) {
+                //                      vm.outTool=[]
+                //                      vm.inTool=[]
+                vm.inChoose = [];
+                vm.outChoose = [];
+                //      获取第一页记录数据
+                vm.$ajax({
+                  data: {
+                    OrgID: localStorage.getItem("OrgID"),
+                    PageIndex: 0,
+                    PageSize: 20
+                  },
+                  url: BasicUrl + "ToolCnt/GetToolCntRecord" + "?callback=?",
+                  success: function(result) {
+                    if (result.length != 20) {
+                      vm.recordIsLastPage = true;
+                    } else {
+                      vm.recordIsLastPage = false;
                     }
+                    vm.records = result;
                   }
-                  hasNotCall.push(hasNotCall_B)
-                  vm.inTool=hasNotCall
-                  vm.inPages=Math.ceil(vm.inTool.length/24)==0?1:Math.ceil(vm.inTool.length/24)
-                }else if(vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"]==0) {
-                  var outHasNotCall_B=receiveData[i]
-                  outHasNotCall_B["Photo"]=vm.toolList[0][receiveData[i]["ToolID"]]["Photo"]
-                  outHasNotCall_B["ToolName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"]
-                  outHasNotCall_B["ToolIDName"]=vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"]
-                  outHasNotCall_B["ischoose"]=false
-                  for (var m=0;m<vm.outChoose.length;m++){
-                    if(vm.outChoose[m]==outHasNotCall_B["ToolID"]){
-                      outHasNotCall_B["ischoose"]=true
-                    }
+                });
+                //      获取总记录条数
+                vm.$ajax({
+                  data: { OrgID: localStorage.getItem("OrgID") },
+                  url:
+                    BasicUrl + "ToolCnt/GetToolCntRecordsCount" + "?callback=?",
+                  success: function(result) {
+                    vm.recordCount = result;
                   }
-
-                  outHasNotCall.push(outHasNotCall_B)
-                  vm.outTool=outHasNotCall
-                  vm.outPages=Math.ceil(vm.outTool.length/12)==0?1:Math.ceil(vm.outTool.length/12)
-                }
+                });
+                localStorage.setItem("placemanID", "0");
+                vm.alertText = "手动确定成功";
+                setTimeout(function() {
+                  vm.alertText = "";
+                }, 2000);
+              } else {
+                localStorage.setItem("placemanID", "0");
+                vm.alertText = "手动确定失败";
+                setTimeout(function() {
+                  vm.alertText = "";
+                }, 2000);
               }
             }
-            if(hasNotCall.length==0){
-              vm.inTool=[]
-            }
-            if(outHasNotCall.length==0){
-              vm.outTool=[]
-            }
-//          }
-          }
-
-
-      },500)
-
-//      获取第一页记录数据
-      $.ajax({
-        type: "get",
-        contentType: "application/json; charset=utf-8",
-        dataType: "jsonp",
-        jsonp: "callback",
-        async: false,
-        data:{"OrgID":localStorage.getItem("OrgID"),"PageIndex":0,"PageSize":20},
-        url:  BasicUrl+'ToolCnt/GetToolCntRecord' + "?callback=?",
-        success: function (result) {
-          if(result.length!=20){
-            vm.recordIsLastPage=true
-          }else {
-            vm.recordIsLastPage=false
-
-          }
-          vm.records=result
-        },
-        error: function (err) {
-//          alert("请求异常")
-        },
-        complete: function (XHR, TS) {
-          XHR = null;  //回收资源
-        }
-      });
-//      获取总记录条数
-      $.ajax({
-        type: "get",
-        contentType: "application/json; charset=utf-8",
-        dataType: "jsonp",
-        jsonp: "callback",
-        async: false,
-        data:{"OrgID":localStorage.getItem("OrgID")},
-        url: BasicUrl+'ToolCnt/GetToolCntRecordsCount' + "?callback=?",
-        success: function (result) {
-          vm.recordCount=result
-        },
-        error: function (err) {
-//          alert("请求异常")
-        },
-        complete: function (XHR, TS) {
-          XHR = null;  //回收资源
-        }
-      });
-//      获取已点工具总数,本监区工具总数
-      var toolClean2=setInterval(function () {
-        if(localStorage.getItem("toolClean")==0){
-          clearInterval(toolClean2)
-        }else {
-          $.ajax({
-            type: "get",
-            contentType: "application/json; charset=utf-8",
-            dataType: "jsonp",
-            jsonp: "callback",
-            async: false,
-            data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  BasicUrl+'ToolCnt/GetToolCalledCount' + "?callback=?",
-            success: function (result) {
-              vm.toolCalledCount=result
-            },
-            error: function (err) {
-//            alert("请求异常")
-            },
-            complete: function (XHR, TS) {
-              XHR = null;  //回收资源
-            }
-          });
-          $.ajax({
-            type: "get",
-            contentType: "application/json; charset=utf-8",
-            dataType: "jsonp",
-            jsonp: "callback",
-            async: false,
-            data:{"OrgID":localStorage.getItem("OrgID")},
-            url:  BasicUrl+'ToolCnt/GetToolCalledCount' + "?callback=?",
-            success: function (result) {
-              vm.orgCriminalCount=result
-            },
-            error: function (err) {
-//            alert("请求异常")
-            },
-            complete: function (XHR, TS) {
-              XHR = null;  //回收资源
-            }
           });
         }
-      },1000)
-
-      /* Coding By Qianjf */
-
+      }, 1000);
     },
-    destroyed: function () {
-      localStorage.setItem("toolClean","0")
-    }
+    cancel: function() {
+      var vm = this;
+      localStorage.setItem("canRouter", 0);
+      vm.$emit("openLogin", true);
+      var send = {
+        Header: {
+          MsgID: "201501260000000034",
+          MsgType: 33
+        },
+        Body: JSON.stringify({
+          OrgID: localStorage.getItem("OrgID"),
+          CountType: 1
+        })
+      };
+      var cancelSet = setInterval(function() {
+        if (localStorage.getItem("placemanID") == 0) {
+        } else if (localStorage.getItem("placemanID") == 1) {
+          /* 点击登录框关闭按钮停止检测民警登录情况*/
+          clearInterval(cancelSet);
+        } else {
+          clearInterval(cancelSet);
+          //发送数据
+          vm.$ajax({
+            url: ajaxUrl,
+            data: JSON.stringify(send),
+            success: function(result) {
+              if (result.RET == 1) {
+                vm.inChoose.length = 0;
+                vm.outChoose.length = 0;
+                vm.outTool.length = 0;
+                vm.inTool.length = 0;
+                vm.outTool = [];
+                vm.inTool = [];
+                vm.inChoose = [];
+                vm.outChoose = [];
 
+                //      获取第一页记录数据
+                vm.$ajax({
+                  data: {
+                    OrgID: localStorage.getItem("OrgID"),
+                    PageIndex: 0,
+                    PageSize: 20
+                  },
+                  url: BasicUrl + "ToolCnt/GetToolCntRecord" + "?callback=?",
+                  success: function(result) {
+                    if (result.length != 20) {
+                      vm.recordIsLastPage = true;
+                    } else {
+                      vm.recordIsLastPage = false;
+                    }
+                    vm.records = result;
+                  }
+                });
+                //      获取总记录条数
+                vm.$ajax({
+                  data: { OrgID: localStorage.getItem("OrgID") },
+                  url:
+                    BasicUrl + "ToolCnt/GetToolCntRecordsCount" + "?callback=?",
+                  success: function(result) {
+                    vm.recordCount = result;
+                  }
+                });
+                localStorage.setItem("placemanID", "0");
+                vm.alertText = "手动结束成功";
+                setTimeout(function() {
+                  vm.alertText = "";
+                  vm.$router.push({ path: "/" });
+                }, 2000);
+              } else {
+                vm.alertText = "手动结束失败";
+                localStorage.setItem("placemanID", "0");
+                setTimeout(function() {
+                  vm.alertText = "";
+                }, 2000);
+              }
+            }
+          });
+        }
+      }, 500);
+    }
+  },
+  mounted() {
+    /* Coding By YanM */
+
+    /* Coding By YanM */
+    /* Coding By Qianjf */
+    var vm = this;
+    localStorage.setItem("placemanID", "0");
+    localStorage.setItem("toolClean", "1");
+
+    var send = {
+      Header: {
+        MsgID: "201501260000000032",
+        MsgType: 32
+      },
+      Body: JSON.stringify({
+        OrgID: localStorage.getItem("OrgID")
+      })
+    };
+    var toolClean1 = setInterval(function() {
+      if (localStorage.getItem("toolClean") == 0) {
+        clearInterval(toolClean1);
+      } else {
+        //发送数据
+        if (vm.ws.readyState == WebSocket.OPEN) {
+          vm.ws.send(JSON.stringify(send));
+        }
+        //        接收数据
+        var receiveData = vm.receiveDataMsgType32;
+
+        //          if(receiveData!=""||receiveData!=null){
+        var hasNotCall = []; //柜内未点1
+        var outHasNotCall = []; //柜外未点0
+
+        for (var i = 0; i < receiveData.length; i++) {
+          if (receiveData[i].Status == "2502") {
+            if (vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"] == 1) {
+              var hasNotCall_B = receiveData[i];
+              hasNotCall_B["Photo"] =
+                vm.toolList[0][receiveData[i]["ToolID"]]["Photo"];
+              hasNotCall_B["ToolName"] =
+                vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"];
+              hasNotCall_B["ToolIDName"] =
+                vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"];
+              for (var m = 0; m < vm.inChoose.length; m++) {
+                if (vm.inChoose[m] == hasNotCall_B["ToolID"]) {
+                  hasNotCall_B["ischoose"] = true;
+                }
+              }
+              hasNotCall.push(hasNotCall_B);
+              vm.inTool = hasNotCall;
+              vm.inPages =
+                Math.ceil(vm.inTool.length / 24) == 0
+                  ? 1
+                  : Math.ceil(vm.inTool.length / 24);
+            } else if (
+              vm.toolList[0][receiveData[i]["ToolID"]]["IsInsideTool"] == 0
+            ) {
+              var outHasNotCall_B = receiveData[i];
+              outHasNotCall_B["Photo"] =
+                vm.toolList[0][receiveData[i]["ToolID"]]["Photo"];
+              outHasNotCall_B["ToolName"] =
+                vm.toolList[0][receiveData[i]["ToolID"]]["ToolName"];
+              outHasNotCall_B["ToolIDName"] =
+                vm.toolList[0][receiveData[i]["ToolID"]]["ToolID"];
+              outHasNotCall_B["ischoose"] = false;
+              for (var m = 0; m < vm.outChoose.length; m++) {
+                if (vm.outChoose[m] == outHasNotCall_B["ToolID"]) {
+                  outHasNotCall_B["ischoose"] = true;
+                }
+              }
+
+              outHasNotCall.push(outHasNotCall_B);
+              vm.outTool = outHasNotCall;
+              vm.outPages =
+                Math.ceil(vm.outTool.length / 12) == 0
+                  ? 1
+                  : Math.ceil(vm.outTool.length / 12);
+            }
+          }
+        }
+        if (hasNotCall.length == 0) {
+          vm.inTool = [];
+        }
+        if (outHasNotCall.length == 0) {
+          vm.outTool = [];
+        }
+        //          }
+      }
+    }, 500);
+
+    //      获取第一页记录数据
+    vm.$ajax({
+      data: {
+        OrgID: localStorage.getItem("OrgID"),
+        PageIndex: 0,
+        PageSize: 20
+      },
+      url: BasicUrl + "ToolCnt/GetToolCntRecord" + "?callback=?",
+      success: function(result) {
+        if (result.length != 20) {
+          vm.recordIsLastPage = true;
+        } else {
+          vm.recordIsLastPage = false;
+        }
+        vm.records = result;
+      }
+    });
+    //      获取总记录条数
+    vm.$ajax({
+      data: { OrgID: localStorage.getItem("OrgID") },
+      url: BasicUrl + "ToolCnt/GetToolCntRecordsCount" + "?callback=?",
+      success: function(result) {
+        vm.recordCount = result;
+      }
+    });
+    //      获取已点工具总数,本监区工具总数
+    var toolClean2 = setInterval(function() {
+      if (localStorage.getItem("toolClean") == 0) {
+        clearInterval(toolClean2);
+      } else {
+        vm.$ajax({
+          data: { OrgID: localStorage.getItem("OrgID") },
+          url: BasicUrl + "ToolCnt/GetToolCalledCount" + "?callback=?",
+          success: function(result) {
+            vm.toolCalledCount = result;
+          }
+        });
+        vm.$ajax({
+          data: { OrgID: localStorage.getItem("OrgID") },
+          url: BasicUrl + "ToolCnt/GetToolCalledCount" + "?callback=?",
+          success: function(result) {
+            vm.orgCriminalCount = result;
+          }
+        });
+      }
+    }, 1000);
+
+    /* Coding By Qianjf */
+  },
+  destroyed: function() {
+    localStorage.setItem("toolClean", "0");
   }
+};
 </script>
 
 <style>
-  .home{
-    height: 836px;
-  }
-  .li2_parts {
-    height: 740px;
-    margin: 0px auto;
-  }
-  .li2_parts .tabHead{
-    width: 100%;
-    height: 40px;
-  }
-  .li2_parts .tab{
-    width: 155px;
-    height: 40px;
-    background: #004bdc;
-    font-size: 18px;
-    text-align: center;
-    float: left;
-    color:white;
-    line-height: 38px;
-  }
-  .li2_parts .tabing{
-    background: white;
-    font-size: 18px;
-    color: #004bdc;
-    text-align: center;
-  }
-  .li2_parts .partsBody{
-    width: 100%;
-    height: 421px;
-    background: white;
+.home {
+  height: 836px;
+}
+.li2_parts {
+  height: 740px;
+  margin: 0px auto;
+}
+.li2_parts .tabHead {
+  width: 100%;
+  height: 40px;
+}
+.li2_parts .tab {
+  width: 155px;
+  height: 40px;
+  background: #004bdc;
+  font-size: 18px;
+  text-align: center;
+  float: left;
+  color: white;
+  line-height: 38px;
+}
+.li2_parts .tabing {
+  background: white;
+  font-size: 18px;
+  color: #004bdc;
+  text-align: center;
+}
+.li2_parts .partsBody {
+  width: 100%;
+  height: 421px;
+  background: white;
+}
+.li2_parts .partsFoot {
+  width: 100%;
+  height: 84px;
+  /*margin-top: -48px;*/
+  background: #c5cfdb;
+}
+.li2_parts .bodyCon {
+  height: 256px;
+  padding: 20px;
+}
+.li2_parts .pages {
+  width: 273px;
+  height: 50px;
+  margin: 0px auto;
+}
+.li2_parts .pageControl {
+}
+.li2_parts .pagesText {
+  font-size: 24px;
+  display: inline-block;
+  width: 155px;
+  text-align: center;
+}
+.li2_parts .sure {
+  width: 126px;
+  height: 40px;
+  background: #004bdc;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  line-height: 36px;
+  letter-spacing: 2px;
+  float: right;
+  margin: 0px 35px;
+}
 
-  }
-  .li2_parts .partsFoot{
-    width: 100%;
-    height: 84px;
-    /*margin-top: -48px;*/
-    background: #c5cfdb;
+.li2_parts .criminal {
+  width: 84%;
+  height: 110px;
+  float: left;
+  background: #0048d9;
+  margin: 6px 6px;
+  text-align: center;
+  padding: 2px;
+}
+.li2_parts .criminal img {
+  border: 1px solid white;
+}
+.li2_parts .criminalName {
+  font-size: 12px;
+  color: white;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 99%;
+}
+.li2_parts .bodyHead {
+  width: 100%;
+  height: 46px;
+  background: #c5cfdb;
+}
+.li2_parts .title {
+  font-size: 25px;
+  font-weight: 800;
+  color: #1d68e8;
+  text-shadow: 2px 2px 2px #fff;
+  line-height: 45px;
+  text-indent: 15px;
+  float: left;
+}
+.li2_parts .titleDescribe {
+  line-height: 45px;
+  font-size: 20px;
+  width: 856px;
+  text-align: left;
+}
+.li2_parts .chosed {
+  background: red !important;
+}
+.tab2 .bodyCon {
+  height: 600px;
+}
 
-  }
-  .li2_parts .bodyCon{
-    height: 256px;
-    padding: 20px;
-
-  }
-  .li2_parts .pages{
-    width: 273px;
-    height: 50px;
-    margin: 0px auto;
-  }
-  .li2_parts .pageControl{
-
-  }
-  .li2_parts .pagesText {
-    font-size: 24px;
-    display: inline-block;
-    width: 155px;
-    text-align: center;
-  }
-  .li2_parts .sure{
-    width: 126px;
-    height: 40px;
-    background: #004bdc;
-    text-align: center;
-    color: white;
-    font-size: 20px;
-    line-height: 36px;
-    letter-spacing: 2px;
-    float: right;
-    margin: 0px 35px;
-  }
-
-
-
-  .li2_parts .criminal{
-    width: 84%;
-    height: 110px;
-    float: left;
-    background: #0048d9;
-    margin: 6px 6px;
-    text-align: center;
-    padding: 2px;
-  }
-  .li2_parts .criminal img{
-    border: 1px solid white;
-  }
-  .li2_parts .criminalName {
-    font-size: 12px;
-    color: white;
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 99%;
-  }
-  .li2_parts .bodyHead{
-    width: 100%;
-    height: 46px;
-    background: #c5cfdb;
-  }
-  .li2_parts .title{
-    font-size: 25px;
-    font-weight: 800;
-    color: #1d68e8;
-    text-shadow: 2px 2px 2px #fff;
-    line-height: 45px;
-    text-indent: 15px;
-    float: left;
-
-  }
-  .li2_parts .titleDescribe{
-    line-height: 45px;
-    font-size: 20px;
-    width: 856px;
-    text-align: left;
-  }
-  .li2_parts .chosed{
-    background: red !important;
-  }
-  .tab2 .bodyCon{
-    height: 600px;
-  }
-
-  .li2_parts tr{
-    height:27px;
-  }
-  .navheader{
-    height: 122px;
-    color: #fff;
-    font-size: 20px;
-  }
+.li2_parts tr {
+  height: 27px;
+}
+.navheader {
+  height: 122px;
+  color: #fff;
+  font-size: 20px;
+}
 </style>
