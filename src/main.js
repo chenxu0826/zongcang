@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+//import VueJsonp from 'vue-jsonp'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import App from './App'
@@ -12,11 +13,14 @@ import config from './config.js'
 import Vuex from 'vuex'
 import echarts from 'echarts'
 // import jqUi from 'jquery-ui'
+import Utils from './utils.js'
+
 
 Vue.use(Vuex)
 Vue.use(ElementUI)
 Vue.use(global)
 Vue.use(config)
+Vue.use(Utils)//自定义的工具类
 
 Vue.config.productionTip = false
 
