@@ -14,7 +14,7 @@ import Vuex from 'vuex'
 import echarts from 'echarts'
 // import jqUi from 'jquery-ui'
 import Utils from './utils.js'
-
+import store from './store'
 
 Vue.use(Vuex)
 Vue.use(ElementUI)
@@ -28,6 +28,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,//使用store
   template: '<App/>',
   components: {
     App

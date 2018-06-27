@@ -71,7 +71,7 @@
 
 
     <!--监区选择 star-->
-    <div class="alertTip alertJQXZ" v-show="alertJQXZ">   
+    <div class="alertTip alertJQXZ" v-show="alertJQXZ">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;">
         <div class="bodyHead"><div class="title">监区选择</div><div @click="close('alertJQXZ')" class="close">X</div></div>
         <div class="bodyCon">
@@ -101,7 +101,7 @@
               <el-col :span="4" style="height:1px;">
               </el-col>
               <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)" :key="1">
-                <div class="tipName">{{alarm.Description}}</div>           
+                <div class="tipName">{{alarm.Description}}</div>
                 <div v-show="isGrup">
                   <el-row>
                     <el-col :span="4" v-for="group in groupTeam" >
@@ -596,7 +596,8 @@ export default {
     homeData: function() {
       let vm = this;
       /* 外出人数（监内）-1 筛选后数据用于VUE渲染 */
-      vm.FlnkIDList_11 = vm.FlnkIDList_1;
+      this.$store.state.home.FlnkIDList1 = vm.FlnkIDList_1;
+      //vm.FlnkIDList_11 = vm.FlnkIDList_1;
 
       /* 非法流动 -2 筛选后数据用于VUE渲染 */
       var vueDataPersonlist_2 = [];
@@ -1856,20 +1857,20 @@ export default {
     vm.ws.onclose = function() {
       vm.onlinestatus = false;
       if (vm.onlinestatus === false) {
-        setInterval(function() {
-          vm.$router.push({ path: "/" });
-          window.location.reload();
-        }, 5000);
+//        setInterval(function() { //todo暂时取消五秒刷新
+//          vm.$router.push({ path: "/" });
+//          window.location.reload();
+//        }, 5000);
       }
     };
 
     /* 错误信息 */
     vm.ws.onerror = function(evt) {
       console.log("WebSocketError!", evt);
-      setInterval(function() {
-        vm.$router.push({ path: "/" });
-        window.location.reload();
-      }, 5000);
+//      setInterval(function() { //todo暂时取消五秒刷新
+//        vm.$router.push({ path: "/" });
+//        window.location.reload();
+//      }, 5000);
     };
 
     /* Coding By YanM */
