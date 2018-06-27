@@ -15,7 +15,6 @@ import { BasicUrl, IMG, ajaxUrl } from "../config";
 
 export default {
   name: "menufooter",
-  props: ["YHDL", "canRouter"],
   data() {
     return {
       menuList: [

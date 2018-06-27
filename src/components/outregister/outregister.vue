@@ -227,8 +227,7 @@ export default {
     "receiveDataMsgType27",
     "policeList",
     "receiveDataMsgType23",
-    "receiveDataMsgType26",
-    "canRouter"
+    "receiveDataMsgType26"
   ],
   data() {
     return {

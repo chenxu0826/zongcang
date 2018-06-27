@@ -40,111 +40,121 @@
 </template>
 
 <script>
-  import axios from 'axios'
-  import { BasicUrl } from '../config'
-  export default {
-
-    name: 'navheader',
-    props:{
-      alertText1:'',
-      message:String,
-      toolPlan:'',
-      personPlan:'',
-      toolplanStartTime:'',
-      toolplanEndTime:'',
-      plan:'',
-      personplanStartTime:'',
-      personplanEndTime:'',
-      personNextTime:'',
-      onlinestatus:true,
-      NextTime:'',
-      toolNextTime:''
-    },
-    data () {
-      return {
-        logoIsShow: true,
-        localTime: '',
-        localWeek: '',
-        localYear: '',
-      }
-    },
-    beforeCreate () {
-
-    },
-    methods: {
-      /* 导航时间计时器 */
-      TimerFormat: function () {
-        var vm = this;
-        setInterval(function () {
-          var Year = new Date().getFullYear()
-          var Months = new Date().getMonth()+1
-          var Days = new Date().getDate()
-          var getDay = new Date().getDay()
-          var Hours = new Date().getHours()>9?new Date().getHours():"0"+new Date().getHours()
-          var Minutes = new Date().getMinutes()>9?new Date().getMinutes():"0"+new Date().getMinutes()
-          var Seconds = new Date().getSeconds()>9? new Date().getSeconds():"0"+ new Date().getSeconds()
-          var getTime = Hours + ':' + Minutes + ':' + Seconds
-          var getYear = Year + '年' + Months + '月' + Days + '日'
-          /*收工语言提示*/
-          var overTime=localStorage.getItem("overTime")
-          if(overTime!=null&&overTime!=""){
-            var timeList=overTime.split(":")
-            if(Hours==timeList[0]&&Minutes==timeList[1]&&Seconds==timeList[2]&&localStorage.getItem("AreaType")==1){
-              vm.$emit("workOut","workOut")
-            }
+import axios from "axios";
+import { BasicUrl } from "../config";
+import { mapState } from "vuex";
+export default {
+  name: "navheader",
+  data() {
+    return {
+      logoIsShow: true,
+      localTime: "",
+      localWeek: "",
+      localYear: ""
+    };
+  },
+  computed: {
+    ...mapState({
+      alertText1: state => state.navheader.alertText1,
+      message: state => state.navheader.message,
+      toolPlan: state => state.navheader.toolPlan,
+      personPlan: state => state.navheader.personPlan,
+      toolplanStartTime: state => state.navheader.toolplanStartTime,
+      toolplanEndTime: state => state.navheader.toolplanEndTime,
+      personplanStartTime: state => state.navheader.personplanStartTime,
+      personplanEndTime: state => state.navheader.personplanEndTime,
+      personNextTime: state => state.navheader.personNextTime,
+      onlinestatus: state => state.navheader.onlinestatus,
+      toolNextTime: state => state.navheader.toolNextTime
+    })
+  },
+  beforeCreate() {},
+  methods: {
+    /* 导航时间计时器 */
+    TimerFormat: function() {
+      var vm = this;
+      setInterval(function() {
+        var Year = new Date().getFullYear();
+        var Months = new Date().getMonth() + 1;
+        var Days = new Date().getDate();
+        var getDay = new Date().getDay();
+        var Hours =
+          new Date().getHours() > 9
+            ? new Date().getHours()
+            : "0" + new Date().getHours();
+        var Minutes =
+          new Date().getMinutes() > 9
+            ? new Date().getMinutes()
+            : "0" + new Date().getMinutes();
+        var Seconds =
+          new Date().getSeconds() > 9
+            ? new Date().getSeconds()
+            : "0" + new Date().getSeconds();
+        var getTime = Hours + ":" + Minutes + ":" + Seconds;
+        var getYear = Year + "年" + Months + "月" + Days + "日";
+        /*收工语言提示*/
+        var overTime = localStorage.getItem("overTime");
+        if (overTime != null && overTime != "") {
+          var timeList = overTime.split(":");
+          if (
+            Hours == timeList[0] &&
+            Minutes == timeList[1] &&
+            Seconds == timeList[2] &&
+            localStorage.getItem("AreaType") == 1
+          ) {
+            vm.$emit("workOut", "workOut");
           }
-          /* 系统定时刷新23:59:59*/
-          if(Hours==23&&Minutes==59&&Seconds==59){
-            window.location.reload()
-          }
+        }
+        /* 系统定时刷新23:59:59*/
+        if (Hours == 23 && Minutes == 59 && Seconds == 59) {
+          window.location.reload();
+        }
 
-          var week
-          if (getDay === '0') {
-            week = '星期日'
-          } else if (getDay == '1') {
-            week = '星期一'
-          } else if (getDay == '2') {
-            week = '星期二'
-          } else if (getDay == '3') {
-            week = '星期三'
-          } else if (getDay == '4') {
-            week = '星期四'
-          } else if (getDay == '5') {
-            week = '星期五'
-          } else if (getDay == '6') {
-            week = '星期六'
-          }
-          vm.localTime = getTime
-          vm.localWeek = week
-          vm.localYear = getYear
-        }, 1000)
-
-      }
-    },
-    mounted(){
-      this.TimerFormat()
-
+        var week;
+        if (getDay === "0") {
+          week = "星期日";
+        } else if (getDay == "1") {
+          week = "星期一";
+        } else if (getDay == "2") {
+          week = "星期二";
+        } else if (getDay == "3") {
+          week = "星期三";
+        } else if (getDay == "4") {
+          week = "星期四";
+        } else if (getDay == "5") {
+          week = "星期五";
+        } else if (getDay == "6") {
+          week = "星期六";
+        }
+        vm.localTime = getTime;
+        vm.localWeek = week;
+        vm.localYear = getYear;
+      }, 1000);
     }
+  },
+  mounted() {
+    this.TimerFormat();
   }
+};
 </script>
 <style lang="scss">
-.navheader{
-  .headTip{
+.navheader {
+  .headTip {
     position: absolute !important;
     margin: -15px 35px !important;
     font-size: 20px !important;
     color: #28ff00 !important;
     width: 556px !important;
   }
-  p{
+  p {
     margin: 0;
   }
   height: 122px;
   color: #fff;
   font-size: 20px;
-  .logo{
+  .logo {
     padding: 30px;
-    p{
+    p {
       margin: 0;
       text-align: left;
       line-height: 54px;
@@ -152,34 +162,33 @@
       font-size: 36px;
     }
   }
-  .logo-hui{
-    p{
+  .logo-hui {
+    p {
       color: #bbb;
     }
   }
-  .navoption{
+  .navoption {
     padding: 30px 30px 0 0;
     float: right;
-    p{
+    p {
       text-align: left;
       font-size: 14px;
       font-weight: bold;
-      line-height:28px;
-      span{
+      line-height: 28px;
+      span {
         margin: 0 5px;
       }
     }
-    .nowposition{
+    .nowposition {
       cursor: pointer;
     }
-    .nav-plan{
+    .nav-plan {
       color: #28ff00;
     }
-    .nav-plan-time{
+    .nav-plan-time {
       color: #ffd800;
       float: right;
     }
   }
 }
-
 </style>
