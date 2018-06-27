@@ -127,13 +127,6 @@ import { BasicUrl, IMG, ajaxUrl } from "../../config";
 
 export default {
   name: "navheader",
-  props: [
-    "SocketAllData",
-    "criminalList",
-    "receiveDataMsgType31",
-    "receiveDataMsgType30",
-    "receiveDataMsgType33"
-  ],
   beforeCreate() {
     /* Coding By YanM */
     /* Coding By YanM */
@@ -170,6 +163,12 @@ export default {
       outB: 12,
       alertText: ""
     };
+  },
+  computed: {
+    ...mapState({
+      criminalList: state => state.crimalcheck.criminalList,
+      receiveDataMsgType31:state => state.crimalcheck.receiveDataMsgType31
+    })
   },
   methods: {
     toggle1: function() {
@@ -458,7 +457,7 @@ export default {
         //发送数据
         if (vm.ws.readyState == WebSocket.OPEN) {
           vm.ws.send(JSON.stringify(send));
-          if (vm.receiveDataMsgType31 == "") {
+          if (receiveDataMsgType31 == "") {
             vm.inChoose = [];
             vm.outChoose = [];
             vm.inCriminals = [];
@@ -470,7 +469,7 @@ export default {
           }
         }
         //接收数据
-        var receiveData = vm.receiveDataMsgType31;
+        var receiveData = receiveDataMsgType31;
         if (receiveData != "" && receiveData != null) {
           var hasNotCall = []; //监内未点2402
           var outHasNotCall = []; //外出未点2403
@@ -479,9 +478,9 @@ export default {
               var notCall = receiveData[i];
               notCall["ischoose"] = false;
               notCall["CriminalName"] =
-                vm.criminalList[0][notCall["PersonID"]]["CriminalName"];
+                criminalList[0][notCall["PersonID"]]["CriminalName"];
               notCall["Photo"] =
-                vm.criminalList[0][notCall["PersonID"]]["Photo"];
+                criminalList[0][notCall["PersonID"]]["Photo"];
               for (var m = 0; m < vm.inChoose.length; m++) {
                 if (vm.inChoose[m] == notCall["PersonID"]) {
                   notCall["ischoose"] = true;
@@ -497,9 +496,9 @@ export default {
               var outNotCall = receiveData[i];
               outNotCall["ischoose"] = false;
               outNotCall["CriminalName"] =
-                vm.criminalList[0][outNotCall["PersonID"]]["CriminalName"];
+                criminalList[0][outNotCall["PersonID"]]["CriminalName"];
               outNotCall["Photo"] =
-                vm.criminalList[0][outNotCall["PersonID"]]["Photo"];
+                criminalList[0][outNotCall["PersonID"]]["Photo"];
               for (var n = 0; n < vm.outChoose.length; n++) {
                 if (vm.outChoose[n] == outNotCall["PersonID"]) {
                   outNotCall["ischoose"] = true;
