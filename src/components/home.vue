@@ -8,29 +8,33 @@
           <div class="content">
             <el-col :span="2" style="height: 10px;"></el-col>
             <el-col :span="10">
-              <p>监区人数：{{isNaN(crimalCount_outCrimalCount.Total)?0:crimalCount_outCrimalCount.Total}}人</p>
-              <p>在监人数：{{isNaN(crimalCount_outCrimalCount.Total-FlnkIDList4.length)?0:(crimalCount_outCrimalCount.Total-FlnkIDList4.length)}}人</p>       
-              <p>异常人员：{{FlnkIDList2.length-FlnkIDList1.length}}人</p>
+              <p>
+                监区人数：{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}人</p>
+              <p>
+                在监人数：{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 : (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}人</p>
+              <p>异常人员：{{FlnkIDList2.length - FlnkIDList1.length}}人</p>
             </el-col>
             <el-col :span="11">
               <p>外出人数（监内）：{{FlnkIDList1.length}}人</p>
-              <p>外出人数（监外）：{{isNaN(crimalCount_outCrimalCount.OutCount)?0:crimalCount_outCrimalCount.OutCount}}人</p>
+              <p>
+                外出人数（监外）：{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}人</p>
             </el-col>
           </div>
         </div>
-         <!--流动人员信息-->
-         <div class="floating_personnel">
+        <!--流动人员信息-->
+        <div class="floating_personnel">
           <h4 class="home_title">流动人员
-            <span class="float">（异常人员{{FlnkIDList2.length-FlnkIDList1.length}}人，</span>
+            <span class="float">（异常人员{{FlnkIDList2.length - FlnkIDList1.length}}人，</span>
             <span class="out">正常流动{{FlnkIDList1.length}}人）</span>
           </h4>
           <el-row class="float_person_wrap">
             <!--{{FlnkIDList2}}-->
-            <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key=index >
+            <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)"
+                    :key=index>
               <!--<div class="float_person_card illegal" :class="item.prisonstatus">-->
-              <div :class="['float_person_card illegal', {moveBlue: item.isBlue}]" >
+              <div :class="['float_person_card illegal', {moveBlue: item.isBlue}]">
                 <el-col :span="7" class="photo">
-                  <img :src="item.Photo" alt="" width="100%" height="100%" >
+                  <img :src="item.Photo" alt="" width="100%" height="100%">
                 </el-col>
                 <el-col :span="16" class="crimal_content">
                   <p>姓名：{{item.CriminalName}} ({{item.CriminalID}})</p>
@@ -44,9 +48,9 @@
               </div>
             </el-col>
           </el-row>
-          <el-row >
+          <el-row>
             <el-col :span="2" style="height: 10px"></el-col>
-            <el-col :span="20" >
+            <el-col :span="20">
               <div class="pages">
                 <span class="pageControl" @click="floating_personnelBack"><img src="../assets/q1.png" alt=""/></span>
                 <span class="pagesText">{{float_personnelNowPage}}/{{float_personnelAllPages}}</span>
@@ -57,177 +61,179 @@
           </el-row>
         </div>
       </el-col>
-      
+
       <el-col :span="17">
-       <div class="member_distribute">
+        <div class="member_distribute">
           <h4 class="home_title">人员分布</h4>
           <div class="map" ref="myMap">
             <div class="getCenter">
-                <img :src="mapPhoto" ref="myImg" >
-                <!--统计显示-->
-                <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" 
-                  :key=index
-                  :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'green',fontWeight:'bold'}">
+              <img :src="mapPhoto" ref="myImg">
+              <!--统计显示-->
+              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange"
+                   :key=index
+                   :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'green',fontWeight:'bold'}">
                 {{item.CriminalCnt}}
-              </div> 
+              </div>
             </div>
           </div>
-       </div>
+        </div>
       </el-col>
     </div>
   </div>
 </template>
 
 <script>
-  import {BasicUrl,ajaxUrl,MapUrl} from '../config'
+  import {BasicUrl, ajaxUrl, MapUrl} from '../config'
+  import {mapState} from 'vuex'
 
   export default {
-  name: 'home',
-  props:[
-    'FlnkIDList1',
-    'FlnkIDList2',
-    'FlnkIDList3',
-    'FlnkIDList4',
-    'chartsDatas',
-    'crimalCount_outCrimalCount',
-    'Iswebsocket',
-    'mapList',
-    'areaList'
-  ],
-  data () {
-    return {
-      float_personnelAllPages:'1',//非法流动总页数
-      float_personnelNowPage:1,//非法流动当前页
-      float_personnelListAll:0,//非法流动总数
-      float_personnelA:1,
-      float_personnelB:3,//3个一页
+    name: 'home',
+    data() {
+      return {
+        float_personnelAllPages: '1',//非法流动总页数
+        float_personnelNowPage: 1,//非法流动当前页
+        float_personnelListAll: 0,//非法流动总数
+        float_personnelA: 1,
+        float_personnelB: 3,//3个一页
 
-      chartsChange:[],
+        chartsChange: [],
 
-      mapScale:0,
-      mapPhoto:"",//地图信息
-      mapHeight:600,
-      mapWidth:800
-    }
-  },
-  methods:{
-    //点击数据弹出窗口
-    select:function(areaid){
-      this.$emit('viewRYXQ',areaid)
+        mapScale: 0,
+        mapPhoto: "",//地图信息
+        mapHeight: 600,
+        mapWidth: 800
+      }
     },
+    computed: {
+      ...mapState({
+        crimalCount_outCrimalCount: state => state.home.crimalCount_outCrimalCount,
+        FlnkIDList1: state => state.home.FlnkIDList1,
+        FlnkIDList2: state => state.home.FlnkIDList2,
+        FlnkIDList4: state => state.home.FlnkIDList4,
+        chartsDatas: state => state.home.chartsDatas,
+        Iswebsocket: state => state.home.Iswebsocket,
+        mapList: state => state.mapList,
+      })
+    },
+    methods: {
+      //点击数据弹出窗口
+      select: function (areaid) {
+        this.$emit('viewRYXQ', areaid)
+      },
 
-    //流动人员翻页
-    floating_personnelGo:function () {
-      if(this.float_personnelNowPage<this.float_personnelAllPages){
-        this.float_personnelNowPage=this.float_personnelNowPage+1
-        this.float_personnelA=this.float_personnelA+3
-        this.float_personnelB=this.float_personnelB+3
-      }else {
+      //流动人员翻页
+      floating_personnelGo: function () {
+        if (this.float_personnelNowPage < this.float_personnelAllPages) {
+          this.float_personnelNowPage = this.float_personnelNowPage + 1
+          this.float_personnelA = this.float_personnelA + 3
+          this.float_personnelB = this.float_personnelB + 3
+        } else {
 //        alert("已经最后一页了")
-      }
-    },
-    floating_personnelBack:function () {
-      if(this.float_personnelNowPage === 1){
+        }
+      },
+      floating_personnelBack: function () {
+        if (this.float_personnelNowPage === 1) {
 //        alert("已经是第一页了")
-      }else {
-        this.float_personnelNowPage=this.float_personnelNowPage-1
-        this.float_personnelA=this.float_personnelA-3
-        this.float_personnelB=this.float_personnelB-3
+        } else {
+          this.float_personnelNowPage = this.float_personnelNowPage - 1
+          this.float_personnelA = this.float_personnelA - 3
+          this.float_personnelB = this.float_personnelB - 3
+        }
+      },
+      //获取地图信息
+      getMap: function () {
+        let vm = this;
+        let map = vm.getLocalStorage('MapFlnkID');
+        let mapInfo = vm.$store.state.mapList[0][map];
+        vm.mapPhoto = MapUrl + mapInfo.MapUrl;
+        vm.mapHeight = mapInfo.Height;
+        vm.mapWidth = mapInfo.Width;
+
+        let divH = this.$refs.myMap.clientHeight,
+          divW = this.$refs.myMap.clientWidth;
+
+        let hScale = divH / vm.mapHeight;
+        let wScale = divW / vm.mapWidth;
+        if (hScale < wScale) {
+          this.$refs.myImg.height = divH;
+          this.$refs.myImg.width = vm.mapWidth * hScale;
+          this.mapScale = hScale;
+        }
+        else {
+          this.$refs.myImg.height = vm.mapHeight * wScale;
+          this.$refs.myImg.width = divW;
+          this.mapScale = wScale;
+        }
       }
     },
-    //获取地图信息
-    getMap:function(){
-      let vm = this;
-      let map =  vm.getLocalStorage('MapFlnkID');
-      let mapInfo = vm.mapList[0][map];
-      vm.mapPhoto = MapUrl+mapInfo.MapUrl;
-      vm.mapHeight = mapInfo.Height;
-      vm.mapWidth = mapInfo.Width;
+    mounted() {
 
-      let divH=this.$refs.myMap.clientHeight,
-          divW=this.$refs.myMap.clientWidth;
-
-      let hScale = divH/vm.mapHeight;
-      let wScale = divW/vm.mapWidth;
-      if(hScale<wScale)
-      {
-         this.$refs.myImg.height=divH;
-         this.$refs.myImg.width=vm.mapWidth*hScale;
-         this.mapScale=hScale;
-      }
-      else
-      {
-         this.$refs.myImg.height=vm.mapHeight*wScale;
-         this.$refs.myImg.width=divW;
-         this.mapScale=wScale;
-      }
-    }
-  },
-  mounted(){
-    
-    var vm = this;
-    localStorage.setItem("canRouter",1)
-    setTimeout(function(){
+      var vm = this;
+      localStorage.setItem("canRouter", 1)
+      setTimeout(function () {
         vm.getMap();
         setInterval(function () {
-        if(vm.chartsChange !== vm.chartsDatas){
-          vm.chartsChange =vm.chartsDatas;
-        }
+          if (vm.chartsChange !== chartsDatas) {
+            vm.chartsChange = chartsDatas;
+          }
 
-        vm.float_personnelListAll=vm.FlnkIDList2.length
-        vm.float_personnelAllPages=Math.ceil(vm.FlnkIDList2.length/3)===0?1:Math.ceil(vm.FlnkIDList2.length/3)
+          vm.float_personnelListAll = FlnkIDList2.length
+          vm.float_personnelAllPages = Math.ceil(FlnkIDList2.length / 3) === 0 ? 1 : Math.ceil(FlnkIDList2.length / 3)
 
-        if(vm.float_personnelNowPage>vm.float_personnelAllPages){
-        
-          vm.float_personnelNowPage=vm.float_personnelAllPages         
-          vm.float_personnelB = vm.float_personnelNowPage*3
-          vm.float_personnelA = vm.float_personnelB-2
+          if (vm.float_personnelNowPage > vm.float_personnelAllPages) {
 
-          //  vm.float_personnelNowPage=1          
-          //  vm.float_personnelB = 3
-          //  vm.float_personnelA = 1
-        }
-      },1000)
-    },500)
+            vm.float_personnelNowPage = vm.float_personnelAllPages
+            vm.float_personnelB = vm.float_personnelNowPage * 3
+            vm.float_personnelA = vm.float_personnelB - 2
 
-    //5秒钟没有数据 刷新界面
-    setInterval(function(){  
-       if(vm.Iswebsocket==0){
-        vm.$router.push({ path: '/' })
-        window.location.reload()
-       }      
-    },5000)
-  
+            //  vm.float_personnelNowPage=1
+            //  vm.float_personnelB = 3
+            //  vm.float_personnelA = 1
+          }
+        }, 1000)
+      }, 500)
+
+      //5秒钟没有数据 刷新界面
+//      setInterval(function () { //todo暂时取消5秒刷新页面
+//        if (vm.$store.state.home.Iswebsocket == 0) {
+//          vm.$router.push({path: '/'})
+//          window.location.reload()
+//        }
+//      }, 5000)
+
+    }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-  .home{
+  .home {
     height: 780px !important;
   }
-  .moveBlue{
+
+  .moveBlue {
     background: #2553ff !important;
   }
-  #myChart{
-    height:480px;
+
+  #myChart {
+    height: 480px;
   }
-  .body{
+
+  .body {
     height: 100%;
-    color:#000;
+    color: #000;
     padding: 25px;
     overflow: hidden;
     padding-top: 0;
-    .home_title{
+    .home_title {
       color: #2553ff;
       text-shadow: -1px 1px 0px #fff;
       margin: 10px 20px;
       font-size: 20px;
-      font-weight:bold;
+      font-weight: bold;
       text-align: left;
     }
-    .pages{
+    .pages {
       width: 273px;
       height: 50px;
       margin: 0px auto;
@@ -239,14 +245,14 @@
       width: 155px;
       text-align: center;
     }
-    .prison_situation{
+    .prison_situation {
       height: 200px;
-      background: rgba(255,255,255,.8);
+      background: rgba(255, 255, 255, .8);
       text-align: left;
       overflow: auto;
       margin-bottom: 20px;
-      .content{
-        p{
+      .content {
+        p {
           font-size: 16px;
           line-height: 48px;
           font-weight: bold;
@@ -254,54 +260,54 @@
         }
       }
     }
-    .member_distribute{
-      height:780px;
-      background: rgba(255,255,255,.8);
+    .member_distribute {
+      height: 780px;
+      background: rgba(255, 255, 255, .8);
       overflow: hidden;
       text-align: left;
       margin-left: 20px;
-      position:relative;
+      position: relative;
     }
-    .floating_personnel{
-      background: rgba(255,255,255,.8);
+    .floating_personnel {
+      background: rgba(255, 255, 255, .8);
       overflow: hidden;
       height: 560px;
       margin-bottom: 20px;
       margin-left: 0px;
-      .float{
+      .float {
         color: #8a2648;
         text-shadow: none;
         font-size: 16px;
       }
-      .out{
+      .out {
         color: #0061ff;
         text-shadow: none;
         font-size: 16px;
       }
-      .float_person_wrap{
+      .float_person_wrap {
         padding: 0 10px;
         height: 450px;
-        .float_person_card{
+        .float_person_card {
           padding: 5px;
           height: 130px;
           margin: 2px 0px;
-          .photo{
-            height:100%;
+          .photo {
+            height: 100%;
           }
         }
-        .outperson{
+        .outperson {
           background: #196fff;
         }
-        .illegal{
+        .illegal {
           background: #93374e;
         }
-        .crimal_content{
+        .crimal_content {
           color: #fff;
           font-size: 14px;
           text-align: left;
           margin-left: 10px;
           overflow: hidden;
-          p{
+          p {
             margin: 0;
             line-height: 22px;
             white-space: nowrap;
@@ -310,30 +316,30 @@
         }
       }
     }
-    .outside_persion_personnel{
-      background: rgba(255,255,255,.8);
+    .outside_persion_personnel {
+      background: rgba(255, 255, 255, .8);
       overflow: hidden;
       height: 260px;
       margin-left: 20px;
-      .outside_person_wrap{
+      .outside_person_wrap {
         padding: 20px 10px;
-        height:140px;
-        .outside_person_card{
+        height: 140px;
+        .outside_person_card {
           padding: 10px;
           height: 100px;
           margin: 5px 10px;
           background: #481fac;
-          .photo{
-            height:100%;
+          .photo {
+            height: 100%;
           }
         }
-        .crimal_content{
+        .crimal_content {
           color: #fff;
           font-size: 12px;
           text-align: left;
           margin-left: 10px;
           overflow: hidden;
-          p{
+          p {
             margin: 0;
             line-height: 28px;
             white-space: nowrap;
@@ -343,22 +349,24 @@
       }
     }
   }
- .map{
+
+  .map {
     position: absolute;
-    left:0;
-    right:0;
-    top:0px;
-    bottom:0;
-    img{
+    left: 0;
+    right: 0;
+    top: 0px;
+    bottom: 0;
+    img {
       display: block;
-    };
-    .getCenter{
-      position:absolute;
-      left:50%;
-      top:50%;
+    }
+  ;
+    .getCenter {
+      position: absolute;
+      left: 50%;
+      top: 50%;
       transform: translateX(-50%) translateY(-50%);
     }
   }
- 
+
 
 </style>

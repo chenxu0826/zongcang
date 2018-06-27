@@ -69,11 +69,12 @@
 <script>
 import { BasicUrl, IMG, ajaxUrl, MapUrl } from "../../config";
 import { ajax } from "../../assets/ajaxWebApiMethod";
+import {mapState} from 'vuex'
 var scaleNum;
 
 export default {
   name: "navheader",
-  props: ["mapList", "criminalList"],
+  props: ["criminalList"],
 
   data() {
     return {
@@ -84,6 +85,11 @@ export default {
       //        criminalGroupIDs:'9C4CE802-D8AB-4172-AC11-15578F19B0FC',
       criminalsituationLsit: ""
     };
+  },
+  computed:{
+    ...mapState({
+      mapList: state => state.mapList,
+    })
   },
   methods: {
     /* 选择互监组成员 */
@@ -154,13 +160,13 @@ export default {
             var mapUrl;
             if (result[i].Status == 1) {
               psName = result[i].PSName;
-              mapUrl = MapUrl + vm.mapList[0][result[i].MapID].MapUrl;
+              mapUrl = MapUrl + mapList[0][result[i].MapID].MapUrl;
             } else if (result[i].Status == 2) {
               psName = result[i].PSName + "(离线)";
               mapUrl = null;
             } else if (result[i].Status == 3) {
               psName = result[i].PSName + "(报警)";
-              mapUrl = MapUrl + vm.mapList[0][result[i].MapID].MapUrl;
+              mapUrl = MapUrl + mapList[0][result[i].MapID].MapUrl;
             }
             vm.criminalLists.push({
               PSName: psName,
@@ -215,13 +221,13 @@ export default {
             var mapUrl;
             if (result[i].Status == 1) {
               psName = result[i].PSName;
-              mapUrl = MapUrl + vm.mapList[0][result[i].MapID].MapUrl;
+              mapUrl = MapUrl + mapList[0][result[i].MapID].MapUrl;
             } else if (result[i].Status == 2) {
               psName = result[i].PSName + "(离线)";
               mapUrl = null;
             } else if (result[i].Status == 3) {
               psName = result[i].PSName + "(报警)";
-              mapUrl = MapUrl + vm.mapList[0][result[i].MapID].MapUrl;
+              mapUrl = MapUrl + mapList[0][result[i].MapID].MapUrl;
             }
             for (var j = 0; j < vm.criminalLists.length; j++) {
               if (vm.criminalLists[j].CriminalID == result[i].CriminalID) {
