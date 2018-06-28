@@ -74,7 +74,6 @@ var scaleNum;
 
 export default {
   name: "navheader",
-  props: ["criminalList"],
 
   data() {
     return {
@@ -89,6 +88,7 @@ export default {
   computed:{
     ...mapState({
       mapList: state => state.mapList,
+      criminalList: state => state.criminalList
     })
   },
   methods: {
@@ -175,7 +175,7 @@ export default {
               CriminalX: result[i].X,
               CriminalY: result[i].Y,
               status: isTrue,
-              CriminalPhoto: vm.criminalList[0][result[i].CriminalID].Photo,
+              CriminalPhoto: criminalList[0][result[i].CriminalID].Photo,
               MapUrl: mapUrl,
               pointStatus: true
             });
