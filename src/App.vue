@@ -18,7 +18,6 @@
       @viewRYXQ="viewRYDetail"
       :toolList="toolList"
       :movePeople="movePeople"
-      :receiveDataMsgType25="receiveDataMsgType25"
       :receiveDataMsgType32="receiveDataMsgType32"
       :chest_card="chest_card"
       :wristband="wristband"
@@ -462,7 +461,6 @@ export default {
       wristband: [], //腕带信息
       /* Coding By YanM */
       /* mj B*/
-      receiveDataMsgType25: {}, //进出ws工数据
       receiveDataMsgType32: {}, //工具清点数据
       toolList: [], // 工具基础信息集合
       GetCriminalCalledList: [], //已点罪犯
@@ -516,8 +514,8 @@ export default {
       criminalList: state => state.criminalList,
       receiveDataMsgType8: state => state.mutualsupervision.receiveDataMsgType8,
       cardPerson: state => state.mutualsupervision.cardPerson,
-      receiveDataMsgType22:state => state.outregister.receiveDataMsgType22,
-      policeList:state => state.outregister.policeList
+      receiveDataMsgType22: state => state.outregister.receiveDataMsgType22,
+      policeList: state => state.outregister.policeList
     })
   },
   methods: {
@@ -1298,7 +1296,7 @@ export default {
               IC: result[i].IC
             };
           }
-          vm.$store.commit('setPoliceList',police_hash);
+          vm.$store.commit("setPoliceList", police_hash);
         }
       });
 
@@ -1417,8 +1415,7 @@ export default {
       vm.$store.commit("setIswebsocket", 1);
       /*过滤进出工数据*/
       if (msg.Header.MsgType === 25) {
-        var receiveDataMsgType25 = JSON.parse(msg.Body);
-        vm.receiveDataMsgType25 = receiveDataMsgType25;
+        vm.$store.commit("setReceiveDataMsgType25", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 30) {
         /*工具清点提交返回结果*/
         var receiveDataMsgType30 = JSON.parse(msg.Body);
@@ -1436,20 +1433,20 @@ export default {
         vm.$store.commit("setReceiveDataMsgType20", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 22) {
         /*外出罪犯信息*/
-        vm.$store.commit('setReceiveDataMsgType22',JSON.parse(msg.Body));
+        vm.$store.commit("setReceiveDataMsgType22", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 27) {
         /*陪同民警信息*/
-        vm.$store.commit("setReceiveDataMsgType27",JSON.parse(msg.Body));
+        vm.$store.commit("setReceiveDataMsgType27", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 23) {
         /*外出登记提交*/
-        vm.$store.commit('setReceiveDataMsgType23',JSON.parse(msg.Body));        
+        vm.$store.commit("setReceiveDataMsgType23", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 26) {
         /*外出登记取消*/
-        vm.$store.commit('setReceiveDataMsgType26',JSON.parse(msg.Body));
+        vm.$store.commit("setReceiveDataMsgType26", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 34) {
         /*获取互监组*/
         var receiveDataMsgType34 = JSON.parse(msg.Body);
-        vm.$store.commit('setAllGroups',receiveDataMsgType34)
+        vm.$store.commit("setAllGroups", receiveDataMsgType34);
         var receiveData = receiveDataMsgType34;
       } else if (msg.Header.MsgType === 8) {
         /*互监组管理刷卡*/

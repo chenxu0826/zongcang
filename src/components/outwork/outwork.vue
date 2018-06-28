@@ -73,10 +73,10 @@
 
 <script>
 import { BasicUrl, IMG, ajaxUrl } from "../../config";
+import { mapState } from "vuex";
 
 export default {
   name: "navheader",
-  props: ["SocketAllData", "receiveDataMsgType25", "criminalList"],
   data() {
     return {
       isShow1: true,
@@ -102,6 +102,11 @@ export default {
       buttonText: "",
       starInterval: ""
     };
+  },
+  computed: {
+    ...mapState({
+      criminalList: state => state.criminalList,
+    })
   },
   methods: {
     toggle1: function() {
@@ -332,7 +337,7 @@ export default {
             getCriminalList["CriminalName"] =
               vm.criminalList[0][getCriminalID]["CriminalName"];
             getCriminalList["Photo"] =
-              vm.criminalList[0][getCriminalID]["Photo"];
+              criminalList[0][getCriminalID]["Photo"];
             getCriminalLists.push(getCriminalList);
             vm.outCriminalList = getCriminalLists;
             for (var k = 0; k < vm.inCriminalList.length; k++) {
