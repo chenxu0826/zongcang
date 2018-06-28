@@ -11,7 +11,7 @@
 /* 上线版本 */
 // export const BasicUrl = 'http://'+window.location.host+'/api/'
 // export const BasicUrl = 'http://10.58.1.177:9001/api/'
-export const BasicUrl = 'http://10.58.1.178:7715/api/' //开发临时使用
+export const BasicUrl = 'http://10.58.1.178:7715/api/'//开发临时使用
 
 $.ajax({
   type: "get",
