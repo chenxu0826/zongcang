@@ -18,17 +18,13 @@
       @viewRYXQ="viewRYDetail"
       :toolList="toolList"
       :movePeople="movePeople"
-      :allGroups="allGroups"
       :policeList="policeList"
       :receiveDataMsgType25="receiveDataMsgType25"
       :receiveDataMsgType32="receiveDataMsgType32"
-      :receiveDataMsgType20="receiveDataMsgType20"
       :receiveDataMsgType22="receiveDataMsgType22"
       :receiveDataMsgType26="receiveDataMsgType26"
       :receiveDataMsgType23="receiveDataMsgType23"
-      :receiveDataMsgType8="receiveDataMsgType8"
       :receiveDataMsgType27="receiveDataMsgType27"
-      :cardPerson="cardPerson"
       :chest_card="chest_card"
       :wristband="wristband"
 
@@ -474,13 +470,10 @@ export default {
       /* mj B*/
       receiveDataMsgType25: {}, //进出ws工数据
       receiveDataMsgType32: {}, //工具清点数据
-      receiveDataMsgType20: {}, //外出登记初次发送
       receiveDataMsgType22: {}, //外出罪犯信息
       receiveDataMsgType23: {}, //外出登记提交
       receiveDataMsgType26: {}, //外出登记取消
-      receiveDataMsgType8: {}, //互监组管理刷卡
       receiveDataMsgType27: {}, //外出登记民警
-      cardPerson: [], //互监组刷卡区域成员
       toolList: [], // 工具基础信息集合
       GetCriminalCalledList: [], //已点罪犯
       criminalCalledIsLastPage: false, //已点罪犯是否是最后一页
@@ -501,7 +494,6 @@ export default {
       alarmB: 1,
       groupTeam: [], //互监组成员
       alertText: "", //登录页面提示
-      allGroups: [], //所有互监组
       /* mj e*/
       alertYHDL: false, //用户登录
       Isopen: false,
@@ -530,8 +522,10 @@ export default {
       plan: state => state.navheader.plan,
       onlinestatus: state => state.navheader.onlinestatus,
       NextTime: state => state.navheader.NextTime,
-      SocketAllData: state => state.crimalcheck.SocketAllData,
-      criminalList: state => state.crimalcheck.criminalList
+      SocketAllData: state => state.SocketAllData,
+      criminalList: state => state.criminalList,
+      receiveDataMsgType8: state => state.mutualsupervision.receiveDataMsgType8,
+      cardPerson: state => state.mutualsupervision.cardPerson
     })
   },
   methods: {
@@ -697,7 +691,7 @@ export default {
 
     /* 零时互监组取消操作，清空刷卡内容*/
     delCardPerson: function() {
-      this.cardPerson = [];
+      this.$store.commit("setCardPerson", []);
     },
     /* 登录弹窗显示 */
     canRouterChange: function() {
@@ -1223,7 +1217,7 @@ export default {
             };
           }
           //所有罪犯信息缓存(传进vue的数据用于渲染页面)
-          vm.$store.commit('setCriminalList',personlist_hash);
+          vm.$store.commit("setCriminalList", personlist_hash);
         }
       });
       /* 监区人数 && 外出人数（监外） */
@@ -1436,7 +1430,7 @@ export default {
       } else if (msg.Header.MsgType === 30) {
         /*工具清点提交返回结果*/
         var receiveDataMsgType30 = JSON.parse(msg.Body);
-        vm.$store.commit('setReceiveDataMsgType30',receiveDataMsgType30);
+        vm.$store.commit("setReceiveDataMsgType30", receiveDataMsgType30);
       } else if (msg.Header.MsgType === 32) {
         /*工具清点*/
         var receiveDataMsgType32 = JSON.parse(msg.Body);
@@ -1444,11 +1438,10 @@ export default {
       } else if (msg.Header.MsgType === 31) {
         /*人员清点*/
         var receiveDataMsgType31 = JSON.parse(msg.Body);
-        vm.$store.commit('setReceiveDataMsgType31',receiveDataMsgType31);
+        vm.$store.commit("setReceiveDataMsgType31", receiveDataMsgType31);
       } else if (msg.Header.MsgType === 20) {
         /*外出登记初次发送*/
-        var receiveDataMsgType20 = JSON.parse(msg.Body);
-        vm.receiveDataMsgType20 = receiveDataMsgType20;
+        vm.$store.commit("setReceiveDataMsgType20", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 22) {
         /*外出罪犯信息*/
         var receiveDataMsgType22 = JSON.parse(msg.Body);
@@ -1468,12 +1461,11 @@ export default {
       } else if (msg.Header.MsgType === 34) {
         /*获取互监组*/
         var receiveDataMsgType34 = JSON.parse(msg.Body);
-        vm.allGroups = receiveDataMsgType34;
+        vm.$store.commit('setAllGroups',receiveDataMsgType34)
         var receiveData = receiveDataMsgType34;
       } else if (msg.Header.MsgType === 8) {
         /*互监组管理刷卡*/
-        var receiveDataMsgType8 = JSON.parse(msg.Body);
-        vm.receiveDataMsgType8 = receiveDataMsgType8;
+        vm.$store.commit("setReceiveDataMsgType8", JSON.parse(msg.Body));
         var receiveData = receiveDataMsgType8;
 
         if (receiveData != "" || receiveData != null) {
@@ -1483,18 +1475,18 @@ export default {
               criminalList[0][receiveData["PersonID"]]["CriminalName"];
             receiveData["Photo"] =
               criminalList[0][receiveData["PersonID"]]["Photo"];
-            for (var i = 0; i < vm.cardPerson.length; i++) {
-              if (vm.cardPerson[i]["PersonID"] == receiveData["PersonID"]) {
-                vm.cardPerson.splice(i, 1);
+            for (var i = 0; i < cardPerson.length; i++) {
+              if (cardPerson[i]["PersonID"] == receiveData["PersonID"]) {
+                cardPerson.splice(i, 1);
               }
             }
-            vm.cardPerson.push(receiveData);
+            cardPerson.push(receiveData);
           }
         }
       } else if (msg.Header.MsgType === 33) {
         /*手动结束人员、工具清点*/
         var receiveDataMsgType33 = JSON.parse(msg.Body);
-        vm.$store.commit('setReceiveDataMsgType33',receiveDataMsgType33);
+        vm.$store.commit("setReceiveDataMsgType33", receiveDataMsgType33);
       } else if (JSON.parse(event.data).Header.MsgType === 2) {
         /* 报警信息 */
         var alarmNews = JSON.parse(JSON.parse(event.data).Body);
@@ -1777,8 +1769,7 @@ export default {
               CardType: chest_card.CardType,
               CriminalID: chest_card.CriminalID,
               status: false,
-              CriminalName:
-                criminalList[0][chest_card.CriminalID].CriminalName,
+              CriminalName: criminalList[0][chest_card.CriminalID].CriminalName,
               Photo: criminalList[0][chest_card.CriminalID].Photo,
               wristband: ""
             });
@@ -1815,8 +1806,7 @@ export default {
           } else {
             if (vm.wristband.length === 0) {
               vm.wristband.push({
-                CrimalName:
-                  criminalList[0][wristband.CriminalID].CriminalName,
+                CrimalName: criminalList[0][wristband.CriminalID].CriminalName,
                 CardID: wristband.CardID,
                 CriminalID: wristband.CriminalID,
                 Photo: criminalList[0][wristband.CriminalID].Photo

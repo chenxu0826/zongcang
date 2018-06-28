@@ -111,19 +111,9 @@
 
 <script>
 import { BasicUrl, IMG, ajaxUrl } from "../../config";
-
+import { mapState } from "vuex";
 export default {
   name: "navheader",
-  props: [
-    "SocketAllData",
-    "criminalList",
-    "receiveDataMsgType8",
-    "receiveDataMsgType35",
-    "receiveDataMsgType20",
-    "cardPerson",
-    "allGroups"
-  ],
-
   data() {
     return {
       generalGroupList: [], //普通互监组
@@ -142,6 +132,12 @@ export default {
       alertText: "",
       getGroupsWS: "" //实时发送获取互监组请求
     };
+  },
+  computed: {
+    ...mapState({
+      cardPerson: state => state.mutualsupervision.cardPerson,
+      allGroups: state => state.mutualsupervision.allGroups
+    })
   },
   methods: {
     //普通互监组选择
@@ -215,7 +211,7 @@ export default {
       //        var r=confirm("确定要删除该人员？");
       //        if (r==true)
       //        {
-      //           this.cardPerson.splice(index,1)
+      //           cardPerson.splice(index,1)
       //        }
       this.$confirm("确定要删除该人员?", "提示", {
         confirmButtonText: "删除",
@@ -223,15 +219,15 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.cardPerson.splice(index, 1);
+          cardPerson.splice(index, 1);
         })
         .catch(() => {});
     },
     submit: function() {
       var vm = this;
       var cardPersonList = [];
-      for (var i = 0; i < vm.cardPerson.length; i++) {
-        cardPersonList.push(vm.cardPerson[i]["PersonID"]);
+      for (var i = 0; i < cardPerson.length; i++) {
+        cardPersonList.push(cardPerson[i]["PersonID"]);
       }
       var send1 = {
         Header: {
@@ -243,7 +239,7 @@ export default {
           CriminalIDs: cardPersonList
         })
       };
-      if (vm.cardPerson == [] || vm.cardPerson == "") {
+      if (cardPerson == [] || cardPerson == "") {
         vm.alertText = "还没人刷卡";
         setTimeout(function() {
           vm.alertText = "";
@@ -722,17 +718,17 @@ export default {
       }
       vm.generalGroupList = [];
       vm.provisionalGroupList = [];
-      for (let i = 0; i < vm.allGroups.length; i++) {
+      for (let i = 0; i < allGroups.length; i++) {
         /*判断是都是报警的互监组*/
-        let reveiceData = vm.allGroups[i];
+        let reveiceData = allGroups[i];
         if (reveiceData.Status == 0) {
           reveiceData.isWring = false;
         } else if (reveiceData.Status == 1) {
           reveiceData.isWring = true;
         }
-        if (vm.allGroups[i].GroupType == 4301) {
+        if (allGroups[i].GroupType == 4301) {
           vm.generalGroupList.push(reveiceData);
-        } else if (vm.allGroups[i].GroupType == 4302) {
+        } else if (allGroups[i].GroupType == 4302) {
           vm.provisionalGroupList.push(reveiceData);
         }
       }

@@ -124,6 +124,7 @@
 
 <script>
 import { BasicUrl, IMG, ajaxUrl } from "../../config";
+import { mapState } from "vuex";
 
 export default {
   name: "navheader",
@@ -166,8 +167,8 @@ export default {
   },
   computed: {
     ...mapState({
-      criminalList: state => state.crimalcheck.criminalList,
-      receiveDataMsgType31:state => state.crimalcheck.receiveDataMsgType31
+      criminalList: state => state.criminalList,
+      receiveDataMsgType31: state => state.crimalcheck.receiveDataMsgType31
     })
   },
   methods: {
@@ -479,8 +480,7 @@ export default {
               notCall["ischoose"] = false;
               notCall["CriminalName"] =
                 criminalList[0][notCall["PersonID"]]["CriminalName"];
-              notCall["Photo"] =
-                criminalList[0][notCall["PersonID"]]["Photo"];
+              notCall["Photo"] = criminalList[0][notCall["PersonID"]]["Photo"];
               for (var m = 0; m < vm.inChoose.length; m++) {
                 if (vm.inChoose[m] == notCall["PersonID"]) {
                   notCall["ischoose"] = true;
