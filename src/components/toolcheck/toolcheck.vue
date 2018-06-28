@@ -19,7 +19,7 @@
               <!--<div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>-->
             </div>
             <div class="bodyCon">
-              <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)" :key="1">
+              <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseIn(index)" >
                   <div style="height: 91px;width: 97px;">
                   <img :src="tool.Photo" width="96" height="85" alt=""/>
@@ -47,7 +47,7 @@
             </div>
             <div class="bodyCon" style="height: 135px;">
 
-              <el-col :span="2"  v-for="(tool,index) in outTool.slice(outA-1,outB)" :key="1">
+              <el-col :span="2"  v-for="(tool,index) in outTool.slice(outA-1,outB)">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseOut(index)" >
                   <div style="height: 91px;width: 97px;">
                     <img :src="tool.Photo" width="96" height="85" alt=""/>
@@ -94,7 +94,7 @@
                   <th>清点人姓名</th>
                   <th>清点状态</th>
                 </tr>
-                <tr v-for="record in records" :key="1">
+                <tr v-for="record in records">
                   <td>{{record.CountTypeName}}</td>
                   <td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>
                   <td>{{record.ShouldCount}}</td>
@@ -489,7 +489,7 @@ export default {
           vm.ws.send(JSON.stringify(send));
         }
         //        接收数据
-        var receiveData = receiveDataMsgType32;
+        var receiveData = vm.$store.state.toolcheck.receiveDataMsgType32;
 
         //          if(receiveData!=""||receiveData!=null){
         var hasNotCall = []; //柜内未点1

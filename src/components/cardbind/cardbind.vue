@@ -15,7 +15,7 @@
             <div class="bodyCon">
               <el-row >
                   <el-row class="float_person_wrap">
-                    <el-col :span="4" v-for="(item,index) in chest_card" :key='1' v-show="!isUnbind">
+                    <el-col :span="4" v-for="(item,index) in chest_card" v-show="!isUnbind">
                       <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}, {card_bind_success:item.wristband!==''}]" @click="bindCardSelect(index)">
                         <el-col :span="10" class="photo">
                           <img :src="item.Photo" alt="" width="100%" height="100%">
@@ -28,7 +28,7 @@
                         </el-col>
                       </div>
                     </el-col>
-                    <el-col :span="4" v-for="item in wristband" :key='1' v-show="isUnbind">
+                    <el-col :span="4" v-for="item in wristband" v-show="isUnbind">
                       <div class="float_person_card card_bind_success">
                         <el-col :span="10" class="photo">
                           <img :src="item.Photo" alt="" width="100%" height="100%">

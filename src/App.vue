@@ -6,7 +6,7 @@
       @getPosition="onClickPosition()"
     ></navheader>
 
-    <router-view      
+    <router-view
       @openLogin="loginOpen"
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
@@ -29,7 +29,7 @@
         </div>
         <div class="bodyCon">
           <el-row>
-            <el-col :span="10" v-for="(item,index) in prisonSelect" :key="1">
+            <el-col :span="10" v-for="(item,index) in prisonSelect">
               <div style="width:10px;"></div>
               <div class="areas" @click="selectArea(index)" :class="{ 'jqxz_active': alertJQXZactive === index}">
                 {{item.AreaName}}
@@ -58,7 +58,7 @@
             <el-row style="height: 265px;">
               <el-col :span="4" style="height:1px;">
               </el-col>
-              <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)" :key="1">
+              <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)">
                 <div class="tipName">{{alarm.Description}}</div>
                 <div v-show="isGrup">
                   <el-row>
@@ -131,7 +131,7 @@
         <div class="bodyCon" style="height: 490px;">
           <el-row>
             <el-col :span="12">
-              <el-col :span="7" v-for="item in nowfloatPerson.slice(1,10)" :key="1">
+              <el-col :span="7" v-for="item in nowfloatPerson.slice(1,10)">
                 <div class="moveCrimal">
                   <div><img :src="item.Photo" width="70%" height="100" alt=""></div>
                   <span>{{item.ObjectName}} <br> {{item.EventTime}}<br>{{item.EventName}}</span>
@@ -179,7 +179,7 @@
               <th>区域名称</th>
               <th>点名状态</th>
             </tr>
-            <tr v-for="GetCriminal in GetCriminalCalledList" :key="1">
+            <tr v-for="GetCriminal in GetCriminalCalledList">
               <td>{{GetCriminal.CriminalName}}</td>
               <td>
                 {{(GetCriminal.CountTime == "" || GetCriminal.CountTime == null) ? "" : GetCriminal.CountTime.replace("T", " ")}}
@@ -219,7 +219,7 @@
               <th>罪犯姓名</th>
               <th>罪犯编号</th>
             </tr>
-            <tr v-for="criminal in areaCriminal" :key="1">
+            <tr v-for="criminal in areaCriminal">
               <td>{{criminal.CriminalName}}</td>
               <td>{{criminal.CriminalID}}</td>
             </tr>
@@ -244,7 +244,7 @@
               <th>清点时间</th>
               <th>清点状态</th>
             </tr>
-            <tr v-for="toolCalled in GetToolCalledList" :key="1">
+            <tr v-for="toolCalled in GetToolCalledList">
               <td>{{toolCalled.ToolTypeName}}</td>
               <td>{{toolCalled.ToolName}}</td>
               <td>{{toolCalled.OrgName}}</td>

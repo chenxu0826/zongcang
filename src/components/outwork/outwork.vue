@@ -5,12 +5,12 @@
     <el-col :span="22">
       <div class="li1_parts">
         <div class="tabHead">
-          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">{{buttonText}}（{{outCriminalList.length}}人）</div>         
+          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">{{buttonText}}（{{outCriminalList.length}}人）</div>
         </div>
         <div class="partsBody" v-show="isShow1">
           <div class="bodyCon">
 
-            <el-col :span="2" v-for="(outCrimina,index)  in outCriminalList.slice(outA-1,outB)" :key="1">
+            <el-col :span="2" v-for="(outCrimina,index)  in outCriminalList.slice(outA-1,outB)">
               <div class="criminal">
                 <div style="height: 91px;width:102px;">
                 <img :src="outCrimina.Photo" width="96" height="85" alt=""/>
@@ -34,7 +34,7 @@
         </div>
         <div class="partsBody" v-show="isShow2">
           <div class="bodyCon">
-            <el-col :span="2" v-for="(inCriminal,index) in inCriminalList.slice(inA-1,inB)" :key="1">
+            <el-col :span="2" v-for="(inCriminal,index) in inCriminalList.slice(inA-1,inB)">
               <div class="criminal">
                 <div style="height: 91px;width: 102px;">
                 <img :src="inCriminal.Photo" width="98%" height="85" alt=""/>
@@ -59,7 +59,7 @@
         <div class="partsFoot">
           <div class="alertText">{{alertText}}</div>
           <div class="sure" v-on:click="sub()">{{buttonText}}</div>
-          <div class="sure" v-on:click="End()">取消</div>        
+          <div class="sure" v-on:click="End()">取消</div>
         </div>
       </div>
     </el-col>

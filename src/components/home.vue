@@ -11,7 +11,8 @@
               <p>
                 监区人数：{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}人</p>
               <p>
-                在监人数：{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 : (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}人</p>
+                在监人数：{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 :
+                (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}人</p>
               <p>异常人员：{{FlnkIDList2.length - FlnkIDList1.length}}人</p>
             </el-col>
             <el-col :span="11">
@@ -29,8 +30,7 @@
           </h4>
           <el-row class="float_person_wrap">
             <!--{{FlnkIDList2}}-->
-            <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)"
-                    :key=index>
+            <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)">
               <!--<div class="float_person_card illegal" :class="item.prisonstatus">-->
               <div :class="['float_person_card illegal', {moveBlue: item.isBlue}]">
                 <el-col :span="7" class="photo">
@@ -70,7 +70,6 @@
               <img :src="mapPhoto" ref="myImg">
               <!--统计显示-->
               <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange"
-                   :key=index
                    :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'green',fontWeight:'bold'}">
                 {{item.CriminalCnt}}
               </div>
