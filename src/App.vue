@@ -1781,7 +1781,7 @@ export default {
     /* 关闭状态 */
     vm.ws.onclose = function() {
       vm.$store.commit("setOnlinestatus", false);
-      if (onlinestatus === false) {
+      if (vm.$store.state.navheader.onlinestatus === false) {
         //        setInterval(function() { //todo暂时取消五秒刷新
         //          vm.$router.push({ path: "/" });
         //          window.location.reload();
