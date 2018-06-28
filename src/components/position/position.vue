@@ -20,7 +20,7 @@
                         <img :src="mapPhoto" alt="" ref="abc">
                         <!--点位显示-->
                         <div v-show="item.pointStatus" :class="['point', {pointed: item.status}]"
-                             v-on:click="select(index)" v-for="(item,index) in criminalLists"
+                             v-on:click="select(index)" v-for="(item,index) in criminalLists" :key="index"
                              :style="{top:item.CriminalY+'px',left:item.CriminalX+'px'}">
                           <div class="pointTop" v-show="item.status">{{item.PSName}}</div>
                         </div>
@@ -41,7 +41,7 @@
                   <el-row>
                     <div class="deailBody">
                       <!--罪犯详细信息-->
-                      <el-col :span="12" v-for="(item,index) in criminalLists">
+                      <el-col :span="12" v-for="(item,index) in criminalLists" :key="index">
                         <div class="criminal" v-on:click="select(index)"
                              :class="['criminal',{criminal_active:item.status}]">
                           <div style="height: 133px;width: 82px;">

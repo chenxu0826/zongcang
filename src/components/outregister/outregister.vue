@@ -45,7 +45,7 @@
                         外出事由 <span   v-show="TimeShow" style="font-size: 16px;color: #f53a2a;font-weight: 800;">(外出时长{{seachNum}}分钟)</span>
                       </div>
                       <div class="deailBody" style="height:269px;">
-                        <el-col :span="4" v-for="(reason,index) in reasonList.slice(reasonA-1,reasonB)">
+                        <el-col :span="4" v-for="(reason,index) in reasonList.slice(reasonA-1,reasonB)" :key="index">
                           <div :class="['choose', {choosed: reason.ischoose}]" v-on:click="chooseReason(index,reason.Str3,reason.Str4)"  >
                             {{reason.DictCodeName}}
                           </div>
@@ -72,7 +72,7 @@
                       外出地点
                     </div>
                     <div class="deailBody" style="height:110px;">
-                      <el-col :span="4" v-for="(areaName,index) in areaNameList.slice(areaA-1,areaB)">
+                      <el-col :span="4" v-for="(areaName,index) in areaNameList.slice(areaA-1,areaB)" :key="index">
                         <div  :class="['choose1', {choosed1: areaName.ischoose}]" v-on:click="chooseArea(index)">
                           {{areaName.AreaName}}
                         </div>
@@ -101,7 +101,7 @@
                     </div>
                     <div class="deailBody" style="height:269px;">
 
-                      <el-col :span="4"  v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)">
+                      <el-col :span="4"  v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="index">
                         <div  class="criminal" v-on:click="delPerson(index)" >
                           <div style="height: 91px;width:90px;">
                             <img :src="criminal.Photo" width="98%" height="85" alt=""/>
@@ -128,7 +128,7 @@
                       陪同民警
                     </div>
                     <div class="deailBody" style="height:131px;">
-                      <el-col :span="4"  v-for="(police,index) in outPolices.slice(outPoliceA-1,outPoliceB)">
+                      <el-col :span="4"  v-for="(police,index) in outPolices.slice(outPoliceA-1,outPoliceB)" :key="index">
                         <div  class="criminal"  >
                           <div style="height: 91px;width: 90px;">
                             <img :src="police.Photo" width="98%" height="85" alt=""/>
@@ -179,7 +179,7 @@
                   <!--<th>清点人姓名</th>-->
                   <!--<th>清点状态</th>-->
                 <!--</tr>-->
-                <!--<tr v-for="record in records">-->
+                <!--<tr v-for="(record,index) in records" :key="index">-->
                   <!--<td>{{record.CountTypeName}}</td>-->
                   <!--<td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>-->
                   <!--<td>{{record.ShouldCount}}</td>-->

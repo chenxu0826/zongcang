@@ -15,7 +15,7 @@
               <div class="titleDescribe">（本监区总人数：{{orgCriminalCount}}人，<span @click="$emit('hasCheaked')" style="color: #1443cd">已点人数{{hascelled}}人</span>）</div>
             </div>
             <div class="bodyCon">
-              <el-col :span="2"  v-for="(criminal,index) in inCriminals.slice(inA-1,inB)">
+              <el-col :span="2"  v-for="(criminal,index) in inCriminals.slice(inA-1,inB)" :key="index">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseIn(index)" >
                   <div style="height: 91px;width: 97px;">
                   <img :src="criminal.Photo" width="96" height="85" alt=""/>
@@ -42,7 +42,7 @@
               <div class="title">外出未点人员{{outCriminals.length}}人</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
-              <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)">
+              <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="index">
                 <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)" >
                   <div style="height: 91px;width: 97px;">
                        <img :src="criminal.Photo" width="96" height="85" alt=""/>
@@ -88,7 +88,7 @@
                   <th>清点人姓名</th>
                   <th>清点状态</th>
                 </tr>
-                <tr v-for="record in records">
+                <tr v-for="(record,index) in records" :key="index">
                   <td>{{record.CountTypeName}}</td>
                   <td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>
                   <td>{{record.ShouldCount}}</td>

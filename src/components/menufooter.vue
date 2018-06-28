@@ -2,7 +2,7 @@
   <div class="menufooter">
     <el-row class="menu_title_wrap">
       <el-col :span="4" class="menu_title"></el-col>
-      <el-col :span="3" class="menu_title" v-for="item in menuList">
+      <el-col :span="3" class="menu_title" v-for="(item,index) in menuList" :key="index">
         <div @click="gopage(item.path)">{{item.name}}</div>
       </el-col>
       <el-col :span="2" class="menu_title"></el-col>

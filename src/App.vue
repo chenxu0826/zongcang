@@ -29,7 +29,7 @@
         </div>
         <div class="bodyCon">
           <el-row>
-            <el-col :span="10" v-for="(item,index) in prisonSelect">
+            <el-col :span="10" v-for="(item,index) in prisonSelect" :key="index">
               <div style="width:10px;"></div>
               <div class="areas" @click="selectArea(index)" :class="{ 'jqxz_active': alertJQXZactive === index}">
                 {{item.AreaName}}
@@ -58,11 +58,11 @@
             <el-row style="height: 265px;">
               <el-col :span="4" style="height:1px;">
               </el-col>
-              <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)">
+              <el-col :span="14" v-for="(alarm,index) in alarmList.slice(alarmA-1,alarmB)" :key="index">
                 <div class="tipName">{{alarm.Description}}</div>
                 <div v-show="isGrup">
                   <el-row>
-                    <el-col :span="4" v-for="group in groupTeam">
+                    <el-col :span="4" v-for="(group,index) in groupTeam" :key="index">
                       <div><img width="100%" :src="group.Photo" alt=""></div>
                       <span>{{group.CriminalName}} <br> {{group.CriminalID}} </span>
                     </el-col>
@@ -131,7 +131,7 @@
         <div class="bodyCon" style="height: 490px;">
           <el-row>
             <el-col :span="12">
-              <el-col :span="7" v-for="item in nowfloatPerson.slice(1,10)">
+              <el-col :span="7" v-for="(item,index) in nowfloatPerson.slice(1,10)" :key="index">
                 <div class="moveCrimal">
                   <div><img :src="item.Photo" width="70%" height="100" alt=""></div>
                   <span>{{item.ObjectName}} <br> {{item.EventTime}}<br>{{item.EventName}}</span>
@@ -179,7 +179,7 @@
               <th>区域名称</th>
               <th>点名状态</th>
             </tr>
-            <tr v-for="GetCriminal in GetCriminalCalledList">
+            <tr v-for="(GetCriminal,index) in GetCriminalCalledList" :key="index">
               <td>{{GetCriminal.CriminalName}}</td>
               <td>
                 {{(GetCriminal.CountTime == "" || GetCriminal.CountTime == null) ? "" :
@@ -220,7 +220,7 @@
               <th>罪犯姓名</th>
               <th>罪犯编号</th>
             </tr>
-            <tr v-for="criminal in areaCriminal">
+            <tr v-for="(criminal,index) in areaCriminal" :key="index">
               <td>{{criminal.CriminalName}}</td>
               <td>{{criminal.CriminalID}}</td>
             </tr>
@@ -245,7 +245,7 @@
               <th>清点时间</th>
               <th>清点状态</th>
             </tr>
-            <tr v-for="toolCalled in GetToolCalledList">
+            <tr v-for="(toolCalled,index) in GetToolCalledList" :key="index">
               <td>{{toolCalled.ToolTypeName}}</td>
               <td>{{toolCalled.ToolName}}</td>
               <td>{{toolCalled.OrgName}}</td>

@@ -18,7 +18,7 @@
                       普通互监组
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="4" v-for="(generalGroup,index) in generalGroupList.slice(generalGroupA-1,generalGroupB)">
+                      <el-col :span="4" v-for="(generalGroup,index) in generalGroupList.slice(generalGroupA-1,generalGroupB)" :key="index">
                         <div  :class="['choose', {wringGroup: generalGroup.isWring}]" v-on:click="chooseGeneralGroup(index)">
                           {{generalGroup.GroupNum}}
                         </div>
@@ -47,7 +47,7 @@
                         临时互监组
                       </div>
                       <div class="deailBody" style="height:110px;">
-                        <el-col :span="4" v-for="(provisionalGroup,index) in provisionalGroupList.slice(provisionalGroupA-1,provisionalGroupB)">
+                        <el-col :span="4" v-for="(provisionalGroup,index) in provisionalGroupList.slice(provisionalGroupA-1,provisionalGroupB)" :key="index">
 
                           <div  :class="['choose', {wringGroup: provisionalGroup.isWring}]" v-on:click="chooseProvisionalGroup(index)">
                             {{provisionalGroup.GroupNum}}
@@ -78,7 +78,7 @@
                       刷卡区域({{cardPerson.length}}人)
                     </div>
                     <div class="deailBody" style="height:269px;">
-                      <el-col :span="8" v-for="(person,index) in cardPerson.slice(0,1112)">
+                      <el-col :span="8" v-for="(person,index) in cardPerson.slice(0,1112)" :key="index">
                         <div class="criminal" v-on:click="cancle(index)" >
                           <img :src="person.Photo" width="98%" height="100" alt=""/>
                           <span class="criminalName">{{person.CriminalName}}</span>

@@ -30,7 +30,7 @@
           </h4>
           <el-row class="float_person_wrap">
             <!--{{FlnkIDList2}}-->
-            <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)">
+            <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key="index">
               <!--<div class="float_person_card illegal" :class="item.prisonstatus">-->
               <div :class="['float_person_card illegal', {moveBlue: item.isBlue}]">
                 <el-col :span="7" class="photo">
@@ -69,7 +69,7 @@
             <div class="getCenter">
               <img :src="mapPhoto" ref="myImg">
               <!--统计显示-->
-              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange"
+              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index"
                    :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'green',fontWeight:'bold'}">
                 {{item.CriminalCnt}}
               </div>
@@ -82,126 +82,126 @@
 </template>
 
 <script>
-  import {BasicUrl, ajaxUrl, MapUrl} from '../config'
-  import {mapState} from 'vuex'
+import { BasicUrl, ajaxUrl, MapUrl } from "../config";
+import { mapState } from "vuex";
 
-  export default {
-    name: 'home',
-    data() {
-      return {
-        float_personnelAllPages: '1',//非法流动总页数
-        float_personnelNowPage: 1,//非法流动当前页
-        float_personnelListAll: 0,//非法流动总数
-        float_personnelA: 1,
-        float_personnelB: 3,//3个一页
+export default {
+  name: "home",
+  data() {
+    return {
+      float_personnelAllPages: "1", //非法流动总页数
+      float_personnelNowPage: 1, //非法流动当前页
+      float_personnelListAll: 0, //非法流动总数
+      float_personnelA: 1,
+      float_personnelB: 3, //3个一页
 
-        chartsChange: [],
+      chartsChange: [],
 
-        mapScale: 0,
-        mapPhoto: "",//地图信息
-        mapHeight: 600,
-        mapWidth: 800
+      mapScale: 0,
+      mapPhoto: "", //地图信息
+      mapHeight: 600,
+      mapWidth: 800
+    };
+  },
+  computed: {
+    ...mapState({
+      crimalCount_outCrimalCount: state =>
+        state.home.crimalCount_outCrimalCount,
+      FlnkIDList1: state => state.home.FlnkIDList1,
+      FlnkIDList2: state => state.home.FlnkIDList2,
+      FlnkIDList4: state => state.home.FlnkIDList4,
+      chartsDatas: state => state.home.chartsDatas,
+      Iswebsocket: state => state.home.Iswebsocket,
+      mapList: state => state.mapList
+    })
+  },
+  methods: {
+    //点击数据弹出窗口
+    select: function(areaid) {
+      this.$emit("viewRYXQ", areaid);
+    },
+
+    //流动人员翻页
+    floating_personnelGo: function() {
+      if (this.float_personnelNowPage < this.float_personnelAllPages) {
+        this.float_personnelNowPage = this.float_personnelNowPage + 1;
+        this.float_personnelA = this.float_personnelA + 3;
+        this.float_personnelB = this.float_personnelB + 3;
+      } else {
+        //        alert("已经最后一页了")
       }
     },
-    computed: {
-      ...mapState({
-        crimalCount_outCrimalCount: state => state.home.crimalCount_outCrimalCount,
-        FlnkIDList1: state => state.home.FlnkIDList1,
-        FlnkIDList2: state => state.home.FlnkIDList2,
-        FlnkIDList4: state => state.home.FlnkIDList4,
-        chartsDatas: state => state.home.chartsDatas,
-        Iswebsocket: state => state.home.Iswebsocket,
-        mapList: state => state.mapList,
-      })
-    },
-    methods: {
-      //点击数据弹出窗口
-      select: function (areaid) {
-        this.$emit('viewRYXQ', areaid)
-      },
-
-      //流动人员翻页
-      floating_personnelGo: function () {
-        if (this.float_personnelNowPage < this.float_personnelAllPages) {
-          this.float_personnelNowPage = this.float_personnelNowPage + 1
-          this.float_personnelA = this.float_personnelA + 3
-          this.float_personnelB = this.float_personnelB + 3
-        } else {
-//        alert("已经最后一页了")
-        }
-      },
-      floating_personnelBack: function () {
-        if (this.float_personnelNowPage === 1) {
-//        alert("已经是第一页了")
-        } else {
-          this.float_personnelNowPage = this.float_personnelNowPage - 1
-          this.float_personnelA = this.float_personnelA - 3
-          this.float_personnelB = this.float_personnelB - 3
-        }
-      },
-      //获取地图信息
-      getMap: function () {
-        let vm = this;
-        let map = vm.getLocalStorage('MapFlnkID');
-        let mapInfo = vm.$store.state.mapList[0][map];
-        vm.mapPhoto = MapUrl + mapInfo.MapUrl;
-        vm.mapHeight = mapInfo.Height;
-        vm.mapWidth = mapInfo.Width;
-
-        let divH = this.$refs.myMap.clientHeight,
-          divW = this.$refs.myMap.clientWidth;
-
-        let hScale = divH / vm.mapHeight;
-        let wScale = divW / vm.mapWidth;
-        if (hScale < wScale) {
-          this.$refs.myImg.height = divH;
-          this.$refs.myImg.width = vm.mapWidth * hScale;
-          this.mapScale = hScale;
-        }
-        else {
-          this.$refs.myImg.height = vm.mapHeight * wScale;
-          this.$refs.myImg.width = divW;
-          this.mapScale = wScale;
-        }
+    floating_personnelBack: function() {
+      if (this.float_personnelNowPage === 1) {
+        //        alert("已经是第一页了")
+      } else {
+        this.float_personnelNowPage = this.float_personnelNowPage - 1;
+        this.float_personnelA = this.float_personnelA - 3;
+        this.float_personnelB = this.float_personnelB - 3;
       }
     },
-    mounted() {
+    //获取地图信息
+    getMap: function() {
+      let vm = this;
+      let map = vm.getLocalStorage("MapFlnkID");
+      let mapInfo = vm.$store.state.mapList[0][map];
+      vm.mapPhoto = MapUrl + mapInfo.MapUrl;
+      vm.mapHeight = mapInfo.Height;
+      vm.mapWidth = mapInfo.Width;
 
-      var vm = this;
-      localStorage.setItem("canRouter", 1)
-      setTimeout(function () {
-        vm.getMap();
-        setInterval(function () {
-          if (vm.chartsChange !== chartsDatas) {
-            vm.chartsChange = chartsDatas;
-          }
+      let divH = this.$refs.myMap.clientHeight,
+        divW = this.$refs.myMap.clientWidth;
 
-          vm.float_personnelListAll = FlnkIDList2.length
-          vm.float_personnelAllPages = Math.ceil(FlnkIDList2.length / 3) === 0 ? 1 : Math.ceil(FlnkIDList2.length / 3)
-
-          if (vm.float_personnelNowPage > vm.float_personnelAllPages) {
-
-            vm.float_personnelNowPage = vm.float_personnelAllPages
-            vm.float_personnelB = vm.float_personnelNowPage * 3
-            vm.float_personnelA = vm.float_personnelB - 2
-
-            //  vm.float_personnelNowPage=1
-            //  vm.float_personnelB = 3
-            //  vm.float_personnelA = 1
-          }
-        }, 1000)
-      }, 500)
-
-      //5秒钟没有数据 刷新界面
-//      setInterval(function () { //todo暂时取消5秒刷新页面
-//        if (vm.$store.state.home.Iswebsocket == 0) {
-//          vm.$router.push({path: '/'})
-//          window.location.reload()
-//        }
-//      }, 5000)
-
+      let hScale = divH / vm.mapHeight;
+      let wScale = divW / vm.mapWidth;
+      if (hScale < wScale) {
+        this.$refs.myImg.height = divH;
+        this.$refs.myImg.width = vm.mapWidth * hScale;
+        this.mapScale = hScale;
+      } else {
+        this.$refs.myImg.height = vm.mapHeight * wScale;
+        this.$refs.myImg.width = divW;
+        this.mapScale = wScale;
+      }
     }
+  },
+  mounted() {
+    var vm = this;
+    localStorage.setItem("canRouter", 1);
+    setTimeout(function() {
+      vm.getMap();
+      setInterval(function() {
+        if (vm.chartsChange !== chartsDatas) {
+          vm.chartsChange = chartsDatas;
+        }
+
+        vm.float_personnelListAll = FlnkIDList2.length;
+        vm.float_personnelAllPages =
+          Math.ceil(FlnkIDList2.length / 3) === 0
+            ? 1
+            : Math.ceil(FlnkIDList2.length / 3);
+
+        if (vm.float_personnelNowPage > vm.float_personnelAllPages) {
+          vm.float_personnelNowPage = vm.float_personnelAllPages;
+          vm.float_personnelB = vm.float_personnelNowPage * 3;
+          vm.float_personnelA = vm.float_personnelB - 2;
+
+          //  vm.float_personnelNowPage=1
+          //  vm.float_personnelB = 3
+          //  vm.float_personnelA = 1
+        }
+      }, 1000);
+    }, 500);
+
+    //5秒钟没有数据 刷新界面
+    //      setInterval(function () { //todo暂时取消5秒刷新页面
+    //        if (vm.$store.state.home.Iswebsocket == 0) {
+    //          vm.$router.push({path: '/'})
+    //          window.location.reload()
+    //        }
+    //      }, 5000)
   }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
