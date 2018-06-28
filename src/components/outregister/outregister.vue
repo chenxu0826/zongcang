@@ -216,19 +216,10 @@
 
 <script>
 import { BasicUrl, IMG, ajaxUrl } from "../../config";
+import { mapState } from "vuex";
 
 export default {
   name: "navheader",
-  props: [
-    "SocketAllData",
-    "criminalList",
-    "receiveDataMsgType20",
-    "receiveDataMsgType22",
-    "receiveDataMsgType27",
-    "policeList",
-    "receiveDataMsgType23",
-    "receiveDataMsgType26"
-  ],
   data() {
     return {
       orgTime: "0",
@@ -269,6 +260,14 @@ export default {
       starPerInterval: "",
       checkPlice: ""
     };
+  },
+  computed: {
+    ...mapState({
+      criminalList: state => state.criminalList,
+      receiveDataMsgType22: state => state.outregister.receiveDataMsgType22,
+      receiveDataMsgType27: state => state.outregister.receiveDataMsgType27,
+      police_hash: state => state.outregister.police_hash
+    })
   },
   methods: {
     /*搜索输入按键*/
@@ -650,8 +649,8 @@ export default {
           Polices["PersonID"] = localStorage.getItem("placemanID");
           Polices["ischoose"] = false;
           Polices["PoliceName"] =
-            vm.policeList[0][localStorage.getItem("placemanID")]["PoliceName"];
-          Polices["Photo"] = vm.policeList[0][Polices["PersonID"]]["Photo"];
+            policeList[0][localStorage.getItem("placemanID")]["PoliceName"];
+          Polices["Photo"] = policeList[0][Polices["PersonID"]]["Photo"];
           if (id != localStorage.getItem("placemanID")) {
             vm.outPolices.push(Polices);
             id = localStorage.getItem("placemanID");
@@ -669,8 +668,8 @@ export default {
           Polices["PersonID"] = localStorage.getItem("placemanID");
           Polices["ischoose"] = false;
           Polices["PoliceName"] =
-            vm.policeList[0][localStorage.getItem("placemanID")]["PoliceName"];
-          Polices["Photo"] = vm.policeList[0][Polices["PersonID"]]["Photo"];
+            policeList[0][localStorage.getItem("placemanID")]["PoliceName"];
+          Polices["Photo"] = policeList[0][Polices["PersonID"]]["Photo"];
           vm.outPolices.push(Polices);
           clearInterval(vm.checkPlice);
         }
@@ -689,8 +688,8 @@ export default {
           Polices["PersonID"] = localStorage.getItem("placemanID");
           Polices["ischoose"] = false;
           Polices["PoliceName"] =
-            vm.policeList[0][localStorage.getItem("placemanID")]["PoliceName"];
-          Polices["Photo"] = vm.policeList[0][Polices["PersonID"]]["Photo"];
+            policeList[0][localStorage.getItem("placemanID")]["PoliceName"];
+          Polices["Photo"] = policeList[0][Polices["PersonID"]]["Photo"];
           vm.outPolices.push(Polices);
         }
       }, 500);
@@ -734,16 +733,16 @@ export default {
           vm.ws.send(JSON.stringify(send27));
         }
         /*外出登记罪犯信息*/
-        var receiveData = vm.receiveDataMsgType22;
+        var receiveData = receiveDataMsgType22;
         if (receiveData != "" && receiveData != null) {
           var outCriminal = []; //外出罪犯
           for (var i = 0; i < receiveData.length; i++) {
             var Criminal = receiveData[i];
             Criminal["ischoose"] = false;
             Criminal["CriminalName"] =
-              vm.criminalList[0][Criminal["CriminalID"]]["CriminalName"];
+              criminalList[0][Criminal["CriminalID"]]["CriminalName"];
             Criminal["Photo"] =
-              vm.criminalList[0][Criminal["CriminalID"]]["Photo"];
+              criminalList[0][Criminal["CriminalID"]]["Photo"];
             outCriminal.push(Criminal);
             vm.outCriminals = outCriminal;
             vm.outPages =
@@ -753,15 +752,15 @@ export default {
           }
         }
         /*陪同民警信息*/
-        var receiveDataP = vm.receiveDataMsgType27;
+        var receiveDataP = receiveDataMsgType27;
         if (receiveDataP != "" && receiveDataP != null) {
           var outPolice = []; //陪同民警
           for (var i = 0; i < receiveDataP.length; i++) {
             var Polices = receiveDataP[i];
             Polices["ischoose"] = false;
             Polices["PoliceName"] =
-              vm.policeList[0][Polices.PoliceID]["PoliceName"];
-            Polices["Photo"] = vm.policeList[0][Polices.PoliceID]["Photo"];
+              policeList[0][Polices.PoliceID]["PoliceName"];
+            Polices["Photo"] = policeList[0][Polices.PoliceID]["Photo"];
             outPolice.push(Polices);
             vm.outPolices = outPolice;
             vm.outPolicePages =

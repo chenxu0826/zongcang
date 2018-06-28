@@ -18,10 +18,10 @@ export default new vuex.Store({
   },
   modules: {
     home: home_store,
-    outregister: outregister_store,
     navheader: navheader_store,
     crimalcheck: crimalcheck_store,
-    mutualsupervision:mutualsupervision_store
+    mutualsupervision:mutualsupervision_store,
+    outregister: outregister_store
   },
   mutations: {
     setMapList(state, Payload) {

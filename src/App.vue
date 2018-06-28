@@ -18,13 +18,8 @@
       @viewRYXQ="viewRYDetail"
       :toolList="toolList"
       :movePeople="movePeople"
-      :policeList="policeList"
       :receiveDataMsgType25="receiveDataMsgType25"
       :receiveDataMsgType32="receiveDataMsgType32"
-      :receiveDataMsgType22="receiveDataMsgType22"
-      :receiveDataMsgType26="receiveDataMsgType26"
-      :receiveDataMsgType23="receiveDataMsgType23"
-      :receiveDataMsgType27="receiveDataMsgType27"
       :chest_card="chest_card"
       :wristband="wristband"
 
@@ -451,7 +446,6 @@ export default {
       FlnkIDList_2: [], //非法流动ID
       FlnkIDList_3: [], //外监进入人员ID
       FlnkIDList_4: [], //在监人数（非在线）ID
-      policeList: [], //警员基础信息集合
       policeLogin: {
         //警员登陆信息
         account: "",
@@ -470,10 +464,6 @@ export default {
       /* mj B*/
       receiveDataMsgType25: {}, //进出ws工数据
       receiveDataMsgType32: {}, //工具清点数据
-      receiveDataMsgType22: {}, //外出罪犯信息
-      receiveDataMsgType23: {}, //外出登记提交
-      receiveDataMsgType26: {}, //外出登记取消
-      receiveDataMsgType27: {}, //外出登记民警
       toolList: [], // 工具基础信息集合
       GetCriminalCalledList: [], //已点罪犯
       criminalCalledIsLastPage: false, //已点罪犯是否是最后一页
@@ -525,7 +515,9 @@ export default {
       SocketAllData: state => state.SocketAllData,
       criminalList: state => state.criminalList,
       receiveDataMsgType8: state => state.mutualsupervision.receiveDataMsgType8,
-      cardPerson: state => state.mutualsupervision.cardPerson
+      cardPerson: state => state.mutualsupervision.cardPerson,
+      receiveDataMsgType22:state => state.outregister.receiveDataMsgType22,
+      policeList:state => state.outregister.policeList
     })
   },
   methods: {
@@ -739,7 +731,7 @@ export default {
               EventID: alarmRecordID,
               PoliceID: placemanID,
               PoliceRole: 1403,
-              PoliceName: vm.policeList[0][placemanID]["PoliceName"]
+              PoliceName: policeList[0][placemanID]["PoliceName"]
             },
             url: BasicUrl + "Event/AlarmHandle" + "?callback=?",
             success: function(result) {
@@ -1306,7 +1298,7 @@ export default {
               IC: result[i].IC
             };
           }
-          vm.policeList[0] = police_hash;
+          vm.$store.commit('setPoliceList',police_hash);
         }
       });
 
@@ -1444,20 +1436,16 @@ export default {
         vm.$store.commit("setReceiveDataMsgType20", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 22) {
         /*外出罪犯信息*/
-        var receiveDataMsgType22 = JSON.parse(msg.Body);
-        vm.receiveDataMsgType22 = receiveDataMsgType22;
+        vm.$store.commit('setReceiveDataMsgType22',JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 27) {
         /*陪同民警信息*/
-        var receiveDataMsgType27 = JSON.parse(msg.Body);
-        vm.receiveDataMsgType27 = receiveDataMsgType27;
+        vm.$store.commit("setReceiveDataMsgType27",JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 23) {
         /*外出登记提交*/
-        var receiveDataMsgType23 = JSON.parse(msg.Body);
-        vm.receiveDataMsgType23 = receiveDataMsgType23;
+        vm.$store.commit('setReceiveDataMsgType23',JSON.parse(msg.Body));        
       } else if (msg.Header.MsgType === 26) {
         /*外出登记取消*/
-        var receiveDataMsgType26 = JSON.parse(msg.Body);
-        vm.receiveDataMsgType26 = receiveDataMsgType26;
+        vm.$store.commit('setReceiveDataMsgType26',JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 34) {
         /*获取互监组*/
         var receiveDataMsgType34 = JSON.parse(msg.Body);
