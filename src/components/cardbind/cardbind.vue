@@ -16,7 +16,7 @@
               <el-row >
                   <el-row class="float_person_wrap">
                     <el-col :span="4" v-for="(item,index) in chest_card" :key='1' v-show="!isUnbind">
-                      <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}, {card_bind_success:item.wristband!==''}]" @click="$emit('bindCardSelect',index)">
+                      <div class="float_person_card card_bind_init" :class="['card_bind_init', {card_bind_select: item.status}, {card_bind_success:item.wristband!==''}]" @click="bindCardSelect(index)">
                         <el-col :span="10" class="photo">
                           <img :src="item.Photo" alt="" width="100%" height="100%">
                         </el-col>
@@ -80,10 +80,20 @@ export default {
   computed: {
     ...mapState({
       chest_card: state => state.cardbind.chest_card,
-      wristband: state => state.cardbind.wristband,
+      wristband: state => state.cardbind.wristband
     })
   },
   methods: {
+    /* 卡绑定选人 */
+    bindCardSelect: function(index) {
+      let vm = this;
+      if (chest_card.length !== 0) {
+        for (let i = 0; i < chest_card.length; i++) {
+          chest_card[i].status = false;
+        }
+        chest_card[index].status = true;
+      }
+    },
     /*卡绑定取消*/
     BindCancel: function() {
       var vm = this;
@@ -112,7 +122,7 @@ export default {
       let vm = this;
       this.isB1 = true;
       this.isB2 = false;
-      vm.$emit("CardBindPageInit");
+      vm.$store.commit("setChest_card", []);/* 卡绑定页面初始化 */
       vm.CardTitle = "卡绑定";
       vm.isUnbind = false;
       var bandCardInfo_req = {
@@ -188,7 +198,7 @@ export default {
       let vm = this;
       this.isB1 = false;
       this.isB2 = true;
-      vm.$emit("clearCardInfo");
+      vm.$store.commit("setWristband", []); /* 卡解绑页面初始化 */
       vm.CardTitle = "卡解绑";
       vm.isUnbind = true;
       var bandCardInfo_req = {
@@ -297,7 +307,7 @@ export default {
       } else {
         localStorage.setItem("moveTypes", "3"); //1为进出工，2为临时外出登记，3为卡绑定
         vm.bandCardInfo_onBind();
-        vm.$emit("CardBindPageInit");
+        vm.$store.commit("setChest_card", []);/* 卡绑定页面初始化 */
         clearInterval(outPlice);
       }
     }, 1000);

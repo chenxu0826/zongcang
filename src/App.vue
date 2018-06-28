@@ -6,15 +6,11 @@
       @getPosition="onClickPosition()"
     ></navheader>
 
-    <router-view
-      @clearCardInfo="clearCardInfo"
-      @bindCardSelect="bindCardSelect"
-      @CardBindPageInit="CardBindPageInit"
+    <router-view      
       @openLogin="loginOpen"
       @hasCheaked="onHasCheaked"
       @hasCheakedTool="onHasCheakedTool"
       @canRouterChange="canRouterChange"
-      @delCardPerson="delCardPerson"
       @viewRYXQ="viewRYDetail"
     ></router-view>
 
@@ -636,27 +632,6 @@ export default {
       vm.ws.close();
     },
 
-    /* 卡绑定页面初始化 */
-    CardBindPageInit: function() {
-      this.$store.commit("setChest_card", []);
-    },
-
-    /* 卡解绑页面初始化 */
-    clearCardInfo: function() {
-      this.$store.commit('setWristband',[]);
-    },
-
-    /* 卡绑定选人 */
-    bindCardSelect: function(index) {
-      let vm = this;
-      if (chest_card.length !== 0) {
-        for (let i = 0; i < chest_card.length; i++) {
-          chest_card[i].status = false;
-        }
-        chest_card[index].status = true;
-      }
-    },
-
     /* Coding By YanM */
 
     /* Coding By Qianjf */
@@ -668,11 +643,6 @@ export default {
       setTimeout(function() {
         vm.$store.commit("setAlertText1", "");
       }, 3000);
-    },
-
-    /* 零时互监组取消操作，清空刷卡内容*/
-    delCardPerson: function() {
-      this.$store.commit("setCardPerson", []);
     },
     /* 登录弹窗显示 */
     canRouterChange: function() {
@@ -1742,7 +1712,8 @@ export default {
               CardType: temp_chest_card.CardType,
               CriminalID: temp_chest_card.CriminalID,
               status: false,
-              CriminalName: criminalList[0][temp_chest_card.CriminalID].CriminalName,
+              CriminalName:
+                criminalList[0][temp_chest_card.CriminalID].CriminalName,
               Photo: criminalList[0][temp_chest_card.CriminalID].Photo,
               wristband: ""
             });
@@ -1766,7 +1737,9 @@ export default {
           }
           //判断为腕带
         } else {
-          if (temp_wristband.CriminalID === "00000000-0000-0000-0000-000000000000") {
+          if (
+            temp_wristband.CriminalID === "00000000-0000-0000-0000-000000000000"
+          ) {
             //判断胸牌是否为空
             if (chest_card.length !== 0) {
               for (let i = 0; i < chest_card.length; i++) {
@@ -1779,7 +1752,8 @@ export default {
           } else {
             if (wristband.length === 0) {
               wristband.push({
-                CrimalName: criminalList[0][temp_wristband.CriminalID].CriminalName,
+                CrimalName:
+                  criminalList[0][temp_wristband.CriminalID].CriminalName,
                 CardID: temp_wristband.CardID,
                 CriminalID: temp_wristband.CriminalID,
                 Photo: criminalList[0][temp_wristband.CriminalID].Photo

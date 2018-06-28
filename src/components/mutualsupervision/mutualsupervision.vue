@@ -255,7 +255,10 @@ export default {
               vm.cardPersonList = [];
               vm.getGroups();
               /*清除刷进来的互监组待定人员*/
-              vm.$emit("delCardPerson");
+              vm.$store.commit(
+                "setCardPerson",
+                []
+              ); /* 零时互监组取消操作，清空刷卡内容*/
               setTimeout(function() {
                 vm.alertText = "";
               }, 2000);
@@ -286,7 +289,10 @@ export default {
                         vm.alertText = result.Description;
                         vm.cardPersonList = [];
                         /*清除刷进来的互监组待定人员*/
-                        vm.$emit("delCardPerson");
+                        vm.$store.commit(
+                          "setCardPerson",
+                          []
+                        ); /* 零时互监组取消操作，清空刷卡内容*/
                         vm.getGroups();
                         setTimeout(function() {
                           vm.alertText = "";
@@ -330,7 +336,7 @@ export default {
               //                        vm.alertText=result.Description
               //                        vm.cardPersonList=[]
               //                        /*清除刷进来的互监组待定人员*/
-              //                        vm.$emit("delCardPerson")
+              //                        vm.$store.commit("setCardPerson", []);  /* 零时互监组取消操作，清空刷卡内容*/
               //                        vm.getGroups()
               //                        setTimeout(function () {
               //                          vm.alertText=""
@@ -353,7 +359,10 @@ export default {
               vm.alertText = result.Description;
               vm.cardPersonList = [];
               /*清除刷进来的互监组待定人员*/
-              vm.$emit("delCardPerson");
+              vm.$store.commit(
+                "setCardPerson",
+                []
+              ); /* 零时互监组取消操作，清空刷卡内容*/
               vm.getGroups();
               setTimeout(function() {
                 vm.alertText = "";
@@ -389,7 +398,10 @@ export default {
                         vm.cardPersonList = [];
                         vm.getGroups();
                         /*清除刷进来的互监组待定人员*/
-                        vm.$emit("delCardPerson");
+                        vm.$store.commit(
+                          "setCardPerson",
+                          []
+                        ); /* 零时互监组取消操作，清空刷卡内容*/
                       } else {
                         vm.alertText = result.Description;
                         setTimeout(function() {
@@ -425,7 +437,10 @@ export default {
                         vm.cardPersonList = [];
                         vm.getGroups();
                         /*清除刷进来的互监组待定人员*/
-                        vm.$emit("delCardPerson");
+                        vm.$store.commit(
+                          "setCardPerson",
+                          []
+                        ); /* 零时互监组取消操作，清空刷卡内容*/
                       } else {
                         vm.alertText = result.Description;
                         setTimeout(function() {
@@ -466,7 +481,7 @@ export default {
               //                        vm.cardPersonList=[]
               //                        vm.getGroups()
               //                        /*清除刷进来的互监组待定人员*/
-              //                        vm.$emit("delCardPerson")
+              //                        vm.$store.commit("setCardPerson", []);  /* 零时互监组取消操作，清空刷卡内容*/
               //                      }else {
               //                        vm.alertText=result.Description
               //                        setTimeout(function () {
@@ -510,7 +525,7 @@ export default {
               //                        vm.cardPersonList=[]
               //                        vm.getGroups()
               //                        /*清除刷进来的互监组待定人员*/
-              //                        vm.$emit("delCardPerson")
+              //                        vm.$store.commit("setCardPerson", []);  /* 零时互监组取消操作，清空刷卡内容*/
               //                      }else {
               //                        vm.alertText=result.Description
               //                        setTimeout(function () {
@@ -530,7 +545,10 @@ export default {
     },
     cancelSubmit: function() {
       this.$router.push({ path: "/" });
-      this.$emit("delCardPerson");
+      this.$store.commit(
+        "setCardPerson",
+        []
+      ); /* 零时互监组取消操作，清空刷卡内容*/
 
       var vm = this;
       var send3 = {
