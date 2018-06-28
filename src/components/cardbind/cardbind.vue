@@ -65,10 +65,10 @@
 
 <script>
 import { ajaxUrl } from "../../config";
+import { mapState } from "vuex";
 
 export default {
   name: "navheader",
-  props: ["chest_card", "wristband"],
   data() {
     return {
       isUnbind: false,
@@ -76,6 +76,12 @@ export default {
       isB1: true,
       isB2: false
     };
+  },
+  computed: {
+    ...mapState({
+      chest_card: state => state.cardbind.chest_card,
+      wristband: state => state.cardbind.wristband,
+    })
   },
   methods: {
     /*卡绑定取消*/
@@ -133,11 +139,11 @@ export default {
       let vm = this;
       vm.addDisable();
       let ChangeCardPeopleList = [];
-      for (let i = 0; i < vm.chest_card.length; i++) {
+      for (let i = 0; i < chest_card.length; i++) {
         ChangeCardPeopleList.push({
-          CriminalID: vm.chest_card[i].CriminalID,
-          ChestCard: vm.chest_card[i].CardID,
-          WristCard: vm.chest_card[i].wristband
+          CriminalID: chest_card[i].CriminalID,
+          ChestCard: chest_card[i].CardID,
+          WristCard: chest_card[i].wristband
         });
       }
       var bandCardInfoSubmit = {
@@ -208,10 +214,10 @@ export default {
       let vm = this;
       vm.addDisable();
       let UnBundingList = [];
-      for (let i = 0; i < vm.wristband.length; i++) {
+      for (let i = 0; i < wristband.length; i++) {
         UnBundingList.push({
-          CriminalID: vm.wristband[i].CriminalID,
-          WristCard: vm.wristband[i].CardID
+          CriminalID: wristband[i].CriminalID,
+          WristCard: wristband[i].CardID
         });
       }
       var UnbandCardInfoSubmit = {

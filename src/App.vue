@@ -16,12 +16,6 @@
       @canRouterChange="canRouterChange"
       @delCardPerson="delCardPerson"
       @viewRYXQ="viewRYDetail"
-      :toolList="toolList"
-      :movePeople="movePeople"
-      :receiveDataMsgType32="receiveDataMsgType32"
-      :chest_card="chest_card"
-      :wristband="wristband"
-
     ></router-view>
 
     <menufooter
@@ -457,12 +451,8 @@ export default {
       nowfloatPersonFirst: [], //实时流动人员大头像
       nowfloatPersonA: 1, //实时流动人员分页
       nowfloatPersonB: 9, //实时流动人员分页
-      chest_card: [], //胸卡信息
-      wristband: [], //腕带信息
       /* Coding By YanM */
       /* mj B*/
-      receiveDataMsgType32: {}, //工具清点数据
-      toolList: [], // 工具基础信息集合
       GetCriminalCalledList: [], //已点罪犯
       criminalCalledIsLastPage: false, //已点罪犯是否是最后一页
       criminalCount: 0, //已点罪犯总页码
@@ -515,7 +505,8 @@ export default {
       receiveDataMsgType8: state => state.mutualsupervision.receiveDataMsgType8,
       cardPerson: state => state.mutualsupervision.cardPerson,
       receiveDataMsgType22: state => state.outregister.receiveDataMsgType22,
-      policeList: state => state.outregister.policeList
+      policeList: state => state.outregister.policeList,
+      chest_card: state => state.cardbind.chest_card
     })
   },
   methods: {
@@ -647,22 +638,22 @@ export default {
 
     /* 卡绑定页面初始化 */
     CardBindPageInit: function() {
-      this.chest_card = [];
+      this.$store.commit("setChest_card", []);
     },
 
     /* 卡解绑页面初始化 */
     clearCardInfo: function() {
-      this.wristband = [];
+      this.$store.commit('setWristband',[]);
     },
 
     /* 卡绑定选人 */
     bindCardSelect: function(index) {
       let vm = this;
-      if (vm.chest_card.length !== 0) {
-        for (let i = 0; i < vm.chest_card.length; i++) {
-          vm.chest_card[i].status = false;
+      if (chest_card.length !== 0) {
+        for (let i = 0; i < chest_card.length; i++) {
+          chest_card[i].status = false;
         }
-        vm.chest_card[index].status = true;
+        chest_card[index].status = true;
       }
     },
 
@@ -1258,7 +1249,7 @@ export default {
                 Photo: IMG + result[i].Photo
               };
             }
-            vm.toolList[0] = toolList_hash;
+            vm.$store.commit("setToolList", toolList_hash);
           }
         }
       });
@@ -1418,12 +1409,10 @@ export default {
         vm.$store.commit("setReceiveDataMsgType25", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 30) {
         /*工具清点提交返回结果*/
-        var receiveDataMsgType30 = JSON.parse(msg.Body);
-        vm.$store.commit("setReceiveDataMsgType30", receiveDataMsgType30);
+        vm.$store.commit("setReceiveDataMsgType30", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 32) {
         /*工具清点*/
-        var receiveDataMsgType32 = JSON.parse(msg.Body);
-        vm.receiveDataMsgType32 = receiveDataMsgType32;
+        vm.$store.commit("setReceiveDataMsgType32", JSON.parse(msg.Body));
       } else if (msg.Header.MsgType === 31) {
         /*人员清点*/
         var receiveDataMsgType31 = JSON.parse(msg.Body);
@@ -1470,8 +1459,7 @@ export default {
         }
       } else if (msg.Header.MsgType === 33) {
         /*手动结束人员、工具清点*/
-        var receiveDataMsgType33 = JSON.parse(msg.Body);
-        vm.$store.commit("setReceiveDataMsgType33", receiveDataMsgType33);
+        vm.$store.commit("setReceiveDataMsgType33", JSON.parse(msg.Body));
       } else if (JSON.parse(event.data).Header.MsgType === 2) {
         /* 报警信息 */
         var alarmNews = JSON.parse(JSON.parse(event.data).Body);
@@ -1744,31 +1732,31 @@ export default {
         localStorage.setItem("placemanID", placeman_card);
       } else if (msg.Header.MsgType === 51) {
         /* 绑定卡-刷卡数据-51 */
-        var chest_card = JSON.parse(msg.Body);
-        var wristband = chest_card;
+        var temp_chest_card = JSON.parse(msg.Body);
+        var temp_wristband = temp_chest_card;
         //判断是胸卡
-        if (chest_card.CardType === 0) {
-          if (vm.chest_card.length === 0) {
-            vm.chest_card.push({
-              CardID: chest_card.CardID,
-              CardType: chest_card.CardType,
-              CriminalID: chest_card.CriminalID,
+        if (temp_chest_card.CardType === 0) {
+          if (chest_card.length === 0) {
+            chest_card.push({
+              CardID: temp_chest_card.CardID,
+              CardType: temp_chest_card.CardType,
+              CriminalID: temp_chest_card.CriminalID,
               status: false,
-              CriminalName: criminalList[0][chest_card.CriminalID].CriminalName,
-              Photo: criminalList[0][chest_card.CriminalID].Photo,
+              CriminalName: criminalList[0][temp_chest_card.CriminalID].CriminalName,
+              Photo: criminalList[0][temp_chest_card.CriminalID].Photo,
               wristband: ""
             });
             //刷卡去重
           } else {
-            for (let i = 0; i <= vm.chest_card.length; i++) {
-              if (vm.chest_card[i].CardID !== chest_card.CardID) {
-                vm.chest_card.push({
-                  CardID: chest_card.CardID,
-                  CardType: chest_card.CardType,
-                  CriminalID: chest_card.CriminalID,
+            for (let i = 0; i <= chest_card.length; i++) {
+              if (chest_card[i].CardID !== temp_chest_card.CardID) {
+                chest_card.push({
+                  CardID: temp_chest_card.CardID,
+                  CardType: temp_chest_card.CardType,
+                  CriminalID: temp_chest_card.CriminalID,
                   CriminalName:
-                    criminalList[0][chest_card.CriminalID].CriminalName,
-                  Photo: criminalList[0][chest_card.CriminalID].Photo,
+                    criminalList[0][temp_chest_card.CriminalID].CriminalName,
+                  Photo: criminalList[0][temp_chest_card.CriminalID].Photo,
                   status: false,
                   wristband: ""
                 });
@@ -1778,33 +1766,33 @@ export default {
           }
           //判断为腕带
         } else {
-          if (wristband.CriminalID === "00000000-0000-0000-0000-000000000000") {
+          if (temp_wristband.CriminalID === "00000000-0000-0000-0000-000000000000") {
             //判断胸牌是否为空
-            if (vm.chest_card.length !== 0) {
-              for (let i = 0; i < vm.chest_card.length; i++) {
-                if (vm.chest_card[i].status === true) {
+            if (chest_card.length !== 0) {
+              for (let i = 0; i < chest_card.length; i++) {
+                if (chest_card[i].status === true) {
                   //提交绑定数据
-                  vm.chest_card[i].wristband = wristband.CardID;
+                  chest_card[i].wristband = temp_wristband.CardID;
                 }
               }
             }
           } else {
-            if (vm.wristband.length === 0) {
-              vm.wristband.push({
-                CrimalName: criminalList[0][wristband.CriminalID].CriminalName,
-                CardID: wristband.CardID,
-                CriminalID: wristband.CriminalID,
-                Photo: criminalList[0][wristband.CriminalID].Photo
+            if (wristband.length === 0) {
+              wristband.push({
+                CrimalName: criminalList[0][temp_wristband.CriminalID].CriminalName,
+                CardID: temp_wristband.CardID,
+                CriminalID: temp_wristband.CriminalID,
+                Photo: criminalList[0][temp_wristband.CriminalID].Photo
               });
             } else {
-              for (let i = 0; i < vm.wristband.length; i++) {
-                if (vm.wristband[i].CardID !== wristband.CardID) {
-                  vm.wristband.push({
+              for (let i = 0; i < wristband.length; i++) {
+                if (wristband[i].CardID !== temp_wristband.CardID) {
+                  wristband.push({
                     CrimalName:
-                      criminalList[0][wristband.CriminalID].CriminalName,
-                    CardID: wristband.CardID,
-                    CriminalID: wristband.CriminalID,
-                    Photo: criminalList[0][wristband.CriminalID].Photo
+                      criminalList[0][temp_wristband.CriminalID].CriminalName,
+                    CardID: temp_wristband.CardID,
+                    CriminalID: temp_wristband.CriminalID,
+                    Photo: criminalList[0][temp_wristband.CriminalID].Photo
                   });
                 }
               }

@@ -131,17 +131,10 @@
 
 <script>
 import { BasicUrl, IMG, ajaxUrl } from "../../config";
+import { mapState } from "vuex";
 var vm = this;
 export default {
   name: "navheader",
-  props: [
-    "SocketAllData",
-    "criminalList",
-    "toolList",
-    "receiveDataMsgType30",
-    "receiveDataMsgType32",
-    "receiveDataMsgType33"
-  ],
   beforeCreate() {
     /* Coding By YanM */
     /* Coding By YanM */
@@ -180,6 +173,12 @@ export default {
       outB: 12,
       a: 1
     };
+  },
+  computed: {
+    ...mapState({
+      toolList: state => state.toolcheck.toolList,
+      receiveDataMsgType32: state => state.toolcheck.receiveDataMsgType32
+    })
   },
 
   methods: {
@@ -490,7 +489,7 @@ export default {
           vm.ws.send(JSON.stringify(send));
         }
         //        接收数据
-        var receiveData = vm.receiveDataMsgType32;
+        var receiveData = receiveDataMsgType32;
 
         //          if(receiveData!=""||receiveData!=null){
         var hasNotCall = []; //柜内未点1
