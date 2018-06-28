@@ -123,29 +123,5 @@
 </script>
 
 <style lang="scss">
-  a {
-    color: #fff;
-    text-decoration: none;
-  }
-
-  .menufooter {
-    padding: 0 25px;
-    height: 122px;
-    color: #fff;
-    overflow: auto;
-    .menu_title_wrap {
-      height: 70px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.31);
-      line-height: 70px;
-      margin: 20px 30px 0 30px;
-    }
-    .menu_title {
-      height: 70px;
-      cursor: pointer;
-      font-size: 26px;
-    }
-    .menu_title:active {
-      border-bottom: 3px solid #fff;
-    }
-  }
+@import "../css/menufooter.scss";
 </style>

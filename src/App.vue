@@ -17,7 +17,7 @@
     <menufooter
       @routerTip="routerTip"
       @openLogin="loginOpen">
-      </menufooter>
+    </menufooter>
 
 
     <!--监区选择 star-->
@@ -182,7 +182,8 @@
             <tr v-for="GetCriminal in GetCriminalCalledList">
               <td>{{GetCriminal.CriminalName}}</td>
               <td>
-                {{(GetCriminal.CountTime == "" || GetCriminal.CountTime == null) ? "" : GetCriminal.CountTime.replace("T", " ")}}
+                {{(GetCriminal.CountTime == "" || GetCriminal.CountTime == null) ? "" :
+                GetCriminal.CountTime.replace("T", " ")}}
               </td>
               <td>{{GetCriminal.OrgName}}</td>
               <td>{{GetCriminal.AreaName}}</td>
@@ -249,7 +250,8 @@
               <td>{{toolCalled.ToolName}}</td>
               <td>{{toolCalled.OrgName}}</td>
               <td>
-                {{(toolCalled.ToolTypeName == "" || toolCalled.CountTime == null) ? "" : toolCalled.CountTime.replace("T", " ")}}
+                {{(toolCalled.ToolTypeName == "" || toolCalled.CountTime == null) ? "" :
+                toolCalled.CountTime.replace("T", " ")}}
               </td>
               <td>{{toolCalled.StatusName}}</td>
             </tr>
@@ -409,1693 +411,1403 @@
 </template>
 
 <script>
-import navheader from "./components/navheader.vue"; // 引入组件头部导航
-import menufooter from "./components/menufooter.vue"; // 引入组件底部菜单
-import { BasicUrl, IMG, ajaxUrl } from "./config";
-import global from "./plugins/vue.global.js";
-import { ajax } from "./assets/ajaxWebApiMethod";
-import { mapState } from "vuex";
+  import navheader from "./components/navheader.vue"; // 引入组件头部导航
+  import menufooter from "./components/menufooter.vue"; // 引入组件底部菜单
+  import {BasicUrl, IMG, ajaxUrl} from "./config";
+  import global from "./plugins/vue.global.js";
+  import {ajax} from "./assets/ajaxWebApiMethod";
+  import {mapState} from "vuex";
 
-export default {
-  name: "app",
-  components: {
-    navheader: navheader, // 引入组件头部导航
-    menufooter: menufooter // 引入组件底部菜单
-  },
-  data() {
-    return {
-      /* Coding By YanM */
-      prisonSelect: [], //监区列表
-      alertJQXZactive: false, //监区选择标记位
-      OrgID: "", //监区ID
-      flowPerson_outPrison: {}, //流动人员 && 外监进入人员
-      personnel_distribution: {}, //人员分布
-      movePeople: [], //人员流动总集合
-      FlnkIDList_1: [], //外出人数（监内）ID
-      FlnkIDList_2: [], //非法流动ID
-      FlnkIDList_3: [], //外监进入人员ID
-      FlnkIDList_4: [], //在监人数（非在线）ID
-      policeLogin: {
-        //警员登陆信息
-        account: "",
-        password: ""
-      },
-      planStartTime: "", //计划任务开始时间
-      planEndTime: "", //计划任务结束时间
-      nowfloatTime: 0, //实时流动倒计时
-      nowfloatPerson: [], //实时流动人员
-      nowfloatPersonFirst: [], //实时流动人员大头像
-      nowfloatPersonA: 1, //实时流动人员分页
-      nowfloatPersonB: 9, //实时流动人员分页
-      /* Coding By YanM */
-      /* mj B*/
-      GetCriminalCalledList: [], //已点罪犯
-      criminalCalledIsLastPage: false, //已点罪犯是否是最后一页
-      criminalCount: 0, //已点罪犯总页码
-      criminalPage: 0, //已点罪犯当前页
-      GetToolCalledList: [], //已点罪犯
-      toolCalledIsLastPage: false, //已点工具是否是最后一页
-      toolCount: 0, //已点工具总页码
-      toolPage: 0, //已点工具当前页
-      alarmList: [], //报警集合
-      alarmListSearch: [], //用于报警集合的匹配
-      alarmText: "", //报警描述
-      alarmPages: 1, //留监总页数
-      alarmNowPage: 1, //留监当前页
-      alarmListAll: 0, //留监总数
-      AlarmRecordID: "",
-      alarmA: 1,
-      alarmB: 1,
-      groupTeam: [], //互监组成员
-      alertText: "", //登录页面提示
-      /* mj e*/
-      alertYHDL: false, //用户登录
-      Isopen: false,
-      alertJQXZ: false, //监区选择
-      alertBJXX: false, //报警信息
-      alertSSLD: false, //实时流动
-      alertYDMD: false, //已点名单
-      alertBJTK: false, //报警弹框
-      alertYDGJ: false, //已点工具
-      alertRYXQ: false, //区域人员详情
-      isPerson: true, //报警类别：人
-      isGrup: false, //报警类别：互监组
-      IsTS: true,
-      isEnd: true,
-      canRouter: 1, //流动路由判
-      /** */
-      areaCriminal: [] //区域下人员详细信息
-    };
-  },
-  computed: {
-    ...mapState({
-      areaList: state => state.areaList,
-      alertText1: state => state.navheader.alertText1,
-      message: state => state.navheader.message,
-      toolPlan: state => state.navheader.toolPlan,
-      plan: state => state.navheader.plan,
-      onlinestatus: state => state.navheader.onlinestatus,
-      NextTime: state => state.navheader.NextTime,
-      SocketAllData: state => state.SocketAllData,
-      criminalList: state => state.criminalList,
-      receiveDataMsgType8: state => state.mutualsupervision.receiveDataMsgType8,
-      cardPerson: state => state.mutualsupervision.cardPerson,
-      receiveDataMsgType22: state => state.outregister.receiveDataMsgType22,
-      policeList: state => state.outregister.policeList,
-      chest_card: state => state.cardbind.chest_card
-    })
-  },
-  methods: {
-    /* Coding By YanM */
-
-    /* 选择监区 */
-    selectArea: function(index) {
-      this.alertJQXZactive = index;
-      this.setLocalStorage(
-        "prisonSelectText",
-        this.prisonSelect[index].AreaName
-      );
-      this.setLocalStorage("OrgID", this.prisonSelect[index].OrgID);
-      this.setLocalStorage("AreaID", this.prisonSelect[index].AreaID);
-      this.setLocalStorage("AreaType", this.prisonSelect[index].AreaType);
-      this.setLocalStorage("MapFlnkID", this.prisonSelect[index].MapFlnkID);
+  export default {
+    name: "app",
+    components: {
+      navheader: navheader, // 引入组件头部导航
+      menufooter: menufooter // 引入组件底部菜单
     },
-
-    /* 默认初始化监区 */
-    initPrison: function() {
-      var vm = this;
-      vm.$ajax({
-        url: BasicUrl + "HomeIndex/GetBindJQ",
-        success: function(result) {
-          vm.prisonSelect = result;
-          vm.$store.commit("setMessage", vm.prisonSelect[0].AreaName);
-          vm.setLocalStorage("OrgID", vm.prisonSelect[0].OrgID);
-          vm.setLocalStorage("DoorID", vm.prisonSelect[0].Door);
-          vm.setLocalStorage("AreaID", vm.prisonSelect[0].AreaID);
-          vm.setLocalStorage("AreaType", vm.prisonSelect[0].AreaType);
-          vm.setLocalStorage("MapFlnkID", vm.prisonSelect[0].MapFlnkID);
-        }
-      });
-    },
-
-    /* 提交选择监区 */
-    prisonAreaSbumit: function() {
-      var vm = this;
-      this.alertJQXZ = false;
-      vm.$store.commit("setMessage", this.getLocalStorage("prisonSelectText"));
-      vm.allDataInit();
-    },
-
-    /* 首页渲染数据 */
-    homeData: function() {
-      let vm = this;
-      /* 外出人数（监内）-1 筛选后数据用于VUE渲染 */
-      vm.$store.commit("setFlnkIDList1", vm.FlnkIDList_1);
-
-      /* 非法流动 -2 筛选后数据用于VUE渲染 */
-      var vueDataPersonlist_2 = [];
-      for (let j = 0; j < vm.FlnkIDList_2.length; j++) {
-        vueDataPersonlist_2[j] = {
-          CriminalID: criminalList[0][vm.FlnkIDList_2[j]].CriminalID,
-          CriminalName: criminalList[0][vm.FlnkIDList_2[j]].CriminalName,
-          Photo: criminalList[0][vm.FlnkIDList_2[j]].Photo
-        };
-      }
-      vm.$store.commit("setFlnkIDList2", vm.movePeople);
-
-      /* 在监人数（非在线）-4 筛选后数据用于VUE渲染 */
-      vm.$store.commit("setFlnkIDList4", vm.FlnkIDList_4);
-    },
-
-    /* 登录信息提交 */
-    logonSbumit: function() {
-      var vm = this;
-      vm.$ajax({
-        data: {
-          UserID: vm.policeLogin.account,
-          UserPwd: vm.policeLogin.password
+    data() {
+      return {
+        /* Coding By YanM */
+        prisonSelect: [], //监区列表
+        alertJQXZactive: false, //监区选择标记位
+        OrgID: "", //监区ID
+        flowPerson_outPrison: {}, //流动人员 && 外监进入人员
+        personnel_distribution: {}, //人员分布
+        movePeople: [], //人员流动总集合
+        FlnkIDList_1: [], //外出人数（监内）ID
+        FlnkIDList_2: [], //非法流动ID
+        FlnkIDList_3: [], //外监进入人员ID
+        FlnkIDList_4: [], //在监人数（非在线）ID
+        policeLogin: {
+          //警员登陆信息
+          account: "",
+          password: ""
         },
-        url: BasicUrl + "HomeIndex/CheckUser",
-        success: function(result) {
-          if (result != null) {
-            vm.alertYHDL = false;
-            localStorage.setItem("placemanID", result[0].FlnkID);
-            vm.canRouter = 0;
-            vm.policeLogin.password = "";
-            vm.policeLogin.account = "";
+        planStartTime: "", //计划任务开始时间
+        planEndTime: "", //计划任务结束时间
+        nowfloatTime: 0, //实时流动倒计时
+        nowfloatPerson: [], //实时流动人员
+        nowfloatPersonFirst: [], //实时流动人员大头像
+        nowfloatPersonA: 1, //实时流动人员分页
+        nowfloatPersonB: 9, //实时流动人员分页
+        /* Coding By YanM */
+        /* mj B*/
+        GetCriminalCalledList: [], //已点罪犯
+        criminalCalledIsLastPage: false, //已点罪犯是否是最后一页
+        criminalCount: 0, //已点罪犯总页码
+        criminalPage: 0, //已点罪犯当前页
+        GetToolCalledList: [], //已点罪犯
+        toolCalledIsLastPage: false, //已点工具是否是最后一页
+        toolCount: 0, //已点工具总页码
+        toolPage: 0, //已点工具当前页
+        alarmList: [], //报警集合
+        alarmListSearch: [], //用于报警集合的匹配
+        alarmText: "", //报警描述
+        alarmPages: 1, //留监总页数
+        alarmNowPage: 1, //留监当前页
+        alarmListAll: 0, //留监总数
+        AlarmRecordID: "",
+        alarmA: 1,
+        alarmB: 1,
+        groupTeam: [], //互监组成员
+        alertText: "", //登录页面提示
+        /* mj e*/
+        alertYHDL: false, //用户登录
+        Isopen: false,
+        alertJQXZ: false, //监区选择
+        alertBJXX: false, //报警信息
+        alertSSLD: false, //实时流动
+        alertYDMD: false, //已点名单
+        alertBJTK: false, //报警弹框
+        alertYDGJ: false, //已点工具
+        alertRYXQ: false, //区域人员详情
+        isPerson: true, //报警类别：人
+        isGrup: false, //报警类别：互监组
+        IsTS: true,
+        isEnd: true,
+        canRouter: 1, //流动路由判
+        /** */
+        areaCriminal: [] //区域下人员详细信息
+      };
+    },
+    computed: {
+      ...mapState({
+        areaList: state => state.areaList,
+        alertText1: state => state.navheader.alertText1,
+        message: state => state.navheader.message,
+        toolPlan: state => state.navheader.toolPlan,
+        plan: state => state.navheader.plan,
+        onlinestatus: state => state.navheader.onlinestatus,
+        NextTime: state => state.navheader.NextTime,
+        SocketAllData: state => state.SocketAllData,
+        criminalList: state => state.criminalList,
+        receiveDataMsgType8: state => state.mutualsupervision.receiveDataMsgType8,
+        cardPerson: state => state.mutualsupervision.cardPerson,
+        receiveDataMsgType22: state => state.outregister.receiveDataMsgType22,
+        policeList: state => state.outregister.policeList,
+        chest_card: state => state.cardbind.chest_card
+      })
+    },
+    methods: {
+      /* Coding By YanM */
+
+      /* 选择监区 */
+      selectArea: function (index) {
+        this.alertJQXZactive = index;
+        this.setLocalStorage(
+          "prisonSelectText",
+          this.prisonSelect[index].AreaName
+        );
+        this.setLocalStorage("OrgID", this.prisonSelect[index].OrgID);
+        this.setLocalStorage("AreaID", this.prisonSelect[index].AreaID);
+        this.setLocalStorage("AreaType", this.prisonSelect[index].AreaType);
+        this.setLocalStorage("MapFlnkID", this.prisonSelect[index].MapFlnkID);
+      },
+
+      /* 默认初始化监区 */
+      initPrison: function () {
+        var vm = this;
+        vm.$ajax({
+          url: BasicUrl + "HomeIndex/GetBindJQ",
+          success: function (result) {
+            vm.prisonSelect = result;
+            vm.$store.commit("setMessage", vm.prisonSelect[0].AreaName);
+            vm.setLocalStorage("OrgID", vm.prisonSelect[0].OrgID);
+            vm.setLocalStorage("DoorID", vm.prisonSelect[0].Door);
+            vm.setLocalStorage("AreaID", vm.prisonSelect[0].AreaID);
+            vm.setLocalStorage("AreaType", vm.prisonSelect[0].AreaType);
+            vm.setLocalStorage("MapFlnkID", vm.prisonSelect[0].MapFlnkID);
+          }
+        });
+      },
+
+      /* 提交选择监区 */
+      prisonAreaSbumit: function () {
+        var vm = this;
+        this.alertJQXZ = false;
+        vm.$store.commit("setMessage", this.getLocalStorage("prisonSelectText"));
+        vm.allDataInit();
+      },
+
+      /* 首页渲染数据 */
+      homeData: function () {
+        let vm = this;
+        /* 外出人数（监内）-1 筛选后数据用于VUE渲染 */
+        vm.$store.commit("setFlnkIDList1", vm.FlnkIDList_1);
+
+        /* 非法流动 -2 筛选后数据用于VUE渲染 */
+        var vueDataPersonlist_2 = [];
+        for (let j = 0; j < vm.FlnkIDList_2.length; j++) {
+          vueDataPersonlist_2[j] = {
+            CriminalID: criminalList[0][vm.FlnkIDList_2[j]].CriminalID,
+            CriminalName: criminalList[0][vm.FlnkIDList_2[j]].CriminalName,
+            Photo: criminalList[0][vm.FlnkIDList_2[j]].Photo
+          };
+        }
+        vm.$store.commit("setFlnkIDList2", vm.movePeople);
+
+        /* 在监人数（非在线）-4 筛选后数据用于VUE渲染 */
+        vm.$store.commit("setFlnkIDList4", vm.FlnkIDList_4);
+      },
+
+      /* 登录信息提交 */
+      logonSbumit: function () {
+        var vm = this;
+        vm.$ajax({
+          data: {
+            UserID: vm.policeLogin.account,
+            UserPwd: vm.policeLogin.password
+          },
+          url: BasicUrl + "HomeIndex/CheckUser",
+          success: function (result) {
+            if (result != null) {
+              vm.alertYHDL = false;
+              localStorage.setItem("placemanID", result[0].FlnkID);
+              vm.canRouter = 0;
+              vm.policeLogin.password = "";
+              vm.policeLogin.account = "";
+            } else {
+              vm.policeLogin.password = "";
+              vm.policeLogin.account = "";
+              vm.alertText = "用户或密码错误";
+              setTimeout(function () {
+                vm.alertText = "";
+              }, 2000);
+            }
+          }
+        });
+      },
+
+      /* 登录弹窗显示 */
+      loginOpen: function (msg) {
+        this.alertYHDL = msg;
+      },
+
+      /* 实时流动倒计时 */
+      nowFloating: function () {
+        let vm = this;
+
+        if (vm.alertSSLD == false) {
+          vm.alertSSLD = true;
+          vm.nowfloatTime = 9;
+          let interval = window.setInterval(function () {
+            if (vm.nowfloatTime-- <= 0) {
+              vm.alertSSLD = false;
+              vm.nowfloatPerson = [];
+              window.clearInterval(interval);
+            }
+          }, 1000);
+        }
+      },
+
+      /* 登录关闭按钮 */
+      loginclose: function () {
+        localStorage.setItem("placemanID", 1);
+        this.Isopen = false;
+        this.$router.push({path: "/"});
+        this.alertYHDL = false;
+        this.policeLogin.account = "";
+        this.policeLogin.password = "";
+      },
+
+      closeWeb: function () {
+        let vm = this;
+        vm.ws.close();
+      },
+
+      /* Coding By YanM */
+
+      /* Coding By Qianjf */
+
+      /*路由跳转提示进出工外出登记不能同时进行*/
+      routerTip: function (tip) {
+        var vm = this;
+        vm.$store.commit("setAlertText1", tip);
+        setTimeout(function () {
+          vm.$store.commit("setAlertText1", "");
+        }, 3000);
+      },
+      /* 登录弹窗显示 */
+      canRouterChange: function () {
+        this.canRouter = 1;
+      },
+
+      /*自适应各种屏幕*/
+      changeSize: function () {
+        var oldWidth = 1584;
+        var oldHeight = 1024;
+        var nowWidth = document.body.clientWidth;
+        var nowHeight = $(window).height();
+        var scaleWidth = oldWidth / nowWidth;
+        var scaleHeight = oldHeight / nowHeight;
+        $("#app").css(
+          "transform",
+          "scale(" + 1 / scaleWidth + "," + 1 / scaleHeight + ")"
+        );
+        $("#app").css("-ms-transform-origin", "0 0");
+        $("#app").css("transform-origin", "0 0");
+        $("#app").css("-webkit-transform-origin", "0 0");
+        $("#app").css("-moz-transform-origin", "0 0");
+        $("#app").css("-o-transform-origin", "0 0");
+      },
+
+      /*报警处理*/
+      alarmHandle: function () {
+        var vm = this;
+        vm.Isopen = true;
+        var alarmRecordID = $("#alarmRecordID").html();
+        var AreaID = $("#AreaID").html();
+        var alarmHandS = setInterval(function () {
+          //用循环是为了判断是否刷卡
+          if (localStorage.getItem("placemanID") == 0 && vm.Isopen) {
+            //先判断民警ID是否为0 为0表示未登陆
+            vm.alertYHDL = true; //用户登录框是否显示
+          } else if (localStorage.getItem("placemanID") == 1 && vm.Isopen) {
+            //先判断民警ID是否为1 为1表示未登陆
+            vm.alertYHDL = true;
           } else {
-            vm.policeLogin.password = "";
-            vm.policeLogin.account = "";
-            vm.alertText = "用户或密码错误";
-            setTimeout(function() {
-              vm.alertText = "";
-            }, 2000);
+            //报警处理提交
+            var placemanID = localStorage.getItem("placemanID");
+            vm.$ajax({
+              data: {
+                EventID: alarmRecordID,
+                PoliceID: placemanID,
+                PoliceRole: 1403,
+                PoliceName: policeList[0][placemanID]["PoliceName"]
+              },
+              url: BasicUrl + "Event/AlarmHandle" + "?callback=?",
+              success: function (result) {
+                clearInterval(alarmHandS);
+                if (result == 0) {
+                  vm.alertText = "处理失败";
+                  setTimeout(function () {
+                    vm.alertText = "";
+                  }, 2000);
+                } else {
+                  //提交报警处理数据给服务
+                  var sendOutAlarmHandle = {
+                    Header: {
+                      MsgID: "201501260000000031",
+                      MsgType: 54
+                    },
+                    Body: JSON.stringify({
+                      EventID: alarmRecordID,
+                      AreaID: AreaID,
+                      RET: 1
+                    })
+                  };
+                  //发送数据提交给服务
+                  vm.$ajax({
+                    url: ajaxUrl,
+                    data: JSON.stringify(sendOutAlarmHandle),
+                    success: function (result) {
+                      if (result.RET == 1) {
+                        vm.alertText = "处理成功";
+                        console.log("sendOutAlarmHandle 提交成功");
+                      } else {
+                      }
+                    }
+                  });
+                  /*页面删除效果*/
+                  for (var j = 0; j < vm.alarmList.length; j++) {
+                    if (vm.alarmList[j]["AlarmRecordID"] == alarmRecordID) {
+                      vm.alarmList.splice(j, 1); //删除记录j
+                      vm.alarmPages = vm.alarmList.length;
+                      if (
+                        vm.alarmPages > vm.alarmNowPage ||
+                        vm.alarmPages == vm.alarmNowPage
+                      ) {
+                      } else {
+                        if (vm.alarmPages == 0) {
+                          vm.alarmPages = 1;
+                          vm.alertBJTK = false;
+                          vm.alertBJXX = false;
+                        }
+                        vm.alarmBack();
+                      }
+                    }
+                  }
+                  vm.alarmText = vm.alarmList[0].Description;
+                  vm.alertText = "处理成功";
+                  setTimeout(function () {
+                    vm.alertText = "";
+                  }, 2000);
+                }
+              },
+              error: function (err) {
+                clearInterval(alarmHandS);
+              },
+              complete: function (XHR, TS) {
+                clearInterval(alarmHandS);
+                XHR = null; //回收资源
+              }
+            });
+          }
+        }, 500);
+      },
+
+      /*报警翻页*/
+      alarmGo: function () {
+        var vm = this;
+        if (this.alarmNowPage < this.alarmPages) {
+          this.alarmNowPage = this.alarmNowPage + 1;
+          this.alarmA = this.alarmA + 1;
+          this.alarmB = this.alarmB + 1;
+          if (this.alarmList[this.alarmA - 1]["EventCode"] == 1003) {
+            //互监组报警(下页)
+            this.isGrup = true;
+            this.isPerson = false;
+            var AlarmRecordID = this.alarmList[this.alarmA - 1]["AlarmRecordID"];
+            var ObjectID = this.alarmList[this.alarmA - 1]["ObjectID"];
+
+            vm.$ajax({
+              data: {GroupID: ObjectID},
+              url: BasicUrl + "Group/GetCriminalListByGroup" + "?callback=?",
+              success: function (result) {
+                vm.groupTeam = result;
+              }
+            });
+          } else {
+            vm.isGrup = false;
+            vm.isPerson = true;
+          }
+        } else if (this.alarmList[this.alarmA - 1]["EventCode"] == 1001) {
+          //区域入侵报警(下页) {
+        }
+      },
+
+      /*报警翻页*/
+      alarmBack: function () {
+        //上页
+        var vm = this;
+        if (this.alarmNowPage == 1) {
+        } else {
+          this.alarmNowPage = this.alarmNowPage - 1;
+          this.alarmA = this.alarmA - 1;
+          this.alarmB = this.alarmB - 1;
+          if (this.alarmList[this.alarmA - 1]["EventCode"] == 1003) {
+            this.isGrup = true;
+            this.isPerson = false;
+            var AlarmRecordID = this.alarmList[this.alarmA - 1]["AlarmRecordID"];
+            var ObjectID = this.alarmList[this.alarmA - 1]["ObjectID"];
+            vm.$ajax({
+              data: {GroupID: ObjectID},
+              url: BasicUrl + "Group/GetCriminalListByGroup",
+              success: function (result) {
+                vm.groupTeam = result;
+              }
+            });
+          } else {
+            this.isGrup = false;
+            this.isPerson = true;
           }
         }
-      });
-    },
+      },
 
-    /* 登录弹窗显示 */
-    loginOpen: function(msg) {
-      this.alertYHDL = msg;
-    },
-
-    /* 实时流动倒计时 */
-    nowFloating: function() {
-      let vm = this;
-
-      if (vm.alertSSLD == false) {
-        vm.alertSSLD = true;
-        vm.nowfloatTime = 9;
-        let interval = window.setInterval(function() {
-          if (vm.nowfloatTime-- <= 0) {
-            vm.alertSSLD = false;
-            vm.nowfloatPerson = [];
-            window.clearInterval(interval);
-          }
-        }, 1000);
-      }
-    },
-
-    /* 登录关闭按钮 */
-    loginclose: function() {
-      localStorage.setItem("placemanID", 1);
-      this.Isopen = false;
-      this.$router.push({ path: "/" });
-      this.alertYHDL = false;
-      this.policeLogin.account = "";
-      this.policeLogin.password = "";
-    },
-
-    closeWeb: function() {
-      let vm = this;
-      vm.ws.close();
-    },
-
-    /* Coding By YanM */
-
-    /* Coding By Qianjf */
-
-    /*路由跳转提示进出工外出登记不能同时进行*/
-    routerTip: function(tip) {
-      var vm = this;
-      vm.$store.commit("setAlertText1", tip);
-      setTimeout(function() {
-        vm.$store.commit("setAlertText1", "");
-      }, 3000);
-    },
-    /* 登录弹窗显示 */
-    canRouterChange: function() {
-      this.canRouter = 1;
-    },
-
-    /*自适应各种屏幕*/
-    changeSize: function() {
-      var oldWidth = 1584;
-      var oldHeight = 1024;
-      var nowWidth = document.body.clientWidth;
-      var nowHeight = $(window).height();
-      var scaleWidth = oldWidth / nowWidth;
-      var scaleHeight = oldHeight / nowHeight;
-      $("#app").css(
-        "transform",
-        "scale(" + 1 / scaleWidth + "," + 1 / scaleHeight + ")"
-      );
-      $("#app").css("-ms-transform-origin", "0 0");
-      $("#app").css("transform-origin", "0 0");
-      $("#app").css("-webkit-transform-origin", "0 0");
-      $("#app").css("-moz-transform-origin", "0 0");
-      $("#app").css("-o-transform-origin", "0 0");
-    },
-
-    /*报警处理*/
-    alarmHandle: function() {
-      var vm = this;
-      vm.Isopen = true;
-      var alarmRecordID = $("#alarmRecordID").html();
-      var AreaID = $("#AreaID").html();
-      var alarmHandS = setInterval(function() {
-        //用循环是为了判断是否刷卡
-        if (localStorage.getItem("placemanID") == 0 && vm.Isopen) {
-          //先判断民警ID是否为0 为0表示未登陆
-          vm.alertYHDL = true; //用户登录框是否显示
-        } else if (localStorage.getItem("placemanID") == 1 && vm.Isopen) {
-          //先判断民警ID是否为1 为1表示未登陆
-          vm.alertYHDL = true;
-        } else {
-          //报警处理提交
-          var placemanID = localStorage.getItem("placemanID");
+      /* 已点人员名单翻页 */
+      getCriminalGo: function () {
+        var vm = this;
+        if (!vm.criminalCalledIsLastPage) {
+          vm.criminalPage = vm.criminalPage + 1;
           vm.$ajax({
             data: {
-              EventID: alarmRecordID,
-              PoliceID: placemanID,
-              PoliceRole: 1403,
-              PoliceName: policeList[0][placemanID]["PoliceName"]
+              OrgID: localStorage.getItem("OrgID"),
+              PageIndex: vm.criminalPage,
+              PageSize: 18
             },
-            url: BasicUrl + "Event/AlarmHandle" + "?callback=?",
-            success: function(result) {
-              clearInterval(alarmHandS);
-              if (result == 0) {
-                vm.alertText = "处理失败";
-                setTimeout(function() {
-                  vm.alertText = "";
-                }, 2000);
+            url: BasicUrl + "CriminalCnt/GetCriminalCalledList" + "?callback=?",
+            success: function (result) {
+              if (result.length != 18) {
+                vm.criminalCalledIsLastPage = true;
               } else {
-                //提交报警处理数据给服务
-                var sendOutAlarmHandle = {
-                  Header: {
-                    MsgID: "201501260000000031",
-                    MsgType: 54
-                  },
-                  Body: JSON.stringify({
-                    EventID: alarmRecordID,
-                    AreaID: AreaID,
-                    RET: 1
-                  })
-                };
-                //发送数据提交给服务
-                vm.$ajax({
-                  url: ajaxUrl,
-                  data: JSON.stringify(sendOutAlarmHandle),
-                  success: function(result) {
-                    if (result.RET == 1) {
-                      vm.alertText = "处理成功";
-                      console.log("sendOutAlarmHandle 提交成功");
-                    } else {
-                    }
-                  }
-                });
-                /*页面删除效果*/
-                for (var j = 0; j < vm.alarmList.length; j++) {
-                  if (vm.alarmList[j]["AlarmRecordID"] == alarmRecordID) {
-                    vm.alarmList.splice(j, 1); //删除记录j
-                    vm.alarmPages = vm.alarmList.length;
-                    if (
-                      vm.alarmPages > vm.alarmNowPage ||
-                      vm.alarmPages == vm.alarmNowPage
-                    ) {
-                    } else {
-                      if (vm.alarmPages == 0) {
-                        vm.alarmPages = 1;
-                        vm.alertBJTK = false;
-                        vm.alertBJXX = false;
-                      }
-                      vm.alarmBack();
-                    }
-                  }
-                }
-                vm.alarmText = vm.alarmList[0].Description;
-                vm.alertText = "处理成功";
-                setTimeout(function() {
-                  vm.alertText = "";
-                }, 2000);
+                vm.criminalCalledIsLastPage = false;
               }
+              vm.GetCriminalCalledList = result;
             },
-            error: function(err) {
-              clearInterval(alarmHandS);
-            },
-            complete: function(XHR, TS) {
-              clearInterval(alarmHandS);
-              XHR = null; //回收资源
+            error: function (err) {
+              console("GetCriminalCalledList请求异常");
             }
           });
-        }
-      }, 500);
-    },
 
-    /*报警翻页*/
-    alarmGo: function() {
-      var vm = this;
-      if (this.alarmNowPage < this.alarmPages) {
-        this.alarmNowPage = this.alarmNowPage + 1;
-        this.alarmA = this.alarmA + 1;
-        this.alarmB = this.alarmB + 1;
-        if (this.alarmList[this.alarmA - 1]["EventCode"] == 1003) {
-          //互监组报警(下页)
-          this.isGrup = true;
-          this.isPerson = false;
-          var AlarmRecordID = this.alarmList[this.alarmA - 1]["AlarmRecordID"];
-          var ObjectID = this.alarmList[this.alarmA - 1]["ObjectID"];
-
+          //      获取总条数
           vm.$ajax({
-            data: { GroupID: ObjectID },
-            url: BasicUrl + "Group/GetCriminalListByGroup" + "?callback=?",
-            success: function(result) {
-              vm.groupTeam = result;
+            data: {OrgID: localStorage.getItem("OrgID")},
+            url: BasicUrl + "CriminalCnt/GetCriminalCalledCount" + "?callback=?",
+            success: function (result) {
+              vm.criminalCount = result;
+            },
+            error: function (err) {
+              console("GetCriminalCalledCount请求异常");
             }
           });
         } else {
-          vm.isGrup = false;
-          vm.isPerson = true;
+          //          alert("已经到了最后一页了")
         }
-      } else if (this.alarmList[this.alarmA - 1]["EventCode"] == 1001) {
-        //区域入侵报警(下页) {
-      }
-    },
+      },
 
-    /*报警翻页*/
-    alarmBack: function() {
-      //上页
-      var vm = this;
-      if (this.alarmNowPage == 1) {
-      } else {
-        this.alarmNowPage = this.alarmNowPage - 1;
-        this.alarmA = this.alarmA - 1;
-        this.alarmB = this.alarmB - 1;
-        if (this.alarmList[this.alarmA - 1]["EventCode"] == 1003) {
-          this.isGrup = true;
-          this.isPerson = false;
-          var AlarmRecordID = this.alarmList[this.alarmA - 1]["AlarmRecordID"];
-          var ObjectID = this.alarmList[this.alarmA - 1]["ObjectID"];
+      /* 已点人员名单翻页 */
+      getCriminalback: function () {
+        var vm = this;
+        if (vm.criminalPage == 0) {
+        } else {
+          vm.criminalPage = vm.criminalPage - 1;
           vm.$ajax({
-            data: { GroupID: ObjectID },
-            url: BasicUrl + "Group/GetCriminalListByGroup",
-            success: function(result) {
-              vm.groupTeam = result;
+            data: {
+              OrgID: localStorage.getItem("OrgID"),
+              PageIndex: vm.criminalPage,
+              PageSize: 18
+            },
+            url: BasicUrl + "CriminalCnt/GetCriminalCalledList" + "?callback=?",
+            success: function (result) {
+              if (result.length != 18) {
+                vm.criminalCalledIsLastPage = true;
+              } else {
+                vm.criminalCalledIsLastPage = false;
+              }
+              vm.GetCriminalCalledList = result;
+            }
+          });
+          //      获取总条数
+          vm.$ajax({
+            data: {OrgID: localStorage.getItem("OrgID")},
+            url: BasicUrl + "CriminalCnt/GetCriminalCalledCount" + "?callback=?",
+            success: function (result) {
+              vm.criminalCount = result;
+            }
+          });
+        }
+      },
+
+      /* 已点工具名单翻页 */
+      getToolback: function () {
+        var vm = this;
+        if (vm.toolPage == 0) {
+        } else {
+          vm.toolPage = vm.toolPage - 1;
+          vm.$ajax({
+            data: {
+              OrgID: localStorage.getItem("OrgID"),
+              PageIndex: vm.toolPage,
+              PageSize: 18
+            },
+            url: BasicUrl + "ToolCnt/GetToolCalledList" + "?callback=?",
+            success: function (result) {
+              if (result.length != 18) {
+                vm.toolCalledIsLastPage = true;
+              } else {
+                vm.toolCalledIsLastPage = false;
+              }
+              vm.GetToolCalledList = result;
+            },
+            error: function (err) {
+              console.log("GetToolCalledList请求异常");
+            }
+          });
+          //      获取总条数
+          vm.$ajax({
+            data: {OrgID: localStorage.getItem("OrgID")},
+            url: BasicUrl + "ToolCnt/GetToolCalledCount" + "?callback=?",
+            success: function (result) {
+              vm.toolCount = result;
+            }
+          });
+        }
+      },
+
+      /* 已点工具名单翻页 */
+      getToolGo: function () {
+        var vm = this;
+        if (!vm.toolCalledIsLastPage) {
+          vm.toolPage = vm.toolPage + 1;
+          vm.$ajax({
+            data: {
+              OrgID: localStorage.getItem("OrgID"),
+              PageIndex: vm.toolPage,
+              PageSize: 18
+            },
+            url: BasicUrl + "ToolCnt/GetToolCalledList" + "?callback=?",
+            success: function (result) {
+              if (result.length != 18) {
+                vm.toolCalledIsLastPage = true;
+              } else {
+                vm.toolCalledIsLastPage = false;
+              }
+              vm.GetToolCalledList = result;
+            }
+          });
+
+          //      获取总条数
+          vm.$ajax({
+            data: {OrgID: localStorage.getItem("OrgID")},
+            url: BasicUrl + "CriminalCnt/GetCriminalCalledCount" + "?callback=?",
+            success: function (result) {
+              vm.criminalCount = result;
             }
           });
         } else {
-          this.isGrup = false;
-          this.isPerson = true;
         }
-      }
-    },
+      },
 
-    /* 已点人员名单翻页 */
-    getCriminalGo: function() {
-      var vm = this;
-      if (!vm.criminalCalledIsLastPage) {
-        vm.criminalPage = vm.criminalPage + 1;
+      /* 已点工具展示及其数据加载 */
+      onHasCheakedTool: function () {
+        this.alertYDGJ = true;
+        var vm = this;
+        //      获取第一页记录数据
         vm.$ajax({
           data: {
             OrgID: localStorage.getItem("OrgID"),
-            PageIndex: vm.criminalPage,
-            PageSize: 18
-          },
-          url: BasicUrl + "CriminalCnt/GetCriminalCalledList" + "?callback=?",
-          success: function(result) {
-            if (result.length != 18) {
-              vm.criminalCalledIsLastPage = true;
-            } else {
-              vm.criminalCalledIsLastPage = false;
-            }
-            vm.GetCriminalCalledList = result;
-          },
-          error: function(err) {
-            console("GetCriminalCalledList请求异常");
-          }
-        });
-
-        //      获取总条数
-        vm.$ajax({
-          data: { OrgID: localStorage.getItem("OrgID") },
-          url: BasicUrl + "CriminalCnt/GetCriminalCalledCount" + "?callback=?",
-          success: function(result) {
-            vm.criminalCount = result;
-          },
-          error: function(err) {
-            console("GetCriminalCalledCount请求异常");
-          }
-        });
-      } else {
-        //          alert("已经到了最后一页了")
-      }
-    },
-
-    /* 已点人员名单翻页 */
-    getCriminalback: function() {
-      var vm = this;
-      if (vm.criminalPage == 0) {
-      } else {
-        vm.criminalPage = vm.criminalPage - 1;
-        vm.$ajax({
-          data: {
-            OrgID: localStorage.getItem("OrgID"),
-            PageIndex: vm.criminalPage,
-            PageSize: 18
-          },
-          url: BasicUrl + "CriminalCnt/GetCriminalCalledList" + "?callback=?",
-          success: function(result) {
-            if (result.length != 18) {
-              vm.criminalCalledIsLastPage = true;
-            } else {
-              vm.criminalCalledIsLastPage = false;
-            }
-            vm.GetCriminalCalledList = result;
-          }
-        });
-        //      获取总条数
-        vm.$ajax({
-          data: { OrgID: localStorage.getItem("OrgID") },
-          url: BasicUrl + "CriminalCnt/GetCriminalCalledCount" + "?callback=?",
-          success: function(result) {
-            vm.criminalCount = result;
-          }
-        });
-      }
-    },
-
-    /* 已点工具名单翻页 */
-    getToolback: function() {
-      var vm = this;
-      if (vm.toolPage == 0) {
-      } else {
-        vm.toolPage = vm.toolPage - 1;
-        vm.$ajax({
-          data: {
-            OrgID: localStorage.getItem("OrgID"),
-            PageIndex: vm.toolPage,
+            PageIndex: 0,
             PageSize: 18
           },
           url: BasicUrl + "ToolCnt/GetToolCalledList" + "?callback=?",
-          success: function(result) {
+          success: function (result) {
             if (result.length != 18) {
               vm.toolCalledIsLastPage = true;
             } else {
               vm.toolCalledIsLastPage = false;
             }
             vm.GetToolCalledList = result;
-          },
-          error: function(err) {
-            console.log("GetToolCalledList请求异常");
           }
         });
+
         //      获取总条数
         vm.$ajax({
-          data: { OrgID: localStorage.getItem("OrgID") },
+          data: {OrgID: localStorage.getItem("OrgID")},
           url: BasicUrl + "ToolCnt/GetToolCalledCount" + "?callback=?",
-          success: function(result) {
+          success: function (result) {
             vm.toolCount = result;
           }
         });
-      }
-    },
+      },
+      /*触发音频*/
+      playAudio: function (id) {
+        var vm = this;
+        var audio = document.getElementById(id);
+        console.log(vm.isEnd);
+        if (vm.isEnd) {
+          audio.play();
+          vm.isEnd = false;
+          audio.onended = function () {
+            vm.isEnd = true;
+          };
+        }
+      },
+      /* Coding By Qianjf */
 
-    /* 已点工具名单翻页 */
-    getToolGo: function() {
-      var vm = this;
-      if (!vm.toolCalledIsLastPage) {
-        vm.toolPage = vm.toolPage + 1;
+      /* 弹窗关闭 */
+      close: function (chose) {
+        if (chose == "alertYHDL") {
+          this.alertYHDL = false;
+        } else if (chose == "alertJQXZ") {
+          this.alertJQXZ = false;
+        } else if (chose == "alertBJXX") {
+          localStorage.setItem("placemanID", "0");
+          this.alertBJXX = false;
+        } else if (chose == "alertSSLD") {
+          this.nowfloatPerson = []; //zyf 清除之前记录的流动人员的信息
+          this.alertSSLD = false;
+        } else if (chose == "alertYDMD") {
+          this.alertYDMD = false;
+          this.criminalPage = 0;
+        } else if (chose == "alertYDGJ") {
+          this.alertYDGJ = false;
+        } else if (chose == "alertRYXQ") {
+          this.alertRYXQ = false;
+        }
+      },
+
+      /* 选择监区弹窗打开 */
+      onClickPosition: function () {
+        this.alertJQXZ = true;
+      },
+
+      /* 已点罪犯展示及其数据加载 */
+      onHasCheaked: function () {
+        this.alertYDMD = true;
+        //      罪犯清点，已点名单
+        var vm = this;
+        //      获取第一页记录数据
         vm.$ajax({
           data: {
             OrgID: localStorage.getItem("OrgID"),
-            PageIndex: vm.toolPage,
+            PageIndex: 0,
             PageSize: 18
           },
-          url: BasicUrl + "ToolCnt/GetToolCalledList" + "?callback=?",
-          success: function(result) {
+          url: BasicUrl + "CriminalCnt/GetCriminalCalledList" + "?callback=?",
+          success: function (result) {
             if (result.length != 18) {
-              vm.toolCalledIsLastPage = true;
+              vm.criminalCalledIsLastPage = true;
             } else {
-              vm.toolCalledIsLastPage = false;
+              vm.criminalCalledIsLastPage = false;
             }
-            vm.GetToolCalledList = result;
+            vm.GetCriminalCalledList = result;
           }
         });
 
         //      获取总条数
         vm.$ajax({
-          data: { OrgID: localStorage.getItem("OrgID") },
+          data: {OrgID: localStorage.getItem("OrgID")},
           url: BasicUrl + "CriminalCnt/GetCriminalCalledCount" + "?callback=?",
-          success: function(result) {
+          success: function (result) {
             vm.criminalCount = result;
           }
         });
-      } else {
-      }
-    },
+      },
 
-    /* 已点工具展示及其数据加载 */
-    onHasCheakedTool: function() {
-      this.alertYDGJ = true;
-      var vm = this;
-      //      获取第一页记录数据
-      vm.$ajax({
-        data: {
-          OrgID: localStorage.getItem("OrgID"),
-          PageIndex: 0,
-          PageSize: 18
-        },
-        url: BasicUrl + "ToolCnt/GetToolCalledList" + "?callback=?",
-        success: function(result) {
-          if (result.length != 18) {
-            vm.toolCalledIsLastPage = true;
-          } else {
-            vm.toolCalledIsLastPage = false;
-          }
-          vm.GetToolCalledList = result;
-        }
-      });
-
-      //      获取总条数
-      vm.$ajax({
-        data: { OrgID: localStorage.getItem("OrgID") },
-        url: BasicUrl + "ToolCnt/GetToolCalledCount" + "?callback=?",
-        success: function(result) {
-          vm.toolCount = result;
-        }
-      });
-    },
-    /*触发音频*/
-    playAudio: function(id) {
-      var vm = this;
-      var audio = document.getElementById(id);
-      console.log(vm.isEnd);
-      if (vm.isEnd) {
-        audio.play();
-        vm.isEnd = false;
-        audio.onended = function() {
-          vm.isEnd = true;
-        };
-      }
-    },
-    /* Coding By Qianjf */
-
-    /* 弹窗关闭 */
-    close: function(chose) {
-      if (chose == "alertYHDL") {
-        this.alertYHDL = false;
-      } else if (chose == "alertJQXZ") {
-        this.alertJQXZ = false;
-      } else if (chose == "alertBJXX") {
-        localStorage.setItem("placemanID", "0");
-        this.alertBJXX = false;
-      } else if (chose == "alertSSLD") {
-        this.nowfloatPerson = []; //zyf 清除之前记录的流动人员的信息
-        this.alertSSLD = false;
-      } else if (chose == "alertYDMD") {
-        this.alertYDMD = false;
-        this.criminalPage = 0;
-      } else if (chose == "alertYDGJ") {
-        this.alertYDGJ = false;
-      } else if (chose == "alertRYXQ") {
-        this.alertRYXQ = false;
-      }
-    },
-
-    /* 选择监区弹窗打开 */
-    onClickPosition: function() {
-      this.alertJQXZ = true;
-    },
-
-    /* 已点罪犯展示及其数据加载 */
-    onHasCheaked: function() {
-      this.alertYDMD = true;
-      //      罪犯清点，已点名单
-      var vm = this;
-      //      获取第一页记录数据
-      vm.$ajax({
-        data: {
-          OrgID: localStorage.getItem("OrgID"),
-          PageIndex: 0,
-          PageSize: 18
-        },
-        url: BasicUrl + "CriminalCnt/GetCriminalCalledList" + "?callback=?",
-        success: function(result) {
-          if (result.length != 18) {
-            vm.criminalCalledIsLastPage = true;
-          } else {
-            vm.criminalCalledIsLastPage = false;
-          }
-          vm.GetCriminalCalledList = result;
-        }
-      });
-
-      //      获取总条数
-      vm.$ajax({
-        data: { OrgID: localStorage.getItem("OrgID") },
-        url: BasicUrl + "CriminalCnt/GetCriminalCalledCount" + "?callback=?",
-        success: function(result) {
-          vm.criminalCount = result;
-        }
-      });
-    },
-
-    /*查看区域人员详情*/
-    viewRYDetail: function(areaId) {
-      var vm = this;
-      var viewCmd = {
-        Header: {
-          MsgID: "201501260000000031",
-          MsgType: 102 //新加 将PSID 赋值为FlnkID
-        },
-        Body: JSON.stringify({
-          MapID: localStorage.getItem("MapFlnkID"),
-          OrgID: localStorage.getItem("OrgID"),
-          ManageLevel: 0,
-          AreaID: areaId,
-          PSType: "2002"
-        })
-      };
-
-      vm.$ajax({
-        url: ajaxUrl,
-        data: JSON.stringify(viewCmd),
-        success: function(result) {
-          var temp = [];
-          for (let i = 0; i < result.length; i++) {
-            let criminalID = result[i].PSID;
-            temp[i] = {
-              CriminalID: criminalList[0][criminalID].CriminalID,
-              CriminalName: criminalList[0][criminalID].CriminalName
-            };
-          }
-          vm.areaCriminal = temp;
-        }
-      });
-      this.alertRYXQ = true;
-    },
-
-    /*报警详情弹框*/
-    alertAlarm: function() {
-      this.isGrup = false; //重置
-      this.isPerson = true; //重置
-      this.alertBJXX = true;
-      this.alarmA = 1;
-      this.alarmB = 1;
-      this.alarmNowPage = 1;
-      var vm = this;
-      if (this.alarmList[0]["EventCode"] == 1003) {
-        //第一个报警类型为互监组报警
-        this.isGrup = true;
-        this.isPerson = false;
-        vm.$ajax({
-          data: { GroupID: vm.alarmList[0]["ObjectID"] },
-          url: BasicUrl + "Group/GetCriminalListByGroup" + "?callback=?",
-          success: function(result) {
-            vm.groupTeam = result;
-          }
-        });
-      }
-      localStorage.setItem("placemanID", "0");
-    },
-
-    /* 所有基础全量数据 */
-    allDataInit: function() {
-      var vm = this;
-      /* 罪犯基础数据 */
-      vm.$ajax({
-        url: BasicUrl + "CriminalCnt/GetCriminalList" + "?callback=?",
-        success: function(result) {
-          //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-          var personlist_hash = [];
-          // 重构罪犯信息哈希数据
-          for (let i = 0; i < result.length; i++) {
-            personlist_hash[result[i].FlnkID] = {
-              FlnkID: result[i].FlnkID,
-              CriminalID: result[i].CriminalID,
-              CriminalName: result[i].CriminalName,
-              Sex: result[i].Sex,
-              MZ: result[i].MZ,
-              SFZ: result[i].SFZ,
-              ZM: result[i].ZM,
-              XQ: result[i].XQ,
-              ZFLB: result[i].ZFLB,
-              Photo: IMG + result[i].Photo,
-              ThumbUrl: result[i].ThumbUrl,
-              OrgID: result[i].OrgID,
-              RoomID: result[i].RoomID,
-              BedID: result[i].BedID,
-              InterimOrgID: result[i].InterimOrgID,
-              ManageLevel: result[i].ManageLevel,
-              IsZDRY: result[i].IsZDRY,
-              Pinyin: result[i].Pinyin,
-              DBID: result[i].DBID,
-              Status: result[i].Status,
-              HostID: result[i].HostID,
-              IsDelete: result[i].IsDelete,
-              UpdateTime: result[i].UpdateTime
-            };
-          }
-          //所有罪犯信息缓存(传进vue的数据用于渲染页面)
-          vm.$store.commit("setCriminalList", personlist_hash);
-        }
-      });
-      /* 监区人数 && 外出人数（监外） */
-      vm.$ajax({
-        data: { OrgID: localStorage.getItem("OrgID") },
-        url: BasicUrl + "CriminalCnt/GetCurOrgCriminalCount",
-        success: function(result) {
-          //alert(localStorage.getItem('OrgID'))参数传递正确取回的值却是错的(其他监区的值)
-          //alert(JSON.stringify(result[0]))
-          vm.$store.commit("setCrimalCount_outCrimalCount", result[0]);
-        }
-      });
-
-      /* 获取配置项 */
-      vm.$ajax({
-        url: BasicUrl + "HomeIndex/GetSysConfig",
-        success: function(result) {
-          for (let i = 0; i < result.length; i++) {
-            if (result[i].FieldName == "KnockOffTime") {
-              /*  默认收工时间*/
-              localStorage.setItem("overTime", result[i].FieldValue);
-            } else if (
-              result[i].FieldName == "ClientSingleOrgNeedRefreshCard"
-            ) {
-              /*  触摸屏切换到出工收工时是否每次都需要刷卡或登录*/
-              //                localStorage.setItem("needPassCard",1)
-              localStorage.setItem("needPassCard", result[i].FieldValue);
-            }
-          }
-        }
-      });
-      /* 工具基础信息 */
-      vm.$ajax({
-        data: { OrgID: localStorage.getItem("OrgID") },
-        url: BasicUrl + "ToolCnt/GetToolList" + "?callback=?",
-        success: function(result) {
-          if (result != undefined || result != null) {
-            //所有工具信息缓存(哈希，便于快速查找缓存中的工具详细信息)
-            var toolList_hash = new Array();
-            // 重构工具信息哈希数据
-            for (var i = 0; i < result.length; i++) {
-              toolList_hash[result[i].FlnkID] = {
-                FlnkID: result[i].FlnkID,
-                ToolID: result[i].ToolID,
-                ToolType: result[i].ToolType,
-                ToolName: result[i].ToolName,
-                IsInsideTool: result[i].IsInsideTool,
-                Photo: IMG + result[i].Photo
-              };
-            }
-            vm.$store.commit("setToolList", toolList_hash);
-          }
-        }
-      });
-
-      /* 全部警员信息 */
-      vm.$ajax({
-        data: { OrgID: localStorage.getItem("OrgID") },
-        url: BasicUrl + "HomeIndex/GetPoliceList",
-        success: function(result) {
-          //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-          var police_hash = new Array();
-          // 重构警员信息哈希数据
-          for (var i = 0; i < result.length; i++) {
-            police_hash[result[i].FlnkID] = {
-              FlnkID: result[i].FlnkID,
-              PoliceNum: result[i].PoliceNum,
-              PoliceName: result[i].PoliceName,
-              Sex: result[i].Sex,
-              OrgID: result[i].OrgID,
-              Post: result[i].Post,
-              Telephone: result[i].Telephone,
-              IntercomNum: result[i].IntercomNum,
-              PoliceMobile: result[i].PoliceMobile,
-              Photo: IMG + result[i].Photo,
-              Pinyin: result[i].Pinyin,
-              OrderIndex: result[i].OrderIndex,
-              DBID: result[i].DBID,
-              PoliceTag: result[i].PoliceTag,
-              Status: result[i].Status,
-              IsDelete: result[i].IsDelete,
-              HostID: result[i].HostID,
-              UpdateTime: result[i].UpdateTime,
-              role: result[i].role,
-              RFID: result[i].RFID,
-              IC: result[i].IC
-            };
-          }
-          vm.$store.commit("setPoliceList", police_hash);
-        }
-      });
-
-      /* 全部地图数据 */
-      vm.$ajax({
-        url: BasicUrl + "HomeIndex/GetMapList",
-        success: function(result) {
-          //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-          var map_hash = new Array();
-          // 重构警员信息哈希数据
-          for (var i = 0; i < result.length; i++) {
-            map_hash[result[i].FlnkID] = {
-              FlnkID: result[i].FlnkID,
-              MapCode: result[i].MapCode,
-              MapName: result[i].MapName,
-              MapUrl: result[i].MapUrl,
-              MapType: result[i].MapType,
-              Width: result[i].Width,
-              Height: result[i].Height,
-              Scale: result[i].Scale,
-              ParentID: result[i].ParentID,
-              OrderIndex: result[i].OrderIndex,
-              Pinyin: result[i].Pinyin,
-              IsDelete: result[i].IsDelete,
-              HostID: result[i].HostID,
-              UpdateTime: result[i].UpdateTime
-            };
-          }
-          vm.$store.commit("setMapList", map_hash);
-        }
-      });
-
-      /*区域配置信息*/
-      vm.$ajax({
-        url: BasicUrl + "HomeIndex/GetQYGuid",
-        data: { MapID: localStorage.getItem("MapFlnkID") },
-        success: function(result) {
-          //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-          var area_hash = new Array();
-          // 重构警员信息哈希数据
-          for (var i = 0; i < result.length; i++) {
-            area_hash[result[i].FlnkID] = {
-              FlnkID: result[i].FlnkID,
-              CenterX: result[i].CenterCoordinate.split(",")[0],
-              CenterY: result[i].CenterCoordinate.split(",")[1],
-              AreaName: result[i].AreaName
-            };
-          }
-          vm.$store.commit("setAreaList", area_hash);
-        }
-      });
-    }
-  },
-  mounted() {
-    var vm = this;
-    vm.changeSize();
-    /* Coding By YanM */
-    this.initPrison();
-
-    /* 打开websocket */
-    vm.ws.onopen = function() {
-      vm.$store.commit("setOnlinestatus", true);
-      setInterval(function() {
-        var flowPerson_outPrison = {
+      /*查看区域人员详情*/
+      viewRYDetail: function (areaId) {
+        var vm = this;
+        var viewCmd = {
           Header: {
-            MsgID: "201501260000000001",
-            MsgType: 11
+            MsgID: "201501260000000031",
+            MsgType: 102 //新加 将PSID 赋值为FlnkID
           },
           Body: JSON.stringify({
-            MapID: vm.getLocalStorage("MapFlnkID"),
-            OrgID: vm.getLocalStorage("OrgID"),
-            AreaIDs: "",
-            AreaType: 1901, //最小区域
+            MapID: localStorage.getItem("MapFlnkID"),
+            OrgID: localStorage.getItem("OrgID"),
+            ManageLevel: 0,
+            AreaID: areaId,
             PSType: "2002"
           })
         };
 
-        /* 流动人员 && 外监进入人员-24 */
-        var personnel_distribution = {
-          Header: {
-            MsgID: "201501260000000001",
-            MsgType: 24
-          },
-          Body: JSON.stringify({
-            OrgID: vm.getLocalStorage("OrgID")
-          })
-        };
-        /* 保持心跳 */
-        var keep_heart = {
-          Header: {
-            MsgID: "201501260000000001",
-            MsgType: 1
-          },
-          Body: JSON.stringify({
-            OrgID: vm.getLocalStorage("OrgID")
-          })
-        };
-        /* 保持心跳-参数-01 */
-        vm.ws.send(JSON.stringify(keep_heart));
-        /* 人员分布-参数-14 */
-        vm.ws.send(JSON.stringify(flowPerson_outPrison));
-        /* 流动人员 && 外监进入人员-参数-24 */
-        vm.ws.send(JSON.stringify(personnel_distribution));
-      }, 2000);
-    };
+        vm.$ajax({
+          url: ajaxUrl,
+          data: JSON.stringify(viewCmd),
+          success: function (result) {
+            var temp = [];
+            for (let i = 0; i < result.length; i++) {
+              let criminalID = result[i].PSID;
+              temp[i] = {
+                CriminalID: criminalList[0][criminalID].CriminalID,
+                CriminalName: criminalList[0][criminalID].CriminalName
+              };
+            }
+            vm.areaCriminal = temp;
+          }
+        });
+        this.alertRYXQ = true;
+      },
 
-    vm.allDataInit();
+      /*报警详情弹框*/
+      alertAlarm: function () {
+        this.isGrup = false; //重置
+        this.isPerson = true; //重置
+        this.alertBJXX = true;
+        this.alarmA = 1;
+        this.alarmB = 1;
+        this.alarmNowPage = 1;
+        var vm = this;
+        if (this.alarmList[0]["EventCode"] == 1003) {
+          //第一个报警类型为互监组报警
+          this.isGrup = true;
+          this.isPerson = false;
+          vm.$ajax({
+            data: {GroupID: vm.alarmList[0]["ObjectID"]},
+            url: BasicUrl + "Group/GetCriminalListByGroup" + "?callback=?",
+            success: function (result) {
+              vm.groupTeam = result;
+            }
+          });
+        }
+        localStorage.setItem("placemanID", "0");
+      },
 
-    /* websocket接收信息 */
-    vm.ws.onmessage = function(event) {
-      vm.$store.commit("setSocketAllData", event.data);
-      var msg = JSON.parse(SocketAllData);
-      if (msg == null) {
-        return;
-      }
-      vm.$store.commit("setIswebsocket", 1);
-      /*过滤进出工数据*/
-      if (msg.Header.MsgType === 25) {
-        vm.$store.commit("setReceiveDataMsgType25", JSON.parse(msg.Body));
-      } else if (msg.Header.MsgType === 30) {
-        /*工具清点提交返回结果*/
-        vm.$store.commit("setReceiveDataMsgType30", JSON.parse(msg.Body));
-      } else if (msg.Header.MsgType === 32) {
-        /*工具清点*/
-        vm.$store.commit("setReceiveDataMsgType32", JSON.parse(msg.Body));
-      } else if (msg.Header.MsgType === 31) {
-        /*人员清点*/
-        var receiveDataMsgType31 = JSON.parse(msg.Body);
-        vm.$store.commit("setReceiveDataMsgType31", receiveDataMsgType31);
-      } else if (msg.Header.MsgType === 20) {
-        /*外出登记初次发送*/
-        vm.$store.commit("setReceiveDataMsgType20", JSON.parse(msg.Body));
-      } else if (msg.Header.MsgType === 22) {
-        /*外出罪犯信息*/
-        vm.$store.commit("setReceiveDataMsgType22", JSON.parse(msg.Body));
-      } else if (msg.Header.MsgType === 27) {
-        /*陪同民警信息*/
-        vm.$store.commit("setReceiveDataMsgType27", JSON.parse(msg.Body));
-      } else if (msg.Header.MsgType === 23) {
-        /*外出登记提交*/
-        vm.$store.commit("setReceiveDataMsgType23", JSON.parse(msg.Body));
-      } else if (msg.Header.MsgType === 26) {
-        /*外出登记取消*/
-        vm.$store.commit("setReceiveDataMsgType26", JSON.parse(msg.Body));
-      } else if (msg.Header.MsgType === 34) {
-        /*获取互监组*/
-        var receiveDataMsgType34 = JSON.parse(msg.Body);
-        vm.$store.commit("setAllGroups", receiveDataMsgType34);
-        var receiveData = receiveDataMsgType34;
-      } else if (msg.Header.MsgType === 8) {
-        /*互监组管理刷卡*/
-        vm.$store.commit("setReceiveDataMsgType8", JSON.parse(msg.Body));
-        var receiveData = receiveDataMsgType8;
+      /* 所有基础全量数据 */
+      allDataInit: function () {
+        var vm = this;
+        /* 罪犯基础数据 */
+        vm.$ajax({
+          url: BasicUrl + "CriminalCnt/GetCriminalList" + "?callback=?",
+          success: function (result) {
+            //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+            var personlist_hash = [];
+            // 重构罪犯信息哈希数据
+            for (let i = 0; i < result.length; i++) {
+              personlist_hash[result[i].FlnkID] = {
+                FlnkID: result[i].FlnkID,
+                CriminalID: result[i].CriminalID,
+                CriminalName: result[i].CriminalName,
+                Sex: result[i].Sex,
+                MZ: result[i].MZ,
+                SFZ: result[i].SFZ,
+                ZM: result[i].ZM,
+                XQ: result[i].XQ,
+                ZFLB: result[i].ZFLB,
+                Photo: IMG + result[i].Photo,
+                ThumbUrl: result[i].ThumbUrl,
+                OrgID: result[i].OrgID,
+                RoomID: result[i].RoomID,
+                BedID: result[i].BedID,
+                InterimOrgID: result[i].InterimOrgID,
+                ManageLevel: result[i].ManageLevel,
+                IsZDRY: result[i].IsZDRY,
+                Pinyin: result[i].Pinyin,
+                DBID: result[i].DBID,
+                Status: result[i].Status,
+                HostID: result[i].HostID,
+                IsDelete: result[i].IsDelete,
+                UpdateTime: result[i].UpdateTime
+              };
+            }
+            //所有罪犯信息缓存(传进vue的数据用于渲染页面)
+            vm.$store.commit("setCriminalList", personlist_hash);
+          }
+        });
+        /* 监区人数 && 外出人数（监外） */
+        vm.$ajax({
+          data: {OrgID: localStorage.getItem("OrgID")},
+          url: BasicUrl + "CriminalCnt/GetCurOrgCriminalCount",
+          success: function (result) {
+            //alert(localStorage.getItem('OrgID'))参数传递正确取回的值却是错的(其他监区的值)
+            //alert(JSON.stringify(result[0]))
+            vm.$store.commit("setCrimalCount_outCrimalCount", result[0]);
+          }
+        });
 
-        if (receiveData != "" || receiveData != null) {
-          if (receiveData["Type"] == 2002) {
-            receiveData["ischoose"] = false;
-            receiveData["CriminalName"] =
-              criminalList[0][receiveData["PersonID"]]["CriminalName"];
-            receiveData["Photo"] =
-              criminalList[0][receiveData["PersonID"]]["Photo"];
-            for (var i = 0; i < cardPerson.length; i++) {
-              if (cardPerson[i]["PersonID"] == receiveData["PersonID"]) {
-                cardPerson.splice(i, 1);
+        /* 获取配置项 */
+        vm.$ajax({
+          url: BasicUrl + "HomeIndex/GetSysConfig",
+          success: function (result) {
+            for (let i = 0; i < result.length; i++) {
+              if (result[i].FieldName == "KnockOffTime") {
+                /*  默认收工时间*/
+                localStorage.setItem("overTime", result[i].FieldValue);
+              } else if (
+                result[i].FieldName == "ClientSingleOrgNeedRefreshCard"
+              ) {
+                /*  触摸屏切换到出工收工时是否每次都需要刷卡或登录*/
+                //                localStorage.setItem("needPassCard",1)
+                localStorage.setItem("needPassCard", result[i].FieldValue);
               }
             }
-            cardPerson.push(receiveData);
           }
-        }
-      } else if (msg.Header.MsgType === 33) {
-        /*手动结束人员、工具清点*/
-        vm.$store.commit("setReceiveDataMsgType33", JSON.parse(msg.Body));
-      } else if (JSON.parse(event.data).Header.MsgType === 2) {
-        /* 报警信息 */
-        var alarmNews = JSON.parse(JSON.parse(event.data).Body);
-        if (alarmNews.EventCode == 1001) {
-          vm.playAudio("waring1001");
-        } else if (alarmNews.EventCode == 1002) {
-          vm.playAudio("waring1002");
-        } else if (alarmNews.EventCode == 1003) {
-          vm.playAudio("waring1003");
-        } else if (alarmNews.EventCode == 1004) {
-          vm.playAudio("waring1004");
-        } else if (alarmNews.EventCode == 1005) {
-          vm.playAudio("waring1005");
-        } else if (alarmNews.EventCode == 1006) {
-          vm.playAudio("waring1006");
-        } else if (alarmNews.EventCode == 1008) {
-          vm.playAudio("waring1008");
-        } else if (alarmNews.EventCode == 1009) {
-          vm.playAudio("waring1009");
-        } else if (alarmNews.EventCode == 1020) {
-          vm.playAudio("waring1020");
-        } else if (alarmNews.EventCode == 1021) {
-          vm.playAudio("waring1021");
-        } else if (alarmNews.EventCode == 1022) {
-          vm.playAudio("waring1022");
-        } else if (alarmNews.EventCode == 1030) {
-          vm.playAudio("waring1030");
-        } else if (alarmNews.EventCode == 1031) {
-          vm.playAudio("waring1031");
-        } else if (alarmNews.EventCode == 1032) {
-          vm.playAudio("waring1032");
-        } else if (alarmNews.EventCode == 1040) {
-          vm.playAudio("waring1040");
-        } else if (alarmNews.EventCode == 1041) {
-          vm.playAudio("waring1041");
-        } else if (alarmNews.EventCode == 1050) {
-          vm.playAudio("waring1050");
-        } else if (alarmNews.EventCode == 1052) {
-          vm.playAudio("waring1052");
-        } else if (alarmNews.EventCode == 1011) {
-          vm.playAudio("waring1011");
-        } else if (alarmNews.EventCode == 1009) {
-          vm.playAudio("waring1009");
-        }
-        /* 区域过滤测试后解开 */
-        if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
-          if (alarmNews.EventCode != 1052) {
-            var criminalData = alarmNews;
-            var criminalInfo = criminalList[0][alarmNews.ObjectID];
-            if (criminalInfo != null && criminalInfo != undefined) {
-              //zyf
-              criminalData.criminalID = criminalInfo.CriminalID;
-              criminalData.Photo = criminalInfo.Photo;
+        });
+        /* 工具基础信息 */
+        vm.$ajax({
+          data: {OrgID: localStorage.getItem("OrgID")},
+          url: BasicUrl + "ToolCnt/GetToolList" + "?callback=?",
+          success: function (result) {
+            if (result != undefined || result != null) {
+              //所有工具信息缓存(哈希，便于快速查找缓存中的工具详细信息)
+              var toolList_hash = new Array();
+              // 重构工具信息哈希数据
+              for (var i = 0; i < result.length; i++) {
+                toolList_hash[result[i].FlnkID] = {
+                  FlnkID: result[i].FlnkID,
+                  ToolID: result[i].ToolID,
+                  ToolType: result[i].ToolType,
+                  ToolName: result[i].ToolName,
+                  IsInsideTool: result[i].IsInsideTool,
+                  Photo: IMG + result[i].Photo
+                };
+              }
+              vm.$store.commit("setToolList", toolList_hash);
             }
-            //根据区域ID获取区域名字字段AreaName
-            vm.$ajax({
-              data: { AreaID: alarmNews.AreaID },
-              url: BasicUrl + "HomeIndex/GetQYName",
-              success: function(result) {
-                if (result != null) {
-                  criminalData.AreaName = result.AreaName;
+          }
+        });
+
+        /* 全部警员信息 */
+        vm.$ajax({
+          data: {OrgID: localStorage.getItem("OrgID")},
+          url: BasicUrl + "HomeIndex/GetPoliceList",
+          success: function (result) {
+            //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+            var police_hash = new Array();
+            // 重构警员信息哈希数据
+            for (var i = 0; i < result.length; i++) {
+              police_hash[result[i].FlnkID] = {
+                FlnkID: result[i].FlnkID,
+                PoliceNum: result[i].PoliceNum,
+                PoliceName: result[i].PoliceName,
+                Sex: result[i].Sex,
+                OrgID: result[i].OrgID,
+                Post: result[i].Post,
+                Telephone: result[i].Telephone,
+                IntercomNum: result[i].IntercomNum,
+                PoliceMobile: result[i].PoliceMobile,
+                Photo: IMG + result[i].Photo,
+                Pinyin: result[i].Pinyin,
+                OrderIndex: result[i].OrderIndex,
+                DBID: result[i].DBID,
+                PoliceTag: result[i].PoliceTag,
+                Status: result[i].Status,
+                IsDelete: result[i].IsDelete,
+                HostID: result[i].HostID,
+                UpdateTime: result[i].UpdateTime,
+                role: result[i].role,
+                RFID: result[i].RFID,
+                IC: result[i].IC
+              };
+            }
+            vm.$store.commit("setPoliceList", police_hash);
+          }
+        });
+
+        /* 全部地图数据 */
+        vm.$ajax({
+          url: BasicUrl + "HomeIndex/GetMapList",
+          success: function (result) {
+            //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+            var map_hash = new Array();
+            // 重构警员信息哈希数据
+            for (var i = 0; i < result.length; i++) {
+              map_hash[result[i].FlnkID] = {
+                FlnkID: result[i].FlnkID,
+                MapCode: result[i].MapCode,
+                MapName: result[i].MapName,
+                MapUrl: result[i].MapUrl,
+                MapType: result[i].MapType,
+                Width: result[i].Width,
+                Height: result[i].Height,
+                Scale: result[i].Scale,
+                ParentID: result[i].ParentID,
+                OrderIndex: result[i].OrderIndex,
+                Pinyin: result[i].Pinyin,
+                IsDelete: result[i].IsDelete,
+                HostID: result[i].HostID,
+                UpdateTime: result[i].UpdateTime
+              };
+            }
+            vm.$store.commit("setMapList", map_hash);
+          }
+        });
+
+        /*区域配置信息*/
+        vm.$ajax({
+          url: BasicUrl + "HomeIndex/GetQYGuid",
+          data: {MapID: localStorage.getItem("MapFlnkID")},
+          success: function (result) {
+            //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+            var area_hash = new Array();
+            // 重构警员信息哈希数据
+            for (var i = 0; i < result.length; i++) {
+              area_hash[result[i].FlnkID] = {
+                FlnkID: result[i].FlnkID,
+                CenterX: result[i].CenterCoordinate.split(",")[0],
+                CenterY: result[i].CenterCoordinate.split(",")[1],
+                AreaName: result[i].AreaName
+              };
+            }
+            vm.$store.commit("setAreaList", area_hash);
+          }
+        });
+      }
+    },
+    mounted() {
+      var vm = this;
+      vm.changeSize();
+      /* Coding By YanM */
+      this.initPrison();
+
+      /* 打开websocket */
+      vm.ws.onopen = function () {
+        vm.$store.commit("setOnlinestatus", true);
+        setInterval(function () {
+          var flowPerson_outPrison = {
+            Header: {
+              MsgID: "201501260000000001",
+              MsgType: 11
+            },
+            Body: JSON.stringify({
+              MapID: vm.getLocalStorage("MapFlnkID"),
+              OrgID: vm.getLocalStorage("OrgID"),
+              AreaIDs: "",
+              AreaType: 1901, //最小区域
+              PSType: "2002"
+            })
+          };
+
+          /* 流动人员 && 外监进入人员-24 */
+          var personnel_distribution = {
+            Header: {
+              MsgID: "201501260000000001",
+              MsgType: 24
+            },
+            Body: JSON.stringify({
+              OrgID: vm.getLocalStorage("OrgID")
+            })
+          };
+          /* 保持心跳 */
+          var keep_heart = {
+            Header: {
+              MsgID: "201501260000000001",
+              MsgType: 1
+            },
+            Body: JSON.stringify({
+              OrgID: vm.getLocalStorage("OrgID")
+            })
+          };
+          /* 保持心跳-参数-01 */
+          vm.ws.send(JSON.stringify(keep_heart));
+          /* 人员分布-参数-14 */
+          vm.ws.send(JSON.stringify(flowPerson_outPrison));
+          /* 流动人员 && 外监进入人员-参数-24 */
+          vm.ws.send(JSON.stringify(personnel_distribution));
+        }, 2000);
+      };
+
+      vm.allDataInit();
+
+      /* websocket接收信息 */
+      vm.ws.onmessage = function (event) {
+        vm.$store.commit("setSocketAllData", event.data);
+        var msg = JSON.parse(SocketAllData);
+        if (msg == null) {
+          return;
+        }
+        vm.$store.commit("setIswebsocket", 1);
+        /*过滤进出工数据*/
+        if (msg.Header.MsgType === 25) {
+          vm.$store.commit("setReceiveDataMsgType25", JSON.parse(msg.Body));
+        } else if (msg.Header.MsgType === 30) {
+          /*工具清点提交返回结果*/
+          vm.$store.commit("setReceiveDataMsgType30", JSON.parse(msg.Body));
+        } else if (msg.Header.MsgType === 32) {
+          /*工具清点*/
+          vm.$store.commit("setReceiveDataMsgType32", JSON.parse(msg.Body));
+        } else if (msg.Header.MsgType === 31) {
+          /*人员清点*/
+          var receiveDataMsgType31 = JSON.parse(msg.Body);
+          vm.$store.commit("setReceiveDataMsgType31", receiveDataMsgType31);
+        } else if (msg.Header.MsgType === 20) {
+          /*外出登记初次发送*/
+          vm.$store.commit("setReceiveDataMsgType20", JSON.parse(msg.Body));
+        } else if (msg.Header.MsgType === 22) {
+          /*外出罪犯信息*/
+          vm.$store.commit("setReceiveDataMsgType22", JSON.parse(msg.Body));
+        } else if (msg.Header.MsgType === 27) {
+          /*陪同民警信息*/
+          vm.$store.commit("setReceiveDataMsgType27", JSON.parse(msg.Body));
+        } else if (msg.Header.MsgType === 23) {
+          /*外出登记提交*/
+          vm.$store.commit("setReceiveDataMsgType23", JSON.parse(msg.Body));
+        } else if (msg.Header.MsgType === 26) {
+          /*外出登记取消*/
+          vm.$store.commit("setReceiveDataMsgType26", JSON.parse(msg.Body));
+        } else if (msg.Header.MsgType === 34) {
+          /*获取互监组*/
+          var receiveDataMsgType34 = JSON.parse(msg.Body);
+          vm.$store.commit("setAllGroups", receiveDataMsgType34);
+          var receiveData = receiveDataMsgType34;
+        } else if (msg.Header.MsgType === 8) {
+          /*互监组管理刷卡*/
+          vm.$store.commit("setReceiveDataMsgType8", JSON.parse(msg.Body));
+          var receiveData = receiveDataMsgType8;
+
+          if (receiveData != "" || receiveData != null) {
+            if (receiveData["Type"] == 2002) {
+              receiveData["ischoose"] = false;
+              receiveData["CriminalName"] =
+                criminalList[0][receiveData["PersonID"]]["CriminalName"];
+              receiveData["Photo"] =
+                criminalList[0][receiveData["PersonID"]]["Photo"];
+              for (var i = 0; i < cardPerson.length; i++) {
+                if (cardPerson[i]["PersonID"] == receiveData["PersonID"]) {
+                  cardPerson.splice(i, 1);
                 }
               }
-            });
-            vm.alarmList.unshift(criminalData);
+              cardPerson.push(receiveData);
+            }
           }
-          /*限制报警条数不超过99*/
-          vm.alarmList.splice(99, 99999999999);
-          vm.alarmText = vm.alarmList[0].Description;
-          vm.alarmPages = vm.alarmList.length;
-          if (vm.alarmList.length != 0) {
-            vm.alertBJTK = true;
-          } else {
-            vm.alertBJTK = false;
+        } else if (msg.Header.MsgType === 33) {
+          /*手动结束人员、工具清点*/
+          vm.$store.commit("setReceiveDataMsgType33", JSON.parse(msg.Body));
+        } else if (JSON.parse(event.data).Header.MsgType === 2) {
+          /* 报警信息 */
+          var alarmNews = JSON.parse(JSON.parse(event.data).Body);
+          if (alarmNews.EventCode == 1001) {
+            vm.playAudio("waring1001");
+          } else if (alarmNews.EventCode == 1002) {
+            vm.playAudio("waring1002");
+          } else if (alarmNews.EventCode == 1003) {
+            vm.playAudio("waring1003");
+          } else if (alarmNews.EventCode == 1004) {
+            vm.playAudio("waring1004");
+          } else if (alarmNews.EventCode == 1005) {
+            vm.playAudio("waring1005");
+          } else if (alarmNews.EventCode == 1006) {
+            vm.playAudio("waring1006");
+          } else if (alarmNews.EventCode == 1008) {
+            vm.playAudio("waring1008");
+          } else if (alarmNews.EventCode == 1009) {
+            vm.playAudio("waring1009");
+          } else if (alarmNews.EventCode == 1020) {
+            vm.playAudio("waring1020");
+          } else if (alarmNews.EventCode == 1021) {
+            vm.playAudio("waring1021");
+          } else if (alarmNews.EventCode == 1022) {
+            vm.playAudio("waring1022");
+          } else if (alarmNews.EventCode == 1030) {
+            vm.playAudio("waring1030");
+          } else if (alarmNews.EventCode == 1031) {
+            vm.playAudio("waring1031");
+          } else if (alarmNews.EventCode == 1032) {
+            vm.playAudio("waring1032");
+          } else if (alarmNews.EventCode == 1040) {
+            vm.playAudio("waring1040");
+          } else if (alarmNews.EventCode == 1041) {
+            vm.playAudio("waring1041");
+          } else if (alarmNews.EventCode == 1050) {
+            vm.playAudio("waring1050");
+          } else if (alarmNews.EventCode == 1052) {
+            vm.playAudio("waring1052");
+          } else if (alarmNews.EventCode == 1011) {
+            vm.playAudio("waring1011");
+          } else if (alarmNews.EventCode == 1009) {
+            vm.playAudio("waring1009");
           }
-        }
-      } else if (JSON.parse(event.data).Header.MsgType === 54) {
-        //已报警数据删除
-        // var DelArarm = JSON.parse(JSON.parse(event.data).Body)
-        //      for(var j=0;j<vm.alarmList.length;j++){
-        //           if(vm.alarmList[j]["AlarmRecordID"]==DelArarm.EventID){
-        //             vm.alarmList.splice(j,1);//删除记录j
-        //             vm.alarmPages=vm.alarmList.length
-        //             if( vm.alarmPages> vm.alarmNowPage||vm.alarmPages==vm.alarmNowPage){
-        //             }else {
-        //               if(vm.alarmPages==0){
-        //                 vm.alarmPages=1
-        //                 vm.alertBJTK=false
-        //                 vm.alertBJXX=false
-        //               }
-        //               vm.alarmBack()
-        //             }
-        //           }
-        //         }
-        //         vm.alarmText =  vm.alarmList[0].Description
-        vm.alertBJTK = false;
-        vm.alertBJXX = false;
-        vm.alarmList = [];
-      } else if (msg.Header.MsgType === 5) {
-        /* 基础数据更新-5*/
-        var update = JSON.parse(msg.Body);
-        vm.allDataInit();
-      } else if (msg.Header.MsgType === 11) {
-        /* 人员分布返回数据-11 */
-        var personnel_distribution_rec = JSON.parse(msg.Body);
-        var chartsParms = [];
-        for (let i = 0; i < personnel_distribution_rec.length; i++) {
-          try {
-            chartsParms[i] = {
-              AreaID: personnel_distribution_rec[i].AreaID,
-              CriminalCnt:
+          /* 区域过滤测试后解开 */
+          if (alarmNews.OrgID.toUpperCase() == localStorage.getItem("OrgID")) {
+            if (alarmNews.EventCode != 1052) {
+              var criminalData = alarmNews;
+              var criminalInfo = criminalList[0][alarmNews.ObjectID];
+              if (criminalInfo != null && criminalInfo != undefined) {
+                //zyf
+                criminalData.criminalID = criminalInfo.CriminalID;
+                criminalData.Photo = criminalInfo.Photo;
+              }
+              //根据区域ID获取区域名字字段AreaName
+              vm.$ajax({
+                data: {AreaID: alarmNews.AreaID},
+                url: BasicUrl + "HomeIndex/GetQYName",
+                success: function (result) {
+                  if (result != null) {
+                    criminalData.AreaName = result.AreaName;
+                  }
+                }
+              });
+              vm.alarmList.unshift(criminalData);
+            }
+            /*限制报警条数不超过99*/
+            vm.alarmList.splice(99, 99999999999);
+            vm.alarmText = vm.alarmList[0].Description;
+            vm.alarmPages = vm.alarmList.length;
+            if (vm.alarmList.length != 0) {
+              vm.alertBJTK = true;
+            } else {
+              vm.alertBJTK = false;
+            }
+          }
+        } else if (JSON.parse(event.data).Header.MsgType === 54) {
+          //已报警数据删除
+          // var DelArarm = JSON.parse(JSON.parse(event.data).Body)
+          //      for(var j=0;j<vm.alarmList.length;j++){
+          //           if(vm.alarmList[j]["AlarmRecordID"]==DelArarm.EventID){
+          //             vm.alarmList.splice(j,1);//删除记录j
+          //             vm.alarmPages=vm.alarmList.length
+          //             if( vm.alarmPages> vm.alarmNowPage||vm.alarmPages==vm.alarmNowPage){
+          //             }else {
+          //               if(vm.alarmPages==0){
+          //                 vm.alarmPages=1
+          //                 vm.alertBJTK=false
+          //                 vm.alertBJXX=false
+          //               }
+          //               vm.alarmBack()
+          //             }
+          //           }
+          //         }
+          //         vm.alarmText =  vm.alarmList[0].Description
+          vm.alertBJTK = false;
+          vm.alertBJXX = false;
+          vm.alarmList = [];
+        } else if (msg.Header.MsgType === 5) {
+          /* 基础数据更新-5*/
+          var update = JSON.parse(msg.Body);
+          vm.allDataInit();
+        } else if (msg.Header.MsgType === 11) {
+          /* 人员分布返回数据-11 */
+          var personnel_distribution_rec = JSON.parse(msg.Body);
+          var chartsParms = [];
+          for (let i = 0; i < personnel_distribution_rec.length; i++) {
+            try {
+              chartsParms[i] = {
+                AreaID: personnel_distribution_rec[i].AreaID,
+                CriminalCnt:
                 personnel_distribution_rec[i].CriminalCnt.GeneralManagement +
                 personnel_distribution_rec[i].CriminalCnt.Investigate +
                 personnel_distribution_rec[i].CriminalCnt.LooseManagement +
                 personnel_distribution_rec[i].CriminalCnt.StrictManagement,
-              X: areaList[0][personnel_distribution_rec[i].AreaID].CenterX,
-              Y: areaList[0][personnel_distribution_rec[i].AreaID].CenterY
-            };
-          } catch (err) {
-            console.log(err);
+                X: areaList[0][personnel_distribution_rec[i].AreaID].CenterX,
+                Y: areaList[0][personnel_distribution_rec[i].AreaID].CenterY
+              };
+            } catch (err) {
+              console.log(err);
+            }
           }
-        }
-        vm.$store.commit("setChartsDatas", chartsParms);
-      } else if (msg.Header.MsgType === 24) {
-        /* 流动人员 && 外监进入人员-返回数据-24 */
-        var flowPerson_outPrison_rec = JSON.parse(msg.Body);
-        //console.log(msg.Body)
-        vm.movePeople = [];
-        // 2、非法流动
-        vm.FlnkIDList_2.length = 0;
-        for (let i = 0; i < flowPerson_outPrison_rec[1].People.length; i++) {
-          let flowCrim = flowPerson_outPrison_rec[1].People[i];
-          if (
-            vm.FlnkIDList_2.length !== flowPerson_outPrison_rec[1].People.length
-          ) {
-            vm.FlnkIDList_2.push(flowCrim.CriminalID);
+          vm.$store.commit("setChartsDatas", chartsParms);
+        } else if (msg.Header.MsgType === 24) {
+          /* 流动人员 && 外监进入人员-返回数据-24 */
+          var flowPerson_outPrison_rec = JSON.parse(msg.Body);
+          //console.log(msg.Body)
+          vm.movePeople = [];
+          // 2、非法流动
+          vm.FlnkIDList_2.length = 0;
+          for (let i = 0; i < flowPerson_outPrison_rec[1].People.length; i++) {
+            let flowCrim = flowPerson_outPrison_rec[1].People[i];
+            if (
+              vm.FlnkIDList_2.length !== flowPerson_outPrison_rec[1].People.length
+            ) {
+              vm.FlnkIDList_2.push(flowCrim.CriminalID);
+            }
+            let runPeople = {};
+            runPeople.AreaName = flowCrim.AreaName;
+            runPeople.Areas = flowCrim.Areas;
+            runPeople.LeaveTime = flowCrim.LeaveTime;
+            runPeople.Polices = flowCrim.Polices;
+            runPeople.Reason = flowCrim.Reason;
+            runPeople.Status = flowCrim.Status;
+            runPeople.CriminalID =
+              criminalList[0][flowCrim.CriminalID].CriminalID;
+            runPeople.CriminalName =
+              criminalList[0][flowCrim.CriminalID].CriminalName;
+            runPeople.Photo = criminalList[0][flowCrim.CriminalID].Photo;
+            runPeople.isBlue = false;
+            vm.movePeople.push(runPeople);
           }
-          let runPeople = {};
-          runPeople.AreaName = flowCrim.AreaName;
-          runPeople.Areas = flowCrim.Areas;
-          runPeople.LeaveTime = flowCrim.LeaveTime;
-          runPeople.Polices = flowCrim.Polices;
-          runPeople.Reason = flowCrim.Reason;
-          runPeople.Status = flowCrim.Status;
-          runPeople.CriminalID =
-            criminalList[0][flowCrim.CriminalID].CriminalID;
-          runPeople.CriminalName =
-            criminalList[0][flowCrim.CriminalID].CriminalName;
-          runPeople.Photo = criminalList[0][flowCrim.CriminalID].Photo;
-          runPeople.isBlue = false;
-          vm.movePeople.push(runPeople);
-        }
 
-        // 4、在监人数（非在线）
-        vm.FlnkIDList_4.length = 0;
-        for (let i = 0; i < flowPerson_outPrison_rec[3].People.length; i++) {
-          let flowCrim = flowPerson_outPrison_rec[3].People[i];
-          vm.FlnkIDList_4.push(flowCrim.CriminalID);
+          // 4、在监人数（非在线）
+          vm.FlnkIDList_4.length = 0;
+          for (let i = 0; i < flowPerson_outPrison_rec[3].People.length; i++) {
+            let flowCrim = flowPerson_outPrison_rec[3].People[i];
+            vm.FlnkIDList_4.push(flowCrim.CriminalID);
 
-          //let runPeople={};
-          //runPeople.AreaName=flowCrim.AreaName
-          //runPeople.Areas=flowCrim.Areas
-          //runPeople.LeaveTime=flowCrim.LeaveTime
-          //runPeople.Polices=flowCrim.Polices
-          //runPeople.Reason=flowCrim.Reason
-          //runPeople.Status=flowCrim.Status
-          //runPeople.CriminalID=criminalList[0][flowCrim.CriminalID].CriminalID
-          //runPeople.CriminalName=criminalList[0][flowCrim.CriminalID].CriminalName
-          //runPeople.Photo=criminalList[0][flowCrim.CriminalID].Photo
-          //runPeople.isBlue=false
-          //vm.movePeople.push(runPeople)
-        }
+            //let runPeople={};
+            //runPeople.AreaName=flowCrim.AreaName
+            //runPeople.Areas=flowCrim.Areas
+            //runPeople.LeaveTime=flowCrim.LeaveTime
+            //runPeople.Polices=flowCrim.Polices
+            //runPeople.Reason=flowCrim.Reason
+            //runPeople.Status=flowCrim.Status
+            //runPeople.CriminalID=criminalList[0][flowCrim.CriminalID].CriminalID
+            //runPeople.CriminalName=criminalList[0][flowCrim.CriminalID].CriminalName
+            //runPeople.Photo=criminalList[0][flowCrim.CriminalID].Photo
+            //runPeople.isBlue=false
+            //vm.movePeople.push(runPeople)
+          }
 
-        // 1、外出人数（监内）
-        vm.FlnkIDList_1.length = 0;
-        for (let i = 0; i < flowPerson_outPrison_rec[0].People.length; i++) {
-          vm.FlnkIDList_1.push(
-            flowPerson_outPrison_rec[0].People[i].CriminalID
-          );
-          let runPeople = {};
-          runPeople.AreaName = flowPerson_outPrison_rec[0].People[i].AreaName;
-          runPeople.Areas = flowPerson_outPrison_rec[0].People[i].Areas;
-          runPeople.LeaveTime = flowPerson_outPrison_rec[0].People[i].LeaveTime;
-          runPeople.Polices = flowPerson_outPrison_rec[0].People[i].Polices;
-          runPeople.Reason = flowPerson_outPrison_rec[0].People[i].Reason;
-          runPeople.Status = flowPerson_outPrison_rec[0].People[i].Status;
-          runPeople.CriminalID =
-            criminalList[0][
+          // 1、外出人数（监内）
+          vm.FlnkIDList_1.length = 0;
+          for (let i = 0; i < flowPerson_outPrison_rec[0].People.length; i++) {
+            vm.FlnkIDList_1.push(
               flowPerson_outPrison_rec[0].People[i].CriminalID
-            ].CriminalID;
-          runPeople.CriminalName =
-            criminalList[0][
-              flowPerson_outPrison_rec[0].People[i].CriminalID
-            ].CriminalName;
-          runPeople.Photo =
-            criminalList[0][
-              flowPerson_outPrison_rec[0].People[i].CriminalID
-            ].Photo;
-          runPeople.isBlue = true;
-          vm.movePeople.push(runPeople); //这边取的非法流动其实是本监外出+非法流动
-        }
-      } else if (msg.Header.MsgType === 4) {
-        /* 计划任务-返回数据-4 */
-        var plan_task = JSON.parse(msg.Body);
-        if (
-          plan_task.PlanTypeName != "巡更计划" &&
-          plan_task.OrgID.toUpperCase() == localStorage.getItem("OrgID")
-        ) {
-          vm.$store.commit("setPlan", plan_task.PlanTypeName);
-          vm.planStartTime = plan_task.StartTime;
-          vm.planEndTime = plan_task.EndTime;
-          vm.$store.commit("setNextTime", plan_task.NextTime);
+            );
+            let runPeople = {};
+            runPeople.AreaName = flowPerson_outPrison_rec[0].People[i].AreaName;
+            runPeople.Areas = flowPerson_outPrison_rec[0].People[i].Areas;
+            runPeople.LeaveTime = flowPerson_outPrison_rec[0].People[i].LeaveTime;
+            runPeople.Polices = flowPerson_outPrison_rec[0].People[i].Polices;
+            runPeople.Reason = flowPerson_outPrison_rec[0].People[i].Reason;
+            runPeople.Status = flowPerson_outPrison_rec[0].People[i].Status;
+            runPeople.CriminalID =
+              criminalList[0][
+                flowPerson_outPrison_rec[0].People[i].CriminalID
+                ].CriminalID;
+            runPeople.CriminalName =
+              criminalList[0][
+                flowPerson_outPrison_rec[0].People[i].CriminalID
+                ].CriminalName;
+            runPeople.Photo =
+              criminalList[0][
+                flowPerson_outPrison_rec[0].People[i].CriminalID
+                ].Photo;
+            runPeople.isBlue = true;
+            vm.movePeople.push(runPeople); //这边取的非法流动其实是本监外出+非法流动
+          }
+        } else if (msg.Header.MsgType === 4) {
+          /* 计划任务-返回数据-4 */
+          var plan_task = JSON.parse(msg.Body);
           if (
-            plan == "工具清点计划" &&
+            plan_task.PlanTypeName != "巡更计划" &&
             plan_task.OrgID.toUpperCase() == localStorage.getItem("OrgID")
           ) {
-            vm.$store.commit("setToolPlan", "工具清点计划");
-            vm.$store.commit("setToolplanStartTime", vm.planStartTime);
-            vm.$store.commit("setToolplanEndTime", vm.planEndTime);
-            vm.$store.commit("setToolNextTime", NextTime);
-            if (localStorage.getItem("canRouter") == 1) {
-              vm.$router.push({ path: "/toolcheck" });
-            } else {
-              vm.$store.commit(
-                "setAlertText1",
-                "工具清点已经开始，请结束本次操作后开始工具清点"
-              );
-              setTimeout(function() {
-                vm.$store.commit("setAlertText1", "");
-              }, 4000);
+            vm.$store.commit("setPlan", plan_task.PlanTypeName);
+            vm.planStartTime = plan_task.StartTime;
+            vm.planEndTime = plan_task.EndTime;
+            vm.$store.commit("setNextTime", plan_task.NextTime);
+            if (
+              plan == "工具清点计划" &&
+              plan_task.OrgID.toUpperCase() == localStorage.getItem("OrgID")
+            ) {
+              vm.$store.commit("setToolPlan", "工具清点计划");
+              vm.$store.commit("setToolplanStartTime", vm.planStartTime);
+              vm.$store.commit("setToolplanEndTime", vm.planEndTime);
+              vm.$store.commit("setToolNextTime", NextTime);
+              if (localStorage.getItem("canRouter") == 1) {
+                vm.$router.push({path: "/toolcheck"});
+              } else {
+                vm.$store.commit(
+                  "setAlertText1",
+                  "工具清点已经开始，请结束本次操作后开始工具清点"
+                );
+                setTimeout(function () {
+                  vm.$store.commit("setAlertText1", "");
+                }, 4000);
+              }
+              vm.playAudio("toolPlan");
+            } else if (
+              plan == "人员清点计划" &&
+              plan_task.OrgID.toUpperCase() == localStorage.getItem("OrgID")
+            ) {
+              vm.$store.commit("setPersonPlan", "人员清点计划");
+              vm.$store.commit("setPersonplanStartTime", vm.planStartTime);
+              vm.$store.commit("setPersonplanEndTime", vm.planEndTime);
+              vm.$store.commit("personNextTime", NextTime);
+              if (localStorage.getItem("canRouter") == 1) {
+                vm.$router.push({path: "/crimalcheck"});
+              } else {
+                vm.$store.commit(
+                  "setAlertText1",
+                  "人员清点已经开始，请结束本次操作后开始人员清点"
+                );
+                setTimeout(function () {
+                  vm.$store.commit("setAlertText1", "");
+                }, 4000);
+              }
+              vm.playAudio("personPlan");
             }
-            vm.playAudio("toolPlan");
-          } else if (
-            plan == "人员清点计划" &&
-            plan_task.OrgID.toUpperCase() == localStorage.getItem("OrgID")
-          ) {
-            vm.$store.commit("setPersonPlan", "人员清点计划");
-            vm.$store.commit("setPersonplanStartTime", vm.planStartTime);
-            vm.$store.commit("setPersonplanEndTime", vm.planEndTime);
-            vm.$store.commit("personNextTime", NextTime);
-            if (localStorage.getItem("canRouter") == 1) {
-              vm.$router.push({ path: "/crimalcheck" });
-            } else {
-              vm.$store.commit(
-                "setAlertText1",
-                "人员清点已经开始，请结束本次操作后开始人员清点"
-              );
-              setTimeout(function() {
-                vm.$store.commit("setAlertText1", "");
-              }, 4000);
-            }
-            vm.playAudio("personPlan");
-          }
-        } else {
-        }
-      } else if (msg.Header.MsgType === 3) {
-        /* 实时流动-返回数据-3 */
-        var now_floating = JSON.parse(msg.Body);
-        now_floating.Photo = criminalList[0][now_floating.ObjectID].Photo;
-
-        //if(vm.alertSSLD === true){  zyf
-        vm.nowFloating();
-        vm.nowfloatPerson.unshift(now_floating);
-        vm.nowfloatPersonFirst = vm.nowfloatPerson[0];
-        //}
-      } else if (msg.Header.MsgType === 6) {
-        /* 警员刷卡-返回数据-6 */
-        var placeman_card = JSON.parse(msg.Body).PoliceID;
-        vm.alertYHDL = false;
-        localStorage.setItem("placemanID", placeman_card);
-      } else if (msg.Header.MsgType === 51) {
-        /* 绑定卡-刷卡数据-51 */
-        var temp_chest_card = JSON.parse(msg.Body);
-        var temp_wristband = temp_chest_card;
-        //判断是胸卡
-        if (temp_chest_card.CardType === 0) {
-          if (chest_card.length === 0) {
-            chest_card.push({
-              CardID: temp_chest_card.CardID,
-              CardType: temp_chest_card.CardType,
-              CriminalID: temp_chest_card.CriminalID,
-              status: false,
-              CriminalName:
-                criminalList[0][temp_chest_card.CriminalID].CriminalName,
-              Photo: criminalList[0][temp_chest_card.CriminalID].Photo,
-              wristband: ""
-            });
-            //刷卡去重
           } else {
-            for (let i = 0; i <= chest_card.length; i++) {
-              if (chest_card[i].CardID !== temp_chest_card.CardID) {
-                chest_card.push({
-                  CardID: temp_chest_card.CardID,
-                  CardType: temp_chest_card.CardType,
-                  CriminalID: temp_chest_card.CriminalID,
-                  CriminalName:
+          }
+        } else if (msg.Header.MsgType === 3) {
+          /* 实时流动-返回数据-3 */
+          var now_floating = JSON.parse(msg.Body);
+          now_floating.Photo = criminalList[0][now_floating.ObjectID].Photo;
+
+          //if(vm.alertSSLD === true){  zyf
+          vm.nowFloating();
+          vm.nowfloatPerson.unshift(now_floating);
+          vm.nowfloatPersonFirst = vm.nowfloatPerson[0];
+          //}
+        } else if (msg.Header.MsgType === 6) {
+          /* 警员刷卡-返回数据-6 */
+          var placeman_card = JSON.parse(msg.Body).PoliceID;
+          vm.alertYHDL = false;
+          localStorage.setItem("placemanID", placeman_card);
+        } else if (msg.Header.MsgType === 51) {
+          /* 绑定卡-刷卡数据-51 */
+          var temp_chest_card = JSON.parse(msg.Body);
+          var temp_wristband = temp_chest_card;
+          //判断是胸卡
+          if (temp_chest_card.CardType === 0) {
+            if (chest_card.length === 0) {
+              chest_card.push({
+                CardID: temp_chest_card.CardID,
+                CardType: temp_chest_card.CardType,
+                CriminalID: temp_chest_card.CriminalID,
+                status: false,
+                CriminalName:
+                criminalList[0][temp_chest_card.CriminalID].CriminalName,
+                Photo: criminalList[0][temp_chest_card.CriminalID].Photo,
+                wristband: ""
+              });
+              //刷卡去重
+            } else {
+              for (let i = 0; i <= chest_card.length; i++) {
+                if (chest_card[i].CardID !== temp_chest_card.CardID) {
+                  chest_card.push({
+                    CardID: temp_chest_card.CardID,
+                    CardType: temp_chest_card.CardType,
+                    CriminalID: temp_chest_card.CriminalID,
+                    CriminalName:
                     criminalList[0][temp_chest_card.CriminalID].CriminalName,
-                  Photo: criminalList[0][temp_chest_card.CriminalID].Photo,
-                  status: false,
-                  wristband: ""
+                    Photo: criminalList[0][temp_chest_card.CriminalID].Photo,
+                    status: false,
+                    wristband: ""
+                  });
+                } else {
+                }
+              }
+            }
+            //判断为腕带
+          } else {
+            if (
+              temp_wristband.CriminalID === "00000000-0000-0000-0000-000000000000"
+            ) {
+              //判断胸牌是否为空
+              if (chest_card.length !== 0) {
+                for (let i = 0; i < chest_card.length; i++) {
+                  if (chest_card[i].status === true) {
+                    //提交绑定数据
+                    chest_card[i].wristband = temp_wristband.CardID;
+                  }
+                }
+              }
+            } else {
+              if (wristband.length === 0) {
+                wristband.push({
+                  CrimalName:
+                  criminalList[0][temp_wristband.CriminalID].CriminalName,
+                  CardID: temp_wristband.CardID,
+                  CriminalID: temp_wristband.CriminalID,
+                  Photo: criminalList[0][temp_wristband.CriminalID].Photo
                 });
               } else {
-              }
-            }
-          }
-          //判断为腕带
-        } else {
-          if (
-            temp_wristband.CriminalID === "00000000-0000-0000-0000-000000000000"
-          ) {
-            //判断胸牌是否为空
-            if (chest_card.length !== 0) {
-              for (let i = 0; i < chest_card.length; i++) {
-                if (chest_card[i].status === true) {
-                  //提交绑定数据
-                  chest_card[i].wristband = temp_wristband.CardID;
-                }
-              }
-            }
-          } else {
-            if (wristband.length === 0) {
-              wristband.push({
-                CrimalName:
-                  criminalList[0][temp_wristband.CriminalID].CriminalName,
-                CardID: temp_wristband.CardID,
-                CriminalID: temp_wristband.CriminalID,
-                Photo: criminalList[0][temp_wristband.CriminalID].Photo
-              });
-            } else {
-              for (let i = 0; i < wristband.length; i++) {
-                if (wristband[i].CardID !== temp_wristband.CardID) {
-                  wristband.push({
-                    CrimalName:
+                for (let i = 0; i < wristband.length; i++) {
+                  if (wristband[i].CardID !== temp_wristband.CardID) {
+                    wristband.push({
+                      CrimalName:
                       criminalList[0][temp_wristband.CriminalID].CriminalName,
-                    CardID: temp_wristband.CardID,
-                    CriminalID: temp_wristband.CriminalID,
-                    Photo: criminalList[0][temp_wristband.CriminalID].Photo
-                  });
+                      CardID: temp_wristband.CardID,
+                      CriminalID: temp_wristband.CriminalID,
+                      Photo: criminalList[0][temp_wristband.CriminalID].Photo
+                    });
+                  }
                 }
               }
             }
           }
         }
-      }
-      /* 调用ajax全量数据 */
-      vm.homeData();
-    };
+        /* 调用ajax全量数据 */
+        vm.homeData();
+      };
 
-    /* 关闭状态 */
-    vm.ws.onclose = function() {
-      vm.$store.commit("setOnlinestatus", false);
-      if (vm.$store.state.navheader.onlinestatus === false) {
-        //        setInterval(function() { //todo暂时取消五秒刷新
-        //          vm.$router.push({ path: "/" });
-        //          window.location.reload();
-        //        }, 5000);
-      }
-    };
+      /* 关闭状态 */
+      vm.ws.onclose = function () {
+        vm.$store.commit("setOnlinestatus", false);
+        if (vm.$store.state.navheader.onlinestatus === false) {
+          //        setInterval(function() { //todo暂时取消五秒刷新
+          //          vm.$router.push({ path: "/" });
+          //          window.location.reload();
+          //        }, 5000);
+        }
+      };
 
-    /* 错误信息 */
-    vm.ws.onerror = function(evt) {
-      console.log("WebSocketError!", evt);
-      //      setInterval(function() { //todo暂时取消五秒刷新
-      //        vm.$router.push({ path: "/" });
-      //        window.location.reload();
-      //      }, 5000);
-    };
+      /* 错误信息 */
+      vm.ws.onerror = function (evt) {
+        console.log("WebSocketError!", evt);
+        //      setInterval(function() { //todo暂时取消五秒刷新
+        //        vm.$router.push({ path: "/" });
+        //        window.location.reload();
+        //      }, 5000);
+      };
 
-    /* Coding By YanM */
+      /* Coding By YanM */
 
-    /* Coding By Qianjf */
-    localStorage.setItem("moveTypes", "0"); //1为进出工，2为临时外出登记
-  }
-};
+      /* Coding By Qianjf */
+      localStorage.setItem("moveTypes", "0"); //1为进出工，2为临时外出登记
+    }
+  };
 </script>
 
 <style>
-.deailHead {
-  color: #004bdc !important;
-}
-
-.home {
-  height: 780px !important;
-}
-
-body {
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  user-select: none;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  overflow-x: hidden;
-  overflow-y: hidden;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  user-select: none;
-}
-
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  /*width: 100%;*/
-  background: url("./assets/bg.png");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  width: 1584px;
-  height: 1024px;
-  overflow: hidden;
-}
-
-.alertTip {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
-  top: 0;
-  background: rgba(0, 0, 0, 0.78);
-}
-
-.alertTip .title {
-  font-size: 25px;
-  font-weight: 800;
-  color: #1d68e8;
-  text-shadow: 2px 2px 2px #fff;
-  line-height: 45px;
-  text-indent: 15px;
-  float: left;
-}
-
-.alertTip .bodyHead {
-  width: 100%;
-  height: 46px;
-  background: #c5cfdb;
-}
-
-.alertTip .bodyCon {
-  height: 240px;
-  padding: 20px;
-}
-
-.alertTip .partsFoot {
-  width: 100%;
-  height: 84px;
-  /* margin-top: -48px; */
-  background: #c5cfdb;
-}
-
-.alertTip .sure {
-  width: 126px;
-  height: 40px;
-  background: #004bdc;
-  text-align: center;
-  color: white;
-  font-size: 20px;
-  line-height: 40px;
-  letter-spacing: 2px;
-  float: right;
-  margin: 0px 35px;
-  cursor: pointer;
-}
-
-.alertTip .alertBody {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background: white;
-}
-
-.alertTip .close {
-  float: right;
-  font-weight: 900;
-  font-size: 30px;
-  margin: 0px 16px;
-  color: #1d68e8;
-  cursor: pointer;
-}
-
-/*用户登录*/
-.alertYHDL input {
-  width: 100%;
-  margin: 20px 0px;
-  font-size: 25px;
-  height: 40px;
-  border: 2px solid rgba(0, 0, 0, 0.38);
-  text-indent: 10px;
-}
-
-.alertYHDL .tipHead {
-  display: inline-block;
-  height: 60px;
-  font-size: 20px;
-  line-height: 70px;
-}
-
-.alertYHDL p {
-  font-size: 23px;
-  text-align: right;
-}
-
-/*监区选择*/
-.jqxz_active {
-  background: blue;
-  color: #fff !important;
-}
-
-.alertJQXZ .areas {
-  width: 100%;
-  height: 50px;
-  color: blue;
-  border: 1px solid;
-  font-size: 14px;
-  text-align: center;
-  line-height: 51px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.alertJQXZ .el-col-5 {
-  padding: 10px;
-}
-
-.alertJQXZ .bodyCon {
-  height: 99px;
-  padding: 20px;
-}
-
-/*报警信息*/
-.alertBJXX p {
-  text-align: left;
-  font-size: 19px;
-  color: red;
-  font-weight: 800;
-  height: 30px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.alertBJXX .tipName {
-  display: inline-block;
-  height: 39px;
-  font-size: 22px;
-  color: rgba(0, 0, 255, 0.72);
-  font-weight: 800;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 100%;
-  text-overflow: ellipsis;
-}
-
-.alertBJXX .pages {
-  width: 273px;
-  height: 50px;
-  margin: 18px auto;
-}
-
-.alertBJXX .pageControl {
-}
-
-.alertBJXX .pagesText {
-  font-size: 24px;
-  display: inline-block;
-  width: 155px;
-  text-align: center;
-}
-
-.lists span {
-  font-weight: 800;
-  font-size: 20px;
-}
-
-.alertBJXX .el-col-4 {
-  width: 16.66667%;
-  margin: 0px 12px;
-}
-
-/*实时流动 */
-.alertSSLD .moveCrimal {
-  margin: 6px 0px;
-}
-
-.alertSSLD span {
-  color: black;
-  font-size: 12px;
-}
-
-/*已点名单*/
-.alertYDMD .pages {
-  width: 273px;
-  height: 50px;
-  margin: 18px auto;
-}
-
-.alertYDMD .pageControl {
-}
-
-.alertYDMD .pagesText {
-  font-size: 24px;
-  display: inline-block;
-  width: 155px;
-  text-align: center;
-}
-
-.alertYDMD .tab {
-  width: 100%;
-  border: 1px solid rgb(0, 0, 0);
-  height: 33px;
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 33px;
-}
-
-/*报警弹框*/
-.alertAlarm {
-  width: 230px;
-  height: 80px;
-  position: fixed;
-  bottom: 80px;
-  right: 34px;
-  position: absolute;
-  background: rgb(255, 51, 51);
-}
-
-.alarmImg {
-  float: left;
-  padding: 1px;
-  margin: 12px 0px;
-}
-
-.alarmImg img {
-  width: 64px;
-}
-
-.alarmText {
-  background: white;
-  float: right;
-  margin: 6px 6px;
-  width: 120px;
-  height: 47px;
-  color: black;
-  text-align: left;
-  font-size: 16px;
-  line-height: 23px;
-  overflow: hidden;
-  padding: 10px;
-}
-
-.alarmNum {
-  width: 30px;
-  position: absolute;
-  color: white;
-  margin: 5px 50px;
-  font-size: 18px;
-}
-
-.alertText {
-  float: left;
-  position: absolute;
-  margin: 15px 16px;
-  font-size: 22px;
-  color: red;
-  font-weight: 800;
-}
+  @import "./css/app.css";
 </style>

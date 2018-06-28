@@ -138,57 +138,5 @@ export default {
 };
 </script>
 <style lang="scss">
-.navheader {
-  .headTip {
-    position: absolute !important;
-    margin: -15px 35px !important;
-    font-size: 20px !important;
-    color: #28ff00 !important;
-    width: 556px !important;
-  }
-  p {
-    margin: 0;
-  }
-  height: 122px;
-  color: #fff;
-  font-size: 20px;
-  .logo {
-    padding: 30px;
-    p {
-      margin: 0;
-      text-align: left;
-      line-height: 54px;
-      margin-left: 40px;
-      font-size: 36px;
-    }
-  }
-  .logo-hui {
-    p {
-      color: #bbb;
-    }
-  }
-  .navoption {
-    padding: 30px 30px 0 0;
-    float: right;
-    p {
-      text-align: left;
-      font-size: 14px;
-      font-weight: bold;
-      line-height: 28px;
-      span {
-        margin: 0 5px;
-      }
-    }
-    .nowposition {
-      cursor: pointer;
-    }
-    .nav-plan {
-      color: #28ff00;
-    }
-    .nav-plan-time {
-      color: #ffd800;
-      float: right;
-    }
-  }
-}
+@import "../css/navheader.scss";
 </style>
