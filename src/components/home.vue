@@ -17,9 +17,8 @@
             </el-col>
             <el-col :span="11">
               <p>外出人数（监内）：{{FlnkIDList1.length}}人</p>
-              <p>
-                外出人数（监外）：{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}人</p>
               <p>外出人数（监外）：{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}人</p>
+                <p v-on:click="viewLXRY" style="margin-left:64px">离线人数：{{FlnkIDList4.length}}人</p>
             </el-col>
           </div>
         </div>
@@ -107,7 +106,7 @@ export default {
   computed: {
     ...mapState({
       crimalCount_outCrimalCount: state =>
-        state.home.crimalCount_outCrimalCount,
+        state.home.crimalCount_outCrimalCount, //监区人数 && 外出人数（监外）
       FlnkIDList1: state => state.home.FlnkIDList1,
       FlnkIDList2: state => state.home.FlnkIDList2,
       FlnkIDList4: state => state.home.FlnkIDList4,
@@ -117,6 +116,10 @@ export default {
     })
   },
   methods: {
+    //点击离线人员弹出详情窗口
+    viewLXRY:function(){
+      this.$emit("viewLXRY");
+    },
     //点击数据弹出窗口
     select: function(areaid) {
       this.$emit("viewRYXQ", areaid);
@@ -145,7 +148,7 @@ export default {
     getMap: function() {
       let vm = this;
       let map = vm.getLocalStorage("MapFlnkID");
-      let mapInfo = vm.$store.state.mapList[0][map];
+      let mapInfo = vm.mapList[0][map];
       vm.mapPhoto = MapUrl + mapInfo.MapUrl;
       vm.mapHeight = mapInfo.Height;
       vm.mapWidth = mapInfo.Width;
@@ -172,15 +175,15 @@ export default {
     setTimeout(function() {
       vm.getMap();
       setInterval(function() {
-        if (vm.chartsChange !== chartsDatas) {
-          vm.chartsChange = chartsDatas;
+        if (vm.chartsChange !== vm.chartsDatas) {
+          vm.chartsChange = vm.chartsDatas;
         }
 
-        vm.float_personnelListAll = FlnkIDList2.length;
+        vm.float_personnelListAll = vm.FlnkIDList2.length;
         vm.float_personnelAllPages =
-          Math.ceil(FlnkIDList2.length / 3) === 0
+          Math.ceil(vm.FlnkIDList2.length / 3) === 0
             ? 1
-            : Math.ceil(FlnkIDList2.length / 3);
+            : Math.ceil(vm.FlnkIDList2.length / 3);
 
         if (vm.float_personnelNowPage > vm.float_personnelAllPages) {
           vm.float_personnelNowPage = vm.float_personnelAllPages;
@@ -196,7 +199,7 @@ export default {
 
     //5秒钟没有数据 刷新界面
     //      setInterval(function () { //todo暂时取消5秒刷新页面
-    //        if (vm.$store.state.home.Iswebsocket == 0) {
+    //        if (vm.Iswebsocket == 0) {
     //          vm.$router.push({path: '/'})
     //          window.location.reload()
     //        }
