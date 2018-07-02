@@ -1591,18 +1591,6 @@
             let flowCrim = flowPerson_outPrison_rec[3].People[i];
             vm.FlnkIDList_4.push(flowCrim.CriminalID);
 
-            //let runPeople={};
-            //runPeople.AreaName=flowCrim.AreaName
-            //runPeople.Areas=flowCrim.Areas
-            //runPeople.LeaveTime=flowCrim.LeaveTime
-            //runPeople.Polices=flowCrim.Polices
-            //runPeople.Reason=flowCrim.Reason
-            //runPeople.Status=flowCrim.Status
-            //runPeople.CriminalID=criminalList[0][flowCrim.CriminalID].CriminalID
-            //runPeople.CriminalName=criminalList[0][flowCrim.CriminalID].CriminalName
-            //runPeople.Photo=criminalList[0][flowCrim.CriminalID].Photo
-            //runPeople.isBlue=false
-            //vm.movePeople.push(runPeople)
           }
 
           // 1、外出人数（监内）
