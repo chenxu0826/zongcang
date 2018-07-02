@@ -243,7 +243,7 @@
               <th>罪犯姓名</th>
               <th>罪犯编号</th>
             </tr>
-            <tr v-for="(criminal,index) in areaCriminal" :key="index">
+            <tr v-for="(criminal,index) in FlnkIDList_4" :key="index">
               <td>{{criminal.CriminalName}}</td>
               <td>{{criminal.CriminalID}}</td>
             </tr>
@@ -1620,7 +1620,9 @@ export default {
         vm.FlnkIDList_4.length = 0;
         for (let i = 0; i < flowPerson_outPrison_rec[3].People.length; i++) {
           let flowCrim = flowPerson_outPrison_rec[3].People[i];
-          vm.FlnkIDList_4.push(flowCrim.CriminalID);
+          flowCrim.CriminalName =vm.criminalList[0][flowCrim.CriminalID].CriminalName;
+          vm.FlnkIDList_4.push(flowCrim);
+          
         }
 
         // 1、外出人数（监内）
