@@ -1,8 +1,8 @@
 export default {
   state: {
-    'FlnkIDList1': [],
-    'FlnkIDList2': [],
-    'FlnkIDList4': [],
+    'FlnkIDList1': [],//外出人数（监内）
+    'FlnkIDList2': [],//非法流动
+    'FlnkIDList4': [],//在监人数（非在线）
     'chartsDatas': [],//人员分布图表渲染数据
     'crimalCount_outCrimalCount': {},//监区人数 && 外出人数（监外）
     'Iswebsocket': 0,//是否建立websocket
