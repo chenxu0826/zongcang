@@ -337,7 +337,7 @@ export default {
             getCriminalList["CriminalName"] =
               vm.criminalList[0][getCriminalID]["CriminalName"];
             getCriminalList["Photo"] =
-              criminalList[0][getCriminalID]["Photo"];
+              vm.criminalList[0][getCriminalID]["Photo"];
             getCriminalLists.push(getCriminalList);
             vm.outCriminalList = getCriminalLists;
             for (var k = 0; k < vm.inCriminalList.length; k++) {

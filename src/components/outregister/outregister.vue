@@ -733,16 +733,16 @@ export default {
           vm.ws.send(JSON.stringify(send27));
         }
         /*外出登记罪犯信息*/
-        var receiveData = receiveDataMsgType22;
+        var receiveData = vm.receiveDataMsgType22;
         if (receiveData != "" && receiveData != null) {
           var outCriminal = []; //外出罪犯
           for (var i = 0; i < receiveData.length; i++) {
             var Criminal = receiveData[i];
             Criminal["ischoose"] = false;
             Criminal["CriminalName"] =
-              criminalList[0][Criminal["CriminalID"]]["CriminalName"];
+              vm.criminalList[0][Criminal["CriminalID"]]["CriminalName"];
             Criminal["Photo"] =
-              criminalList[0][Criminal["CriminalID"]]["Photo"];
+              vm.criminalList[0][Criminal["CriminalID"]]["Photo"];
             outCriminal.push(Criminal);
             vm.outCriminals = outCriminal;
             vm.outPages =
@@ -752,7 +752,7 @@ export default {
           }
         }
         /*陪同民警信息*/
-        var receiveDataP = receiveDataMsgType27;
+        var receiveDataP = vm.receiveDataMsgType27;
         if (receiveDataP != "" && receiveDataP != null) {
           var outPolice = []; //陪同民警
           for (var i = 0; i < receiveDataP.length; i++) {

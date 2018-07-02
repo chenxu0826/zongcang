@@ -211,7 +211,7 @@ export default {
       //        var r=confirm("确定要删除该人员？");
       //        if (r==true)
       //        {
-      //           cardPerson.splice(index,1)
+      //           vm.cardPerson.splice(index,1)
       //        }
       this.$confirm("确定要删除该人员?", "提示", {
         confirmButtonText: "删除",
@@ -219,15 +219,15 @@ export default {
         type: "warning"
       })
         .then(() => {
-          cardPerson.splice(index, 1);
+          vm.cardPerson.splice(index, 1);
         })
         .catch(() => {});
     },
     submit: function() {
       var vm = this;
       var cardPersonList = [];
-      for (var i = 0; i < cardPerson.length; i++) {
-        cardPersonList.push(cardPerson[i]["PersonID"]);
+      for (var i = 0; i < vm.cardPerson.length; i++) {
+        cardPersonList.push(vm.cardPerson[i]["PersonID"]);
       }
       var send1 = {
         Header: {
@@ -239,7 +239,7 @@ export default {
           CriminalIDs: cardPersonList
         })
       };
-      if (cardPerson == [] || cardPerson == "") {
+      if (vm.cardPerson == [] || vm.cardPerson == "") {
         vm.alertText = "还没人刷卡";
         setTimeout(function() {
           vm.alertText = "";
@@ -736,17 +736,17 @@ export default {
       }
       vm.generalGroupList = [];
       vm.provisionalGroupList = [];
-      for (let i = 0; i < allGroups.length; i++) {
+      for (let i = 0; i < vm.allGroups.length; i++) {
         /*判断是都是报警的互监组*/
-        let reveiceData = allGroups[i];
+        let reveiceData = vm.allGroups[i];
         if (reveiceData.Status == 0) {
           reveiceData.isWring = false;
         } else if (reveiceData.Status == 1) {
           reveiceData.isWring = true;
         }
-        if (allGroups[i].GroupType == 4301) {
+        if (vm.allGroups[i].GroupType == 4301) {
           vm.generalGroupList.push(reveiceData);
-        } else if (allGroups[i].GroupType == 4302) {
+        } else if (vm.allGroups[i].GroupType == 4302) {
           vm.provisionalGroupList.push(reveiceData);
         }
       }

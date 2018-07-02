@@ -489,7 +489,7 @@ export default {
           vm.ws.send(JSON.stringify(send));
         }
         //        接收数据
-        var receiveData = vm.$store.state.toolcheck.receiveDataMsgType32;
+        var receiveData = vm.receiveDataMsgType32;
 
         //          if(receiveData!=""||receiveData!=null){
         var hasNotCall = []; //柜内未点1

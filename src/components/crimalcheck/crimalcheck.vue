@@ -458,7 +458,7 @@ export default {
         //发送数据
         if (vm.ws.readyState == WebSocket.OPEN) {
           vm.ws.send(JSON.stringify(send));
-          if (receiveDataMsgType31 == "") {
+          if (vm.receiveDataMsgType31 == "") {
             vm.inChoose = [];
             vm.outChoose = [];
             vm.inCriminals = [];
@@ -470,7 +470,7 @@ export default {
           }
         }
         //接收数据
-        var receiveData = vm.$store.state.crimalcheck.receiveDataMsgType31;
+        var receiveData = vm.receiveDataMsgType31;
         if (receiveData != "" && receiveData != null) {
           var hasNotCall = []; //监内未点2402
           var outHasNotCall = []; //外出未点2403
@@ -479,8 +479,8 @@ export default {
               var notCall = receiveData[i];
               notCall["ischoose"] = false;
               notCall["CriminalName"] =
-                criminalList[0][notCall["PersonID"]]["CriminalName"];
-              notCall["Photo"] = criminalList[0][notCall["PersonID"]]["Photo"];
+                vm.criminalList[0][notCall["PersonID"]]["CriminalName"];
+              notCall["Photo"] = vm.criminalList[0][notCall["PersonID"]]["Photo"];
               for (var m = 0; m < vm.inChoose.length; m++) {
                 if (vm.inChoose[m] == notCall["PersonID"]) {
                   notCall["ischoose"] = true;
@@ -496,9 +496,9 @@ export default {
               var outNotCall = receiveData[i];
               outNotCall["ischoose"] = false;
               outNotCall["CriminalName"] =
-                criminalList[0][outNotCall["PersonID"]]["CriminalName"];
+                vm.criminalList[0][outNotCall["PersonID"]]["CriminalName"];
               outNotCall["Photo"] =
-                criminalList[0][outNotCall["PersonID"]]["Photo"];
+                vm.criminalList[0][outNotCall["PersonID"]]["Photo"];
               for (var n = 0; n < vm.outChoose.length; n++) {
                 if (vm.outChoose[n] == outNotCall["PersonID"]) {
                   outNotCall["ischoose"] = true;

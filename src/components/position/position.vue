@@ -164,13 +164,13 @@
               var mapUrl;
               if (result[i].Status == 1) {
                 psName = result[i].PSName;
-                mapUrl = MapUrl + mapList[0][result[i].MapID].MapUrl;
+                mapUrl = MapUrl + vm.mapList[0][result[i].MapID].MapUrl;
               } else if (result[i].Status == 2) {
                 psName = result[i].PSName + "(离线)";
                 mapUrl = null;
               } else if (result[i].Status == 3) {
                 psName = result[i].PSName + "(报警)";
-                mapUrl = MapUrl + mapList[0][result[i].MapID].MapUrl;
+                mapUrl = MapUrl + vm.mapList[0][result[i].MapID].MapUrl;
               }
               vm.criminalLists.push({
                 PSName: psName,
@@ -179,7 +179,7 @@
                 CriminalX: result[i].X,
                 CriminalY: result[i].Y,
                 status: isTrue,
-                CriminalPhoto: criminalList[0][result[i].CriminalID].Photo,
+                CriminalPhoto: vm.criminalList[0][result[i].CriminalID].Photo,
                 MapUrl: mapUrl,
                 pointStatus: true
               });
@@ -225,13 +225,13 @@
               var mapUrl;
               if (result[i].Status == 1) {
                 psName = result[i].PSName;
-                mapUrl = MapUrl + mapList[0][result[i].MapID].MapUrl;
+                mapUrl = MapUrl + vm.mapList[0][result[i].MapID].MapUrl;
               } else if (result[i].Status == 2) {
                 psName = result[i].PSName + "(离线)";
                 mapUrl = null;
               } else if (result[i].Status == 3) {
                 psName = result[i].PSName + "(报警)";
-                mapUrl = MapUrl + mapList[0][result[i].MapID].MapUrl;
+                mapUrl = MapUrl + vm.mapList[0][result[i].MapID].MapUrl;
               }
               for (var j = 0; j < vm.criminalLists.length; j++) {
                 if (vm.criminalLists[j].CriminalID == result[i].CriminalID) {

@@ -19,6 +19,7 @@
               <p>外出人数（监内）：{{FlnkIDList1.length}}人</p>
               <p>
                 外出人数（监外）：{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}人</p>
+              <p>外出人数（监外）：{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}人</p>
             </el-col>
           </div>
         </div>
