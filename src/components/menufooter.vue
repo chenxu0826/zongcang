@@ -1,125 +1,129 @@
 <template>
   <div class="menufooter">
     <el-row class="menu_title_wrap">
-      <el-col :span="4" class="menu_title"></el-col>
+      <el-col :span="3" class="menu_title"></el-col>
       <el-col :span="3" class="menu_title" v-for="(item,index) in menuList" :key="index">
         <div @click="gopage(item.path)">{{item.name}}</div>
       </el-col>
-      <el-col :span="2" class="menu_title"></el-col>
+      <el-col :span="3" class="menu_title"></el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-  import {BasicUrl, IMG, ajaxUrl} from "../config";
+import { BasicUrl, IMG, ajaxUrl } from "../config";
 
-  export default {
-    name: "menufooter",
-    data() {
-      return {
-        menuList: []//menufooter菜单配置信息  属性--- name：显示名称，path：路由地址
-      };
-    },
-    mounted: function () {
-      let vm = this;
+export default {
+  name: "menufooter",
+  data() {
+    return {
+      menuList: [] //menufooter菜单配置信息  属性--- name：显示名称，path：路由地址
+    };
+  },
+  mounted: function() {
+    let vm = this;
 
-      //TODO 临时使用的模拟数据,等有相关接口后改为AJAX请求
-      let tempstr = '[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outregister"}]'
-      vm.menuList = JSON.parse(tempstr);
-    },
-    methods: {
-      gopage: function (path) {
-        //菜单切换
-        var vm = this;
-        if (path === "/outwork") {
-          if (localStorage.getItem("moveTypes") == 2) {
-            var sendCancle = {
-              Header: {
-                MsgID: "201501260000000035",
-                MsgType: 26
-              },
-              Body: JSON.stringify({
-                OrgID: localStorage.getItem("OrgID"),
-                DoorID: localStorage.getItem("DoorID")
-              })
-            };
-            //发送取消数据
-            vm.$ajax({
-              url: ajaxUrl,
-              data: JSON.stringify(sendCancle),
-              success: function (result) {
-                if (result.RET == 1) {
-                  vm.$router.push({path: "/outwork"});
-                } else {
-                  vm.$message("外出登记取消失败");
-                }
+    //TODO 临时使用的模拟数据,等有相关接口后改为AJAX请求
+    let tempstr ='[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outregister"},{"name": "快捷登记", "path": "/tempButton" }]';
+    vm.menuList = JSON.parse(tempstr);
+  },
+  methods: {
+    gopage: function(path) {
+      //菜单切换
+      var vm = this;
+      if (path === "/tempButton") {
+        vm.$emit("openTempAlert", true);
+      }
+
+      if (path === "/outwork") {
+        if (localStorage.getItem("moveTypes") == 2) {
+          var sendCancle = {
+            Header: {
+              MsgID: "201501260000000035",
+              MsgType: 26
+            },
+            Body: JSON.stringify({
+              OrgID: localStorage.getItem("OrgID"),
+              DoorID: localStorage.getItem("DoorID")
+            })
+          };
+          //发送取消数据
+          vm.$ajax({
+            url: ajaxUrl,
+            data: JSON.stringify(sendCancle),
+            success: function(result) {
+              if (result.RET == 1) {
+                vm.$router.push({ path: "/outwork" });
+              } else {
+                vm.$message("外出登记取消失败");
               }
-            });
-          } else if (localStorage.getItem("moveTypes") == 3) {
-            vm.$message("请先完成卡绑定操作");
-          } else {
-            this.$router.push({path: "/outwork"});
-            if (localStorage.getItem("needPassCard") == 1) {
-              vm.$emit("openLogin", true);
             }
-          }
-        } else if (path === "/outregister") {
-          if (localStorage.getItem("moveTypes") == 1) {
-            var sendCancle = {
-              Header: {
-                MsgID: "201501260000000035",
-                MsgType: 26
-              },
-              Body: JSON.stringify({
-                OrgID: localStorage.getItem("OrgID"),
-                DoorID: localStorage.getItem("DoorID")
-              })
-            };
-            //发送取消数据
-            vm.$ajax({
-              url: ajaxUrl,
-              data: JSON.stringify(sendCancle),
-              success: function (result) {
-                if (result.RET == 1) {
-                  vm.$router.push({path: "/outregister"});
-                } else {
-                  vm.$message("出收工登记取消失败");
-                }
-              }
-            });
-          } else if (localStorage.getItem("moveTypes") == 3) {
-            vm.$message("请先完成卡绑定操作");
-          } else {
-            this.$router.push({path: "/outregister"});
-            if (localStorage.getItem("needPassCard") == 1) {
-              //vm.$emit('openLogin',true)
-            }
-          }
-        } else if (path === "/crimalcheck") {
-          this.$router.push({path: "/crimalcheck"});
-        } else if (path === "/toolcheck") {
-          this.$router.push({path: "/toolcheck"});
-        } else if (path === "/mutualsupervision") {
-          this.$router.push({path: "/mutualsupervision"});
-        } else if (path === "/") {
-          this.$router.push({path: "/"});
-        } else if (path === "/cardbind") {
-          if (localStorage.getItem("moveTypes") == 2) {
-            //          alert("请先完成临时外出登记")
-            //          vm.$emit('routerTip',"请先完成临时外出登记")
-            vm.$message("请先完成临时外出登记");
-          } else if (localStorage.getItem("moveTypes") == 1) {
-            //          alert("请先完成进出工登记")
-            //          vm.$emit('routerTip',"请先完成进出工登记")
-            vm.$message("请先完成进出工登记");
-          } else {
-            this.$router.push({path: "/cardbind"});
+          });
+        } else if (localStorage.getItem("moveTypes") == 3) {
+          vm.$message("请先完成卡绑定操作");
+        } else {
+          this.$router.push({ path: "/outwork" });
+          if (localStorage.getItem("needPassCard") == 1) {
             vm.$emit("openLogin", true);
           }
         }
+      } else if (path === "/outregister") {
+        if (localStorage.getItem("moveTypes") == 1) {
+          var sendCancle = {
+            Header: {
+              MsgID: "201501260000000035",
+              MsgType: 26
+            },
+            Body: JSON.stringify({
+              OrgID: localStorage.getItem("OrgID"),
+              DoorID: localStorage.getItem("DoorID")
+            })
+          };
+          //发送取消数据
+          vm.$ajax({
+            url: ajaxUrl,
+            data: JSON.stringify(sendCancle),
+            success: function(result) {
+              if (result.RET == 1) {
+                vm.$router.push({ path: "/outregister" });
+              } else {
+                vm.$message("出收工登记取消失败");
+              }
+            }
+          });
+        } else if (localStorage.getItem("moveTypes") == 3) {
+          vm.$message("请先完成卡绑定操作");
+        } else {
+          this.$router.push({ path: "/outregister" });
+          if (localStorage.getItem("needPassCard") == 1) {
+            //vm.$emit('openLogin',true)
+          }
+        }
+      } else if (path === "/crimalcheck") {
+        this.$router.push({ path: "/crimalcheck" });
+      } else if (path === "/toolcheck") {
+        this.$router.push({ path: "/toolcheck" });
+      } else if (path === "/mutualsupervision") {
+        this.$router.push({ path: "/mutualsupervision" });
+      } else if (path === "/") {
+        this.$router.push({ path: "/" });
+      } else if (path === "/cardbind") {
+        if (localStorage.getItem("moveTypes") == 2) {
+          //          alert("请先完成临时外出登记")
+          //          vm.$emit('routerTip',"请先完成临时外出登记")
+          vm.$message("请先完成临时外出登记");
+        } else if (localStorage.getItem("moveTypes") == 1) {
+          //          alert("请先完成进出工登记")
+          //          vm.$emit('routerTip',"请先完成进出工登记")
+          vm.$message("请先完成进出工登记");
+        } else {
+          this.$router.push({ path: "/cardbind" });
+          vm.$emit("openLogin", true);
+        }
       }
     }
-  };
+  }
+};
 </script>
 
 <style lang="scss">

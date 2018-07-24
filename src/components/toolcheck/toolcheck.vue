@@ -14,9 +14,7 @@
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
               <div class="title">柜内工具未点{{inTool.length}}件</div>
-
               <div class="titleDescribe">（<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>
-              <!--<div class="titleDescribe">（柜内工具总数：200个，<span style="color: #1443cd"  @click="$emit('hasCheakedTool')" >已点工具{{toolCalledCount}}个</span>）</div>-->
             </div>
             <div class="bodyCon">
               <el-col :span="2"  v-for="(tool,index) in inTool.slice(inA-1,inB)" :key="index">
@@ -27,7 +25,6 @@
                   <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
               </el-col>
-
             </div>
             <el-row >
               <el-col :span="8" style="height: 10px"></el-col>
@@ -46,7 +43,6 @@
               <div class="title">柜外工具未点{{outTool.length}}件</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
-
               <el-col :span="2"  v-for="(tool,index) in outTool.slice(outA-1,outB)" :key="index">
                 <div  :class="['criminal', {chosed: tool.ischoose}]" v-on:click="chooseOut(index)" >
                   <div style="height: 91px;width: 97px;">
@@ -55,7 +51,6 @@
                   <span class="criminalName">{{ tool.ToolName }}</span>
                 </div>
               </el-col>
-
             </div>
             <el-row >
               <el-col :span="8" style="height: 10px"></el-col>

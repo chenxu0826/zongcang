@@ -17,8 +17,124 @@
 
     <menufooter
       @routerTip="routerTip"
-      @openLogin="loginOpen">
+      @openLogin="loginOpen"
+      @openTempAlert="tempAlertOpen">
     </menufooter>
+
+<!--temp选择 start-->
+    <div class="alertTip alertJQXZ" v-show="alertTemp">   
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;background: #c5cfdb;">
+        <div class="bodyHead"><div @click="close('alertTemp')" class="close">X</div></div>
+        <div class="bodyCon">
+          <br>
+          <el-row>
+            <el-col :span="6" style="margin-top:12px">
+              <img @click="chooseTemp(tempAlertList[0].type)" src="./suowaijiuyiTemp.png" style="width:80px" alt="">
+              <br>
+              <div @click="chooseTemp(tempAlertList[0].type)"><strong>{{tempAlertList[0].name}}</strong></div>
+            </el-col>
+            <el-col :span="6" style="margin-top:12px">
+              <img @click="chooseTemp(tempAlertList[1].type)" src="./jiashuhuijianTemp.png" style="width:80px" alt="">
+              <br>
+              <div @click="chooseTemp(tempAlertList[1].type)"><strong>{{tempAlertList[1].name}}</strong></div>
+            </el-col>
+            <el-col :span="6" style="margin-top:12px">
+              <img @click="chooseTemp(tempAlertList[2].type)" src="./banyunTemp.png" style="width:80px" alt="">
+              <br>
+              <div @click="chooseTemp(tempAlertList[2].type)"><strong>{{tempAlertList[2].name}}</strong></div>
+            </el-col>
+            <el-col :span="6" style="margin-top:12px">
+              <img @click="chooseTemp(tempAlertList[3].type)" src="./fangfengTemp.png" style="width:80px" alt="">
+              <br>
+              <div @click="chooseTemp(tempAlertList[3].type)"><strong>{{tempAlertList[3].name}}</strong></div>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+    </div>
+    <!--temp选择 end-->
+
+  <!--外出就医对话框 start-->
+    <div class="alertTip alertJQXZ" v-show="alertWCJY">   
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 245px;">
+        <div class="bodyHead"><div class="title">外出就医</div><div @click="close('alertWCJY')" class="close">X</div></div>
+        <div class="bodyCon" style="height:159px">
+          <br>
+          <el-row>
+            <el-col :span="24">
+              
+            </el-col>
+          </el-row>
+        </div>
+        <div class="partsFoot" style="height:60px">
+          <div style="margin: 20px 20px;float: left">
+            <strong>请刷卡提交</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--外出就医对话框 end-->
+
+    <!--家属会见对话框 start-->
+    <div class="alertTip alertJQXZ" v-show="alertJSHJ">   
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 245px;">
+        <div class="bodyHead"><div class="title">家属会见</div><div @click="close('alertJSHJ')" class="close">X</div></div>
+        <div class="bodyCon" style="height:159px">
+          <br>
+          <el-row>
+            <el-col :span="24">
+
+            </el-col>
+          </el-row>
+        </div>
+        <div class="partsFoot" style="height:60px">
+          <div style="margin: 20px 20px;float: left">
+            <strong>请刷卡提交</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--家属会见对话框 end-->
+
+    <!--搬运对话框 start-->
+    <div class="alertTip alertJQXZ" v-show="alertBY">   
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 245px;">
+        <div class="bodyHead"><div class="title">搬运</div><div @click="close('alertBY')" class="close">X</div></div>
+        <div class="bodyCon" style="height:159px">
+          <br>
+          <el-row>
+            <el-col :span="24">
+
+            </el-col>
+          </el-row>
+        </div>
+        <div class="partsFoot" style="height:60px">
+          <div style="margin: 20px 20px;float: left">
+            <strong>请刷卡提交</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--搬运对话框 end-->
+
+   <!--放风对话框 start-->
+    <div class="alertTip alertJQXZ" v-show="alertFF">   
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 245px;">
+        <div class="bodyHead"><div class="title">放风</div><div @click="close('alertFF')" class="close">X</div></div>
+        <div class="bodyCon" style="height:159px">
+          <br>
+          <el-row>
+
+          </el-row>
+        </div>
+        <div class="partsFoot" style="height:60px">
+          <div style="margin: 20px 20px;float: left">
+            <strong>请刷卡提交</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--放风对话框 end-->
 
 
     <!--监区选择 star-->
@@ -449,6 +565,19 @@ export default {
   },
   data() {
     return {
+      //Temp按钮相关
+      tempAlertList: [
+        { name: "外出就医", type: 1, Photo: "./suowaijiuyiTemp.png" },
+        { name: "家属会见", type: 2, Photo: "./jiashuhuijianTemp.png" },
+        { name: "搬运", type: 3, Photo: "./banyunTemp.png" },
+        { name: "放风", type: 4, Photo: "./fangfengTemp.png" }
+      ],
+      alertTemp: false,
+      alertWCJY: false,
+      alertJSHJ: false,
+      alertBY: false,
+      alertFF: false,
+
       /* Coding By YanM */
       prisonSelect: [], //监区列表
       alertJQXZactive: false, //监区选择标记位
@@ -532,6 +661,30 @@ export default {
     })
   },
   methods: {
+    chooseTemp: function(type) {
+      this.alertTemp = false;
+      if (type == 1) {
+        this.alertWCJY = true;
+        return;
+      }
+      if (type == 2) {
+        this.alertJSHJ = true;
+        return;
+      }
+      if (type == 3) {
+        this.alertBY = true;
+        return;
+      }
+      if (type == 4) {
+        this.alertFF = true;
+        return;
+      }
+    },
+    // 临时弹窗显示
+    tempAlertOpen: function(msg) {
+      this.alertTemp = msg;
+    },
+
     /* Coding By YanM */
 
     /* 选择监区 */
@@ -1058,6 +1211,20 @@ export default {
         this.alertRYXQ = false;
       } else if (chose == "alertLXXQ") {
         this.alertLXXQ = false;
+      } else if (chose == "alertTemp") {
+        this.alertTemp = false; //trl temp临时测试
+      } else if (chose == "alertWCJY") {
+        this.alertWCJY = false; //trl temp临时测试
+        this.alertTemp = true;
+      } else if (chose == "alertJSHJ") {
+        this.alertJSHJ = false; //trl temp临时测试
+        this.alertTemp = true;
+      } else if (chose == "alertBY") {
+        this.alertBY = false; //trl temp临时测试
+        this.alertTemp = true;
+      } else if (chose == "alertFF") {
+        this.alertFF = false; //trl temp临时测试
+        this.alertTemp = true;
       }
     },
 
@@ -1620,9 +1787,9 @@ export default {
         vm.FlnkIDList_4.length = 0;
         for (let i = 0; i < flowPerson_outPrison_rec[3].People.length; i++) {
           let flowCrim = flowPerson_outPrison_rec[3].People[i];
-          flowCrim.CriminalName =vm.criminalList[0][flowCrim.CriminalID].CriminalName;
+          flowCrim.CriminalName =
+            vm.criminalList[0][flowCrim.CriminalID].CriminalName;
           vm.FlnkIDList_4.push(flowCrim);
-          
         }
 
         // 1、外出人数（监内）
@@ -1785,7 +1952,8 @@ export default {
                 if (wristband[i].CardID !== temp_wristband.CardID) {
                   wristband.push({
                     CrimalName:
-                      vm.criminalList[0][temp_wristband.CriminalID].CriminalName,
+                      vm.criminalList[0][temp_wristband.CriminalID]
+                        .CriminalName,
                     CardID: temp_wristband.CardID,
                     CriminalID: temp_wristband.CriminalID,
                     Photo: vm.criminalList[0][temp_wristband.CriminalID].Photo

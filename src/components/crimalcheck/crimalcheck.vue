@@ -23,7 +23,6 @@
                   <span class="criminalName">{{ criminal.CriminalName }}</span>
                 </div>
               </el-col>
-
             </div>
             <el-row >
               <el-col :span="8" style="height: 10px"></el-col>

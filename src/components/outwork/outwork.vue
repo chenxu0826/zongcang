@@ -8,8 +8,7 @@
           <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">{{buttonText}}（{{outCriminalList.length}}人）</div>
         </div>
         <div class="partsBody" v-show="isShow1">
-          <div class="bodyCon">
-
+          <div class="bodyCon">            
             <el-col :span="2" v-for="(outCrimina,index)  in outCriminalList.slice(outA-1,outB)" :key="index">
               <div class="criminal">
                 <div style="height: 91px;width:102px;">
@@ -30,9 +29,8 @@
             </el-col>
             <el-col :span="8" style="height: 10px"></el-col>
           </el-row>
-
         </div>
-        <div class="partsBody" v-show="isShow2">
+          <div class="partsBody" v-show="isShow2">
           <div class="bodyCon">
             <el-col :span="2" v-for="(inCriminal,index) in inCriminalList.slice(inA-1,inB)" :key="index">
               <div class="criminal">
@@ -105,7 +103,7 @@ export default {
   },
   computed: {
     ...mapState({
-      criminalList: state => state.criminalList,
+      criminalList: state => state.criminalList
     })
   },
   methods: {
