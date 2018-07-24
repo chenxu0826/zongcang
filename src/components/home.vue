@@ -13,8 +13,7 @@
               <p>
                 在监人数：{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 :
                 (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}人</p>
-                <p>异常人员：1人</p>
-              <!-- <p>异常人员：{{FlnkIDList2.length - FlnkIDList1.length}}人</p> -->
+              <p>异常人员：{{FlnkIDList2.length - FlnkIDList1.length}}人</p>
             </el-col>
             <el-col :span="11">
               <p>外出人数（监内）：{{FlnkIDList1.length}}人</p>
@@ -29,9 +28,7 @@
             <span class="float">（异常人员{{FlnkIDList2.length - FlnkIDList1.length}}人，</span>
             <span class="out">正常流动{{FlnkIDList1.length}}人）</span>
           </h4>
-          <el-row class="float_person_wrap">
-            {{FlnkIDList2}}
-            
+          <el-row class="float_person_wrap">                      
             <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key="index">
               
               <div :class="['float_person_card illegal', {moveBlue: item.isBlue}]">
