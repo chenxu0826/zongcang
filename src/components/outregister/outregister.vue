@@ -42,7 +42,7 @@
                   <el-row >
                     <el-row >
                       <div class="deailHead">
-                        外出事由 <span   v-show="TimeShow" style="font-size: 16px;color: #f53a2a;font-weight: 800;">(外出时长{{seachNum}}分钟)</span>
+                        外出事由 <span v-show="TimeShow" style="font-size: 16px;color: #f53a2a;font-weight: 800;">(外出时长{{seachNum}}分钟)</span>
                       </div>
                       <div class="deailBody" style="height:269px;">
                         <el-col :span="4" v-for="(reason,index) in reasonList.slice(reasonA-1,reasonB)" :key="index">
