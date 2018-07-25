@@ -24,7 +24,8 @@ export default {
     let vm = this;
 
     //TODO 临时使用的模拟数据,等有相关接口后改为AJAX请求
-    let tempstr ='[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outregister"},{"name": "快捷登记", "path": "/tempButton" }]';
+    let tempstr =
+      '[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outregister"},{"name": "快捷登记", "path": "/tempButton" }]';
     vm.menuList = JSON.parse(tempstr);
   },
   methods: {
@@ -32,7 +33,7 @@ export default {
       //菜单切换
       var vm = this;
       if (path === "/tempButton") {
-        vm.$emit("openTempAlert", true);
+        vm.$emit("openFastRegisterAlert", true);
       }
 
       if (path === "/outwork") {
