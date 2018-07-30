@@ -6,6 +6,41 @@
   height: 780px !important;
 }
 
+.choose {
+  border: 2px solid #004bdc;
+  height: 37px;
+  line-height: 35px;
+  margin: 6px 5px;
+  color: blue;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.criminal {
+  width: 84%;
+  height: 110px;
+  float: left;
+  background: #0048d9;
+  margin: 6px 6px;
+  text-align: center;
+  padding: 2px;
+}
+
+.criminal img {
+  border: 1px solid white;
+}
+
+.criminalName {
+  font-size: 12px;
+  color: white;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 99%;
+}
+
 body {
   -moz-user-select: none;
   -khtml-user-select: none;

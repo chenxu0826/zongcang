@@ -100,9 +100,8 @@
                       外出人员({{outCriminals.length}}人)
                     </div>
                     <div class="deailBody" style="height:269px;">
-
                       <el-col :span="4"  v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="index">
-                        <div  class="criminal" v-on:click="delPerson(index)" >
+                        <div  class="criminal">
                           <div style="height: 91px;width:90px;">
                             <img :src="criminal.Photo" width="98%" height="85" alt=""/>
                           </div>
@@ -542,10 +541,10 @@ export default {
     //提交登记
     submitOutRegister: function() {
       var vm = this;
-      var Criminals = "";
-      var Polices = "";
-      var Areas = "";
-      var Reason = "";
+      var Criminals = ""; //罪犯数据
+      var Polices = ""; //民警数据
+      var Areas = ""; //去往区域
+      var Reason = ""; //事由
 
       for (var i = 0; i < vm.outCriminals.length; i++) {
         if (i == 0) {

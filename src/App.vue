@@ -1,33 +1,22 @@
 <template>
   <div id="app">
     <!--头部-->
-    <navheader
-      @workOut="playAudio"
-      @getPosition="onClickPosition()"
-    ></navheader>
+    <navheader @workOut="playAudio" @getPosition="onClickPosition()"></navheader>
 
-    <router-view
-      @openLogin="loginOpen"
-      @hasCheaked="onHasCheaked"
-      @hasCheakedTool="onHasCheakedTool"
-      @canRouterChange="canRouterChange"
-      @viewRYXQ="viewRYDetail"
-      @viewLXRY="viewLXRYDetail"
-    ></router-view>
+    <router-view @openLogin="loginOpen" @hasCheaked="onHasCheaked" @hasCheakedTool="onHasCheakedTool" @canRouterChange="canRouterChange" @viewRYXQ="viewRYDetail" @viewLXRY="viewLXRYDetail"></router-view>
 
-    <menufooter
-      @routerTip="routerTip"
-      @openLogin="loginOpen"
-      @openFastRegisterAlert="fastRegisterAlertOpen">
+    <menufooter @routerTip="routerTip" @openLogin="loginOpen" @openFastRegisterAlert="fastRegisterAlertOpen">
     </menufooter>
 
     <!--快捷登记事由选择 start-->
-    <div class="alertTip alertJQXZ" v-show="alertTemp">   
+    <div class="alertTip alertJQXZ" v-show="alertKJDJreason">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;background: #c5cfdb;">
-        <div class="bodyHead"><div @click="close('alertTemp')" class="close">X</div></div>
+        <div class="bodyHead">
+          <div @click="close('alertKJDJreason')" class="close">X</div>
+        </div>
         <div class="bodyCon">
-          <el-col :span="4" v-for="(reason,index) in reasonList.slice(reasonA-1,reasonB)" :key="index">
-            <div class="choose">{{reason.DictCodeName}}</div>
+          <el-col :span="4" v-for="(reason,index) in reasonList" :key="index">
+            <div class="choose" @click="startFastRegister(reason)">{{reason.DictCodeName}}</div>
           </el-col>
         </div>
       </div>
@@ -35,19 +24,28 @@
     <!--快捷登记事由选择 end-->
 
     <!--快捷登记刷卡对话框 start-->
-    <div class="alertTip alertJQXZ" v-show="alertWCJY">   
+    <div class="alertTip alertJQXZ" v-show="alertKJDJ">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 245px;">
-        <div class="bodyHead"><div class="title">外出就医</div><div @click="close('alertWCJY')" class="close">X</div></div>
+        <div class="bodyHead">
+          <div class="title">快捷登记</div>
+          <div @click="close('alertKJDJ')" class="close">X</div>
+        </div>
         <div class="bodyCon" style="height:159px">
           <br>
           <el-row>
-            <el-col :span="24">
-              
+            <el-col :span="4" v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="index">
+              <div class="criminal">
+                <div style="height: 91px;width:90px;">
+                  <img :src="criminal.Photo" width="98%" height="85" alt="" />
+                </div>
+                <span class="criminalName">{{ criminal.CriminalName}}</span>
+              </div>
             </el-col>
           </el-row>
         </div>
         <div class="partsFoot" style="height:60px">
-          <div style="margin: 20px 20px;float: left">
+          <div class="alertText">{{alertText}}</div>
+          <div style="margin: 20px 20px;float: right">
             <strong>请刷卡提交</strong>
           </div>
         </div>
@@ -136,9 +134,9 @@
               <el-col :span="8" style="height: 10px"></el-col>
               <el-col :span="8">
                 <div class="pages">
-                  <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt=""/></span>
+                  <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt="" /></span>
                   <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
-                  <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt=""/></span>
+                  <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt="" /></span>
                 </div>
               </el-col>
               <el-col :span="8" style="height: 10px"></el-col>
@@ -180,8 +178,7 @@
                 <div class="moveCrimal">
                   <div style="height:50px;"></div>
                   <div><img :src="nowfloatPersonFirst.Photo" width="100%" height="250" alt=""></div>
-                  <span
-                    style="font-size: 20px;font-weight:800">{{nowfloatPersonFirst.ObjectName}} <br> {{nowfloatPersonFirst.EventTime}}<br>{{nowfloatPersonFirst.EventName}} </span>
+                  <span style="font-size: 20px;font-weight:800">{{nowfloatPersonFirst.ObjectName}} <br> {{nowfloatPersonFirst.EventTime}}<br>{{nowfloatPersonFirst.EventName}} </span>
                 </div>
               </el-col>
               <el-col :span="7" style="height: 10px">
@@ -217,8 +214,7 @@
             <tr v-for="(GetCriminal,index) in GetCriminalCalledList" :key="index">
               <td>{{GetCriminal.CriminalName}}</td>
               <td>
-                {{(GetCriminal.CountTime == "" || GetCriminal.CountTime == null) ? "" :
-                GetCriminal.CountTime.replace("T", " ")}}
+                {{(GetCriminal.CountTime == "" || GetCriminal.CountTime == null) ? "" : GetCriminal.CountTime.replace("T", " ")}}
               </td>
               <td>{{GetCriminal.OrgName}}</td>
               <td>{{GetCriminal.AreaName}}</td>
@@ -230,10 +226,9 @@
           <el-col :span="8" style="height: 10px"></el-col>
           <el-col :span="8">
             <div class="pages">
-              <span class="pageControl"><img src="./assets/q1.png" v-on:click="getCriminalback()" alt=""/></span>
-              <span
-                class="pagesText">{{criminalPage + 1}}/{{Math.ceil(criminalCount / 18) == 0 ? 1 : Math.ceil(criminalCount / 18)}}</span>
-              <span class="pageControl"><img src="./assets/q2.png" v-on:click="getCriminalGo()" alt=""/></span>
+              <span class="pageControl"><img src="./assets/q1.png" v-on:click="getCriminalback()" alt="" /></span>
+              <span class="pagesText">{{criminalPage + 1}}/{{Math.ceil(criminalCount / 18) == 0 ? 1 : Math.ceil(criminalCount / 18)}}</span>
+              <span class="pageControl"><img src="./assets/q2.png" v-on:click="getCriminalGo()" alt="" /></span>
             </div>
           </el-col>
           <el-col :span="8" style="height: 10px"></el-col>
@@ -307,8 +302,7 @@
               <td>{{toolCalled.ToolName}}</td>
               <td>{{toolCalled.OrgName}}</td>
               <td>
-                {{(toolCalled.ToolTypeName == "" || toolCalled.CountTime == null) ? "" :
-                toolCalled.CountTime.replace("T", " ")}}
+                {{(toolCalled.ToolTypeName == "" || toolCalled.CountTime == null) ? "" : toolCalled.CountTime.replace("T", " ")}}
               </td>
               <td>{{toolCalled.StatusName}}</td>
             </tr>
@@ -318,10 +312,9 @@
           <el-col :span="8" style="height: 10px"></el-col>
           <el-col :span="8">
             <div class="pages">
-              <span class="pageControl"><img src="./assets/q1.png" v-on:click="getToolback()" alt=""/></span>
-              <span class="pagesText"
-                    style="font-size: 28px">{{toolPage + 1}}/{{Math.ceil(toolCount / 18) == 0 ? 1 : Math.ceil(toolCount / 18)}}</span>
-              <span class="pageControl"><img src="./assets/q2.png" v-on:click="getToolGo()" alt=""/></span>
+              <span class="pageControl"><img src="./assets/q1.png" v-on:click="getToolback()" alt="" /></span>
+              <span class="pagesText" style="font-size: 28px">{{toolPage + 1}}/{{Math.ceil(toolCount / 18) == 0 ? 1 : Math.ceil(toolCount / 18)}}</span>
+              <span class="pageControl"><img src="./assets/q2.png" v-on:click="getToolGo()" alt="" /></span>
             </div>
           </el-col>
           <el-col :span="8" style="height: 10px"></el-col>
@@ -329,7 +322,6 @@
       </div>
     </div>
     <!--已点工具 end-->
-
 
     <!--报警弹框 star-->
     <div class="alertAlarm" v-show="alertBJTK" v-on:click="alertAlarm()">
@@ -378,91 +370,91 @@
     <!--报警音频资源加载-->
     <!--区域入侵报警-->
     <audio id="waring1001" preload="preload">
-      <source src="resources/sound/systemsound/1001.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1001.mp3" type="audio/ogg" />
     </audio>
     <!--周界入侵报警-->
     <audio id="waring1002" preload="preload">
-      <source src="resources/sound/systemsound/1002.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1002.mp3" type="audio/ogg" />
     </audio>
     <!--互监组超界报警-->
     <audio id="waring1003" preload="preload">
-      <source src="resources/sound/systemsound/1003.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1003.mp3" type="audio/ogg" />
     </audio>
     <!--警囚比异常报警-->
     <audio id="waring1004" preload="preload">
-      <source src="resources/sound/systemsound/1004.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1004.mp3" type="audio/ogg" />
     </audio>
     <!--超时未到达报警-->
     <audio id="waring1005" preload="preload">
-      <source src="resources/sound/systemsound/1005.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1005.mp3" type="audio/ogg" />
     </audio>
     <!--人员流动报警-->
     <audio id="waring1006" preload="preload">
-      <source src="resources/sound/systemsound/1006.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1006.mp3" type="audio/ogg" />
     </audio>
     <!--罪犯脱岗报警-->
     <audio id="waring1008" preload="preload">
-      <source src="resources/sound/systemsound/1008.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1008.mp3" type="audio/ogg" />
     </audio>
     <!--罪犯超区域报警-->
     <audio id="waring1009" preload="preload">
-      <source src="resources/sound/systemsound/1009.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1009.mp3" type="audio/ogg" />
     </audio>
     <!--离线报警-->
     <audio id="waring1011" preload="preload">
-      <source src="resources/sound/systemsound/1011.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1011.mp3" type="audio/ogg" />
     </audio>
     <!--放风场滞留报警-->
     <audio id="waring1020" preload="preload">
-      <source src="resources/sound/systemsound/1020.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1020.mp3" type="audio/ogg" />
     </audio>
     <!--厕所滞留报警-->
     <audio id="waring1021" preload="preload">
-      <source src="resources/sound/systemsound/1021.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1021.mp3" type="audio/ogg" />
     </audio>
     <!--提押滞留报警-->
     <audio id="waring1022" preload="preload">
-      <source src="resources/sound/systemsound/1022.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1022.mp3" type="audio/ogg" />
     </audio>
     <!--断带报警-->
     <audio id="waring1030" preload="preload">
-      <source src="resources/sound/systemsound/1030.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1030.mp3" type="audio/ogg" />
     </audio>
     <!--按钮报警-->
     <audio id="waring1031" preload="preload">
-      <source src="resources/sound/systemsound/1031.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1031.mp3" type="audio/ogg" />
     </audio>
     <!--电池电量低-->
     <audio id="waring1032" preload="preload">
-      <source src="resources/sound/systemsound/1032.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1032.mp3" type="audio/ogg" />
     </audio>
     <!--外来人员超区域报警-->
     <audio id="waring1040" preload="preload">
-      <source src="resources/sound/systemsound/1040.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1040.mp3" type="audio/ogg" />
     </audio>
     <!--外来车辆超区域报警-->
     <audio id="waring1041" preload="preload">
-      <source src="resources/sound/systemsound/1041.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1041.mp3" type="audio/ogg" />
     </audio>
     <!--民警脱岗报警-->
     <audio id="waring1050" preload="preload">
-      <source src="resources/sound/systemsound/1050.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1050.mp3" type="audio/ogg" />
     </audio>
     <!--请及时点名-->
     <audio id="waring1052" preload="preload">
-      <source src="resources/sound/systemsound/1052.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/1052.mp3" type="audio/ogg" />
     </audio>
     <!--人员清点音频资源加载-->
     <audio id="personPlan" preload="preload">
-      <source src="resources/sound/systemsound/prisoner_check.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/prisoner_check.mp3" type="audio/ogg" />
     </audio>
     <!--工具清点音频资源加载-->
     <audio id="toolPlan" preload="preload">
-      <source src="resources/sound/systemsound/tool_check.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/tool_check.mp3" type="audio/ogg" />
     </audio>
     <!--收工音频资源加载-->
     <audio id="workOut" preload="preload">
-      <source src="resources/sound/systemsound/workBack.mp3" type="audio/ogg"/>
+      <source src="resources/sound/systemsound/workBack.mp3" type="audio/ogg" />
     </audio>
   </div>
 </template>
@@ -484,8 +476,8 @@ export default {
   data() {
     return {
       //快捷登记相关模态框状态
-      alertTemp: false,
-      alertWCJY: false,
+      alertKJDJreason: false,
+      alertKJDJ: false,
 
       /* Coding By YanM */
       prisonSelect: [], //监区列表
@@ -552,8 +544,11 @@ export default {
 
       //快捷登记相关
       reasonList: [], // 外出事由
-      reasonA: 1,
-      reasonB: 30
+      selectReason: "", //选中的事由名字
+      isSuccess: 0,
+      starPerInterval: "", //获取外出登记的人员明细的Interval任务
+      getPoliceSwipeCardInterval: "", //获取等待民警刷卡触发提交请求的Interval任务
+      outCriminals: [] //外出罪犯信息
     };
   },
   computed: {
@@ -575,10 +570,11 @@ export default {
     })
   },
   methods: {
-    // 快捷登记弹窗显示
+    // 快捷登记(选择事由)弹窗显示
     fastRegisterAlertOpen: function(msg) {
       //获取外出事由
       var vm = this;
+      var test = localStorage.getItem("OrgID");
       vm.$ajax({
         data: { OrgID: localStorage.getItem("OrgID") },
         url: BasicUrl + "Move/GetMoveReasonList" + "?callback=?",
@@ -597,7 +593,145 @@ export default {
           }
         }
       });
-      this.alertTemp = msg;
+      this.alertKJDJreason = msg;
+    },
+
+    //开始快捷登记
+    startFastRegister: function(reason) {
+      var vm = this;
+      vm.alertKJDJreason = false;
+      vm.alertKJDJ = true;
+      vm.selectReason = reason.DictCodeName;
+      var send1 = {
+        Header: {
+          MsgID: "201501260000000035",
+          MsgType: 20
+        },
+        Body: JSON.stringify({
+          OrgID: localStorage.getItem("OrgID"),
+          DoorID: localStorage.getItem("DoorID"),
+          AreaID: localStorage.getItem("AreaID"),
+          RegType: 2603
+        })
+      };
+      //发送数据
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(send1),
+        success: function(result) {
+          if (result.RET == 1) {
+            vm.isSuccess = 1;
+          } else {
+            vm.isSuccess = 0;
+          }
+        }
+      });
+
+      //      获取外出登记的人员明细
+      vm.starPerInterval = setInterval(function() {
+        if (vm.isSuccess == 1) {
+          var send2 = {
+            Header: {
+              MsgID: "201501260000000035",
+              MsgType: 22
+            },
+            Body: JSON.stringify({
+              OrgID: localStorage.getItem("OrgID"),
+              DoorID: localStorage.getItem("DoorID")
+            })
+          };
+          var send27 = {
+            Header: {
+              MsgID: "201501260000000035",
+              MsgType: 27
+            },
+            Body: JSON.stringify({
+              OrgID: localStorage.getItem("OrgID"),
+              DoorID: localStorage.getItem("DoorID")
+            })
+          };
+          //发送数据
+          if (vm.ws.readyState == WebSocket.OPEN) {
+            vm.ws.send(JSON.stringify(send2));
+          }
+          if (vm.ws.readyState == WebSocket.OPEN) {
+            vm.ws.send(JSON.stringify(send27));
+          }
+          /*外出登记罪犯信息*/
+          var receiveData = vm.receiveDataMsgType22;
+          if (receiveData != "" && receiveData != null) {
+            var outCriminal = []; //外出罪犯
+            for (var i = 0; i < receiveData.length; i++) {
+              var Criminal = receiveData[i];
+              Criminal["ischoose"] = false;
+              Criminal["CriminalName"] =
+                vm.criminalList[0][Criminal["CriminalID"]]["CriminalName"];
+              Criminal["Photo"] =
+                vm.criminalList[0][Criminal["CriminalID"]]["Photo"];
+              outCriminal.push(Criminal);
+              vm.outCriminals = outCriminal;
+            }
+          }
+        }
+      }, 1000);
+
+      //获取民警是否刷卡，以及刷卡信息
+      vm.getPoliceSwipeCardInterval = setInterval(function() {
+        var policemanID = localStorage.getItem("placemanID");
+        if (policemanID != 0 || policemanID != 1) {
+          var placemanID = localStorage.getItem("placemanID");
+          clearInterval(vm.getPoliceSwipeCardInterval);
+          clearInterval(vm.starPerInterval);
+          vm.submitOutRegister(); //发送提交外出登记信息请求
+        }
+      }, 500);
+    },
+
+    //提交外出登记信息
+    submitOutRegister() {
+      var OutCriminalsId = []; //外出罪犯的ID集合
+      for (var outCriminal in vm.outCriminals) {
+        OutCriminalsId.push(outCriminal.CriminalID);
+      }
+      var sendOutRegister = {
+        Header: {
+          MsgID: "201501260000000031",
+          MsgType: 23
+        },
+        Body: JSON.stringify({
+          OrgID: localStorage.getItem("OrgID"),
+          DoorID: localStorage.getItem("DoorID"),
+          Criminals: OutCriminalsId,
+          Polices: [localStorage.getItem("placemanID")],
+          Reason: vm.selectReason,
+          Areas: []
+        })
+      };
+
+      //发送数据
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(sendOutRegister),
+        success: function(result) {
+          if (result.RET == 1) {
+            vm.alertText = "提交成功";
+            setTimeout(function() {
+              vm.alertText = "";
+              this.alertKJDJ = false;
+              this.alertKJDJreason = false;
+              vm.outCriminals = [];
+            }, 2000);
+          } else {
+            vm.canRouterChange();
+            vm.alertText = "提交失败";
+            setTimeout(function() {
+              vm.alertText = "";
+              this.alertKJDJ = false;
+              this.alertKJDJreason = true;
+            }, 2000);
+          }
+        }
+      });
     },
 
     /* Coding By YanM */
@@ -628,6 +762,9 @@ export default {
           vm.setLocalStorage("AreaID", vm.prisonSelect[0].AreaID);
           vm.setLocalStorage("AreaType", vm.prisonSelect[0].AreaType);
           vm.setLocalStorage("MapFlnkID", vm.prisonSelect[0].MapFlnkID);
+        },
+        error: function(err) {
+          console.log(err);
         }
       });
     },
@@ -1125,20 +1262,13 @@ export default {
         this.alertRYXQ = false;
       } else if (chose == "alertLXXQ") {
         this.alertLXXQ = false;
-      } else if (chose == "alertTemp") {
-        this.alertTemp = false; //trl temp临时测试
-      } else if (chose == "alertWCJY") {
-        this.alertWCJY = false; //trl temp临时测试
-        this.alertTemp = true;
-      } else if (chose == "alertJSHJ") {
-        this.alertJSHJ = false; //trl temp临时测试
-        this.alertTemp = true;
-      } else if (chose == "alertBY") {
-        this.alertBY = false; //trl temp临时测试
-        this.alertTemp = true;
-      } else if (chose == "alertFF") {
-        this.alertFF = false; //trl temp临时测试
-        this.alertTemp = true;
+      } else if (chose == "alertKJDJreason") {
+        this.alertKJDJreason = false;
+      } else if (chose == "alertKJDJ") {
+        clearInterval(vm.getPoliceSwipeCardInterval);
+        clearInterval(vm.starPerInterval);
+        this.alertKJDJ = false;
+        this.alertKJDJreason = true;
       }
     },
 

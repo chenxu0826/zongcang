@@ -14,8 +14,7 @@
     <el-col :span="12" class="navoption">
       <el-col :span="23">
         <p>
-          <!-- <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ message }}</span> -->
-          <span @click="$emit('getPosition')" class="nowposition">当前位置：厂房1</span>
+          <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ message }}</span>
           <span>{{localYear}}</span>
           <span>{{localWeek}}</span>
           <span>{{localTime}}</span>
