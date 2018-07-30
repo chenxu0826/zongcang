@@ -11,14 +11,13 @@
               <p>
                 监区人数：{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}人</p>
               <p>
-                在监人数：{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 :
-                (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}人</p>
+                在监人数：{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 : (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}人</p>
               <p>异常人员：{{FlnkIDList2.length - FlnkIDList1.length}}人</p>
             </el-col>
             <el-col :span="11">
               <p>外出人数（监内）：{{FlnkIDList1.length}}人</p>
               <p>外出人数（监外）：{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}人</p>
-                <p v-on:click="viewLXRY">离线人数：{{FlnkIDList4.length}}人</p>
+              <p v-on:click="viewLXRY">离线人数：{{FlnkIDList4.length}}人</p>
             </el-col>
           </div>
         </div>
@@ -28,9 +27,9 @@
             <span class="float">（异常人员{{FlnkIDList2.length - FlnkIDList1.length}}人，</span>
             <span class="out">正常流动{{FlnkIDList1.length}}人）</span>
           </h4>
-          <el-row class="float_person_wrap">                      
+          <el-row class="float_person_wrap">
             <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key="index">
-              
+
               <div :class="['float_person_card illegal', {moveBlue: item.isBlue}]">
                 <el-col :span="7" class="photo">
                   <img :src="item.Photo" alt="" width="100%" height="100%">
@@ -45,17 +44,16 @@
                   <p v-show="item.isBlue">外出事由：{{item.outreasons}}</p>
                 </el-col>
               </div>
-            </el-col> 
-
+            </el-col>
 
           </el-row>
           <el-row>
             <el-col :span="2" style="height: 10px"></el-col>
             <el-col :span="20">
               <div class="pages">
-                <span class="pageControl" @click="floating_personnelBack"><img src="../assets/q1.png" alt=""/></span>
+                <span class="pageControl" @click="floating_personnelBack"><img src="../assets/q1.png" alt="" /></span>
                 <span class="pagesText">{{float_personnelNowPage}}/{{float_personnelAllPages}}</span>
-                <span class="pageControl" @click="floating_personnelGo"><img src="../assets/q2.png" alt=""/></span>
+                <span class="pageControl" @click="floating_personnelGo"><img src="../assets/q2.png" alt="" /></span>
               </div>
             </el-col>
             <el-col :span="2" style="height: 10px"></el-col>
@@ -70,8 +68,7 @@
             <div class="getCenter">
               <img :src="mapPhoto" ref="myImg">
               <!--统计显示-->
-              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index"
-                   :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'green',fontWeight:'bold'}">
+              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'green',fontWeight:'bold'}">
                 {{item.CriminalCnt}}
               </div>
             </div>
@@ -199,12 +196,13 @@ export default {
     }, 500);
 
     //5秒钟没有数据 刷新界面
-    //      setInterval(function () { //todo暂时取消5秒刷新页面
-    //        if (vm.Iswebsocket == 0) {
-    //          vm.$router.push({path: '/'})
-    //          window.location.reload()
-    //        }
-    //      }, 5000)
+    setInterval(function() {
+      //todo暂时取消5秒刷新页面
+      if (vm.Iswebsocket == 0) {
+        // vm.$router.push({ path: "/" });
+        // window.location.reload();
+      }
+    }, 5000);
   }
 };
 </script>

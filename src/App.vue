@@ -25,15 +25,15 @@
 
     <!--快捷登记刷卡对话框 start-->
     <div class="alertTip alertJQXZ" v-show="alertKJDJ">
-      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 245px;">
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 337px;">
         <div class="bodyHead">
           <div class="title">快捷登记</div>
           <div @click="close('alertKJDJ')" class="close">X</div>
         </div>
-        <div class="bodyCon" style="height:159px">
+        <div class="bodyCon" style="height:250px">
           <br>
           <el-row>
-            <el-col :span="4" v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="index">
+            <el-col :span="4" v-for="(criminal,index) in outCriminals" :key="index">
               <div class="criminal">
                 <div style="height: 91px;width:90px;">
                   <img :src="criminal.Photo" width="98%" height="85" alt="" />
@@ -678,21 +678,24 @@ export default {
       //获取民警是否刷卡，以及刷卡信息
       vm.getPoliceSwipeCardInterval = setInterval(function() {
         var policemanID = localStorage.getItem("placemanID");
-        if (policemanID != 0 || policemanID != 1) {
+        if (policemanID != 0 && policemanID != 1) {
           var placemanID = localStorage.getItem("placemanID");
           clearInterval(vm.getPoliceSwipeCardInterval);
           clearInterval(vm.starPerInterval);
           vm.submitOutRegister(); //发送提交外出登记信息请求
+          localStorage.setItem("placemanID", 0);
         }
       }, 500);
     },
 
     //提交外出登记信息
-    submitOutRegister() {
+    submitOutRegister: function() {
+      var vm = this;
       var OutCriminalsId = []; //外出罪犯的ID集合
       for (var outCriminal in vm.outCriminals) {
         OutCriminalsId.push(outCriminal.CriminalID);
       }
+      OutCriminalsId = OutCriminalsId.join(",");
       var sendOutRegister = {
         Header: {
           MsgID: "201501260000000031",
@@ -702,12 +705,12 @@ export default {
           OrgID: localStorage.getItem("OrgID"),
           DoorID: localStorage.getItem("DoorID"),
           Criminals: OutCriminalsId,
-          Polices: [localStorage.getItem("placemanID")],
+          Polices: localStorage.getItem("placemanID"),
           Reason: vm.selectReason,
-          Areas: []
+          Areas: ''
         })
       };
-
+      
       //发送数据
       vm.$ajax({
         url: ajaxUrl,
@@ -716,16 +719,16 @@ export default {
           if (result.RET == 1) {
             vm.alertText = "提交成功";
             setTimeout(function() {
-              vm.alertText = "";
+              this.alertText = "";
               this.alertKJDJ = false;
               this.alertKJDJreason = false;
-              vm.outCriminals = [];
+              this.outCriminals = [];
             }, 2000);
           } else {
             vm.canRouterChange();
-            vm.alertText = "提交失败";
+            this.alertText = "提交失败";
             setTimeout(function() {
-              vm.alertText = "";
+              this.alertText = "";
               this.alertKJDJ = false;
               this.alertKJDJreason = true;
             }, 2000);
@@ -1265,8 +1268,8 @@ export default {
       } else if (chose == "alertKJDJreason") {
         this.alertKJDJreason = false;
       } else if (chose == "alertKJDJ") {
-        clearInterval(vm.getPoliceSwipeCardInterval);
-        clearInterval(vm.starPerInterval);
+        clearInterval(this.getPoliceSwipeCardInterval);
+        clearInterval(this.starPerInterval);
         this.alertKJDJ = false;
         this.alertKJDJreason = true;
       }
@@ -2016,20 +2019,22 @@ export default {
     vm.ws.onclose = function() {
       vm.$store.commit("setOnlinestatus", false);
       if (vm.onlinestatus === false) {
-        //        setInterval(function() { //todo暂时取消五秒刷新
-        //          vm.$router.push({ path: "/" });
-        //          window.location.reload();
-        //        }, 5000);
+        setInterval(function() {
+          //todo暂时取消五秒刷新
+          // vm.$router.push({ path: "/" });
+          // window.location.reload();
+        }, 5000);
       }
     };
 
     /* 错误信息 */
     vm.ws.onerror = function(evt) {
       console.log("WebSocketError!", evt);
-      //      setInterval(function() { //todo暂时取消五秒刷新
-      //        vm.$router.push({ path: "/" });
-      //        window.location.reload();
-      //      }, 5000);
+      setInterval(function() {
+        //todo暂时取消五秒刷新
+        // vm.$router.push({ path: "/" });
+        // window.location.reload();
+      }, 5000);
     };
 
     /* Coding By YanM */
