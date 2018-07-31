@@ -30,7 +30,7 @@
           <div class="title">快捷登记</div>
           <div @click="close('alertKJDJ')" class="close">X</div>
         </div>
-        <div class="bodyCon" style="height:250px">
+        <div class="bodyCon" style="height:291px;overflow-y:scroll;padding:0px">
           <br>
           <el-row>
             <el-col :span="4" v-for="(criminal,index) in outCriminals" :key="index">
@@ -707,30 +707,34 @@ export default {
           Criminals: OutCriminalsId,
           Polices: localStorage.getItem("placemanID"),
           Reason: vm.selectReason,
-          Areas: ''
+          Areas: ""
         })
       };
-      
+
       //发送数据
       vm.$ajax({
         url: ajaxUrl,
         data: JSON.stringify(sendOutRegister),
         success: function(result) {
           if (result.RET == 1) {
+            debugger;
             vm.alertText = "提交成功";
             setTimeout(function() {
-              this.alertText = "";
-              this.alertKJDJ = false;
-              this.alertKJDJreason = false;
-              this.outCriminals = [];
+              debugger
+              vm.alertText = "";
+              vm.alertKJDJ = false;
+              vm.alertKJDJreason = false;
+              vm.outCriminals = [];
             }, 2000);
           } else {
+            debugger;
             vm.canRouterChange();
-            this.alertText = "提交失败";
+            vm.alertText = "提交失败";
             setTimeout(function() {
-              this.alertText = "";
-              this.alertKJDJ = false;
-              this.alertKJDJreason = true;
+              debugger
+              vm.alertText = "";
+              vm.alertKJDJ = false;
+              vm.alertKJDJreason = true;
             }, 2000);
           }
         }
