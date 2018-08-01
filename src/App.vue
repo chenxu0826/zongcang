@@ -692,7 +692,7 @@ export default {
     submitOutRegister: function() {
       var vm = this;
       var OutCriminalsId = []; //外出罪犯的ID集合
-      for (var outCriminal in vm.outCriminals) {
+      for (var outCriminal of vm.outCriminals) {
         OutCriminalsId.push(outCriminal.CriminalID);
       }
       OutCriminalsId = OutCriminalsId.join(",");
