@@ -730,14 +730,17 @@ export default {
         MapID: localStorage.getItem("MapFlnkID").toLowerCase()
       })
     };
+    
     vm.getGroupsWS = setInterval(function() {
       if (vm.ws.readyState == WebSocket.OPEN) {
         vm.ws.send(JSON.stringify(sendGroupAct));
       }
       vm.generalGroupList = [];
       vm.provisionalGroupList = [];
+      
       for (let i = 0; i < vm.allGroups.length; i++) {
         /*判断是都是报警的互监组*/
+        
         let reveiceData = vm.allGroups[i];
         if (reveiceData.Status == 0) {
           reveiceData.isWring = false;

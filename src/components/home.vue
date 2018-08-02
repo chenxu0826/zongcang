@@ -146,6 +146,7 @@ export default {
     getMap: function() {
       let vm = this;
       let map = vm.getLocalStorage("MapFlnkID");
+      
       let mapInfo = vm.mapList[0][map];
       vm.mapPhoto = MapUrl + mapInfo.MapUrl;
       vm.mapHeight = mapInfo.Height;

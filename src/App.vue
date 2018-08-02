@@ -10,13 +10,13 @@
 
     <!--快捷登记事由选择 start-->
     <div class="alertTip alertJQXZ" v-show="alertKJDJreason">
-      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 270px;background: #c5cfdb;">
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 390px;background: #c5cfdb;">
         <div class="bodyHead">
           <div @click="close('alertKJDJreason')" class="close">X</div>
         </div>
         <div class="bodyCon">
-          <el-col :span="4" v-for="(reason,index) in reasonList" :key="index">
-            <div class="choose" @click="startFastRegister(reason)">{{reason.DictCodeName}}</div>
+          <el-col :span="6" v-for="(reason,index) in reasonList" :key="index">
+            <div class="choose" style="height:60px;width:130px;font-size:20px;line-height:60px" @click="startFastRegister(reason)">{{reason.DictCodeName}}</div>
           </el-col>
         </div>
       </div>
@@ -717,21 +717,17 @@ export default {
         data: JSON.stringify(sendOutRegister),
         success: function(result) {
           if (result.RET == 1) {
-            debugger;
             vm.alertText = "提交成功";
             setTimeout(function() {
-              debugger
               vm.alertText = "";
               vm.alertKJDJ = false;
               vm.alertKJDJreason = false;
               vm.outCriminals = [];
             }, 2000);
           } else {
-            debugger;
             vm.canRouterChange();
             vm.alertText = "提交失败";
             setTimeout(function() {
-              debugger
               vm.alertText = "";
               vm.alertKJDJ = false;
               vm.alertKJDJreason = true;

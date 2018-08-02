@@ -1,17 +1,17 @@
 <template>
   <div class="menufooter">
-    <el-row class="menu_title_wrap">
-      <el-col :span="3" class="menu_title"></el-col>
-      <el-col :span="3" class="menu_title" v-for="(item,index) in menuList" :key="index">
+    <el-row class="menu_title_wrap" style="display:flex;justify-content:space-between;">
+
+      <div class="menu_title" style="float:left" v-for="(item,index) in menuList" :key="index">
         <div @click="gopage(item.path)">{{item.name}}</div>
-      </el-col>
-      <el-col :span="3" class="menu_title"></el-col>
+      </div>
+
     </el-row>
   </div>
 </template>
 
 <script>
-import { BasicUrl, IMG, ajaxUrl } from "../config";
+import { BasicUrl, IMG, ajaxUrl, MapUrl } from "../config";
 
 export default {
   name: "menufooter",
@@ -22,17 +22,35 @@ export default {
   },
   mounted: function() {
     let vm = this;
+    //todo上线的时候要把这段解开来实现菜单配置动态化
+    // $.ajax({
+    //   type: "get",
+    //   contentType: "application/json; charset=utf-8",
+    //   dataType: "json",
+    //   url: MapUrl + "/dist/menuList.json",
+    //   success: function(result) {
+    //     vm.menuList = result;
+    //   },
 
-    //TODO 临时使用的模拟数据,等有相关接口后改为AJAX请求
-    let tempstr =
-      '[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outregister"},{"name": "快捷登记", "path": "/tempButton" }]';
-    vm.menuList = JSON.parse(tempstr);
+    //   complete: function(XHR, TS) {
+    //     XHR = null; // 回收资源
+    //   },
+    //   error: function(e) {
+    //     console.log(e);
+    //   }
+    // });
+
+    
+
+    let menuJson =
+      '[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outRegisterFast"},{"name": "互监组管理", "path": "/mutualsupervision" }]';
+    vm.menuList = JSON.parse(menuJson);
   },
   methods: {
     gopage: function(path) {
       //菜单切换
       var vm = this;
-      if (path === "/tempButton") {
+      if (path === "/outRegisterFast") {
         vm.$emit("openFastRegisterAlert", true);
       }
 

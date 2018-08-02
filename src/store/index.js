@@ -9,6 +9,7 @@ import mutualsupervision_store from '../components/mutualsupervision/mutualsuper
 import outregister_store from '../components/outregister/outregister_store.js'
 import toolcheck_store from '../components/toolcheck/toolcheck_store.js'
 import cardbind_store from '../components/cardbind/cardbind_store.js'
+import outwork_store from '../components/outwork/outwork_store.js';
 
 
 export default new vuex.Store({
@@ -25,7 +26,8 @@ export default new vuex.Store({
     mutualsupervision: mutualsupervision_store,
     outregister: outregister_store,
     toolcheck: toolcheck_store,
-    cardbind: cardbind_store
+    cardbind: cardbind_store,
+    outwork:outwork_store
   },
   mutations: {
     setMapList(state, Payload) {
