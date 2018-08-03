@@ -68,7 +68,8 @@
             <div class="getCenter">
               <img :src="mapPhoto" ref="myImg">
               <!--统计显示-->
-              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}">
+              <!-- 位置原因点位有所偏移，暂行进行点位数据强制偏移，后期查找出原因进行修改 -->
+              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale-20+'px',left:item.X*mapScale-30+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}">
                 {{item.CriminalCnt}}
               </div>
             </div>
@@ -151,6 +152,7 @@ export default {
       vm.mapPhoto = MapUrl + mapInfo.MapUrl;
       vm.mapHeight = mapInfo.Height;
       vm.mapWidth = mapInfo.Width;
+      debugger
 
       let divH = this.$refs.myMap.clientHeight,
         divW = this.$refs.myMap.clientWidth;
@@ -176,7 +178,9 @@ export default {
       setInterval(function() {
         if (vm.chartsChange !== vm.chartsDatas) {
           vm.chartsChange = vm.chartsDatas;
+          
         }
+        debugger
 
         vm.float_personnelListAll = vm.FlnkIDList2.length;
         vm.float_personnelAllPages =
