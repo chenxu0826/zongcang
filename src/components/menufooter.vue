@@ -23,26 +23,26 @@ export default {
   mounted: function() {
     let vm = this;
     //todo上线的时候要把这段解开来实现菜单配置动态化
-    // $.ajax({
-    //   type: "get",
-    //   contentType: "application/json; charset=utf-8",
-    //   dataType: "json",
-    //   url: MapUrl + "/dist/menuList.json",
-    //   success: function(result) {
-    //     vm.menuList = result;
-    //   },
+    $.ajax({
+      type: "get",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      url: MapUrl + "/dist/menuList.json",
+      success: function(result) {
+        vm.menuList = result;
+      },
 
-    //   complete: function(XHR, TS) {
-    //     XHR = null; // 回收资源
-    //   },
-    //   error: function(e) {
-    //     console.log(e);
-    //   }
-    // });
+      complete: function(XHR, TS) {
+        XHR = null; // 回收资源
+      },
+      error: function(e) {
+        console.log(e);
+      }
+    });
 
-    let menuJson =
-      '[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outRegisterFast"},{"name": "互监组管理", "path": "/mutualsupervision" }]';
-    vm.menuList = JSON.parse(menuJson);
+    // let menuJson =
+    //   '[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outRegisterFast"},{"name": "互监组管理", "path": "/mutualsupervision" }]';
+    // vm.menuList = JSON.parse(menuJson);
   },
   methods: {
     gopage: function(path) {

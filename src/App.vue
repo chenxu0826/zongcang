@@ -27,7 +27,7 @@
     <div class="alertTip alertJQXZ" v-show="alertKJDJ">
       <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 337px;">
         <div class="bodyHead">
-          <div class="title">快捷登记</div>
+          <div class="title">外出人员信息</div>
           <div @click="close('alertKJDJ')" class="close">X</div>
         </div>
         <div class="bodyCon" style="height:291px;overflow-y:scroll;padding:0px">
@@ -45,7 +45,8 @@
         </div>
         <div class="partsFoot" style="height:60px">
           <div class="alertText">{{alertText}}</div>
-          <div style="margin: 20px 20px;float: right">
+          <div style="margin: 0 20px;font-size:25px;display:flex;justify-content:space-between">
+            <font style="color:red;">{{KJDJtext}}</font>
             <strong>请刷卡提交</strong>
           </div>
         </div>
@@ -548,7 +549,8 @@ export default {
       isSuccess: 0,
       starPerInterval: "", //获取外出登记的人员明细的Interval任务
       getPoliceSwipeCardInterval: "", //获取等待民警刷卡触发提交请求的Interval任务
-      outCriminals: [] //外出罪犯信息
+      outCriminals: [], //外出罪犯信息
+      KJDJtext: ""
     };
   },
   computed: {
@@ -679,6 +681,14 @@ export default {
       vm.getPoliceSwipeCardInterval = setInterval(function() {
         var policemanID = localStorage.getItem("placemanID");
         if (policemanID != 0 && policemanID != 1) {
+          if (vm.outCriminals.length == 0) {
+            localStorage.setItem("placemanID", 0);
+            vm.KJDJtext = "提交失败,暂无外出人员";
+            setTimeout(function() {
+              vm.KJDJtext = "";
+            }, 4000);
+            return;
+          }
           var placemanID = localStorage.getItem("placemanID");
           clearInterval(vm.getPoliceSwipeCardInterval);
           clearInterval(vm.starPerInterval);
@@ -1271,7 +1281,6 @@ export default {
         clearInterval(this.getPoliceSwipeCardInterval);
         clearInterval(this.starPerInterval);
         this.alertKJDJ = false;
-        this.alertKJDJreason = true;
       }
     },
 
@@ -1581,7 +1590,6 @@ export default {
             PSType: "2002"
           })
         };
-
         /* 流动人员 && 外监进入人员-24 */
         var personnel_distribution = {
           Header: {
@@ -1623,7 +1631,11 @@ export default {
       vm.$store.commit("setIswebsocket", 1);
       /*过滤进出工数据*/
       if (msg.Header.MsgType === 25) {
-        vm.$store.commit("setReceiveDataMsgType25", JSON.parse(msg.Body));
+        if (JSON.parse(msg.Body) != null && JSON.parse(msg.Body).length != 0) {
+          vm.$store.commit("setReceiveDataMsgType25", JSON.parse(msg.Body));
+        } else {
+          vm.$store.commit("setReceiveDataMsgType25", []);
+        }
       } else if (msg.Header.MsgType === 30) {
         /*工具清点提交返回结果*/
         vm.$store.commit("setReceiveDataMsgType30", JSON.parse(msg.Body));

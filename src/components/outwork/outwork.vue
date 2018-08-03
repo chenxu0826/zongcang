@@ -100,7 +100,7 @@ export default {
   computed: {
     ...mapState({
       criminalList: state => state.criminalList,
-      receiveDataMsgType25: state=> state.outwork.receiveDataMsgType25
+      receiveDataMsgType25: state => state.outwork.receiveDataMsgType25
     })
   },
   methods: {
@@ -173,13 +173,12 @@ export default {
           RegType: parseInt(vm.MoveType)
         })
       };
-      
+
       //发送数据
       vm.$ajax({
         url: ajaxUrl,
         data: JSON.stringify(send1),
         success: function(result) {
-          
           if (result.RET == 1) {
             vm.isSuccess = 1;
             localStorage.setItem("placemanID", "0");
@@ -202,11 +201,10 @@ export default {
       vm.buttonText = "出工";
       vm.MoveType = "2601";
     }
-    vm.firstWs();
+
     vm.$emit("openLogin", true);
     localStorage.setItem("placemanID", 0);
     var outWork = setInterval(function() {
-      ;
       if (localStorage.getItem("placemanID") == 0) {
         /*民警还未刷卡*/
       } else if (localStorage.getItem("placemanID") == 1) {
@@ -214,6 +212,7 @@ export default {
         clearInterval(outWork);
       } else {
         clearInterval(outWork);
+        vm.firstWs();
         var Polices = localStorage.getItem("placemanID");
         localStorage.setItem("placemanID", "0");
         var Reason;
@@ -239,7 +238,6 @@ export default {
           url: ajaxUrl,
           data: JSON.stringify(workSend),
           success: function(result) {
-            
             localStorage.setItem("moveTypes", "0");
             if (result.RET == 1) {
               localStorage.setItem("placemanID", 0);
@@ -247,10 +245,8 @@ export default {
               vm.$emit("openLogin", false);
               setTimeout(function() {
                 vm.alertText = "";
-                
               }, 2000);
 
-              ;
               //      发送内容
               var personnel_distribution = {
                 Header: {
@@ -263,19 +259,20 @@ export default {
                   MoveType: parseInt(vm.MoveType)
                 })
               };
-              ;
               vm.starInterval = setInterval(function() {
-                ;
                 if (vm.isSuccess == 1) {
                   if (vm.ws.readyState == WebSocket.OPEN) {
                     vm.ws.send(JSON.stringify(personnel_distribution));
                   }
                   var receiveDataMsgType25 = vm.receiveDataMsgType25;
+                  debugger;
                   var getCriminalLists = [];
                   if (
                     receiveDataMsgType25 != "" &&
-                    receiveDataMsgType25 != null
+                    receiveDataMsgType25 != null &&
+                    receiveDataMsgType25.length != 0
                   ) {
+                    debugger;
                     vm.inPages =
                       Math.ceil(vm.inCriminalList.length / 48) == 0
                         ? 1
@@ -296,6 +293,10 @@ export default {
                         }
                       }
                     }
+                  } else {
+                    debugger;
+                    vm.inCriminalList = [];
+                    vm.outCriminalList = [];
                   }
                   vm.outPages =
                     Math.ceil(vm.outCriminalList.length / 48) == 0

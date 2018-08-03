@@ -41,7 +41,7 @@
                   <p v-show="item.isBlue">前往区域：{{item.Areas}}</p>
                   <p v-show="item.isBlue">陪同民警：{{item.Polices}}</p>
                   <p>外出时间：{{item.LeaveTime}}</p>
-                  <p v-show="item.isBlue">外出事由：{{item.outreasons}}</p>
+                  <p v-show="item.isBlue">外出事由：{{item.Reason}}</p>
                 </el-col>
               </div>
             </el-col>
