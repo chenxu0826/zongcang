@@ -68,7 +68,7 @@
             <div class="getCenter">
               <img :src="mapPhoto" ref="myImg">
               <!--统计显示-->
-              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'green',fontWeight:'bold'}">
+              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale+'px',left:item.X*mapScale+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}">
                 {{item.CriminalCnt}}
               </div>
             </div>
