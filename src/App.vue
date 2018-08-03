@@ -1836,6 +1836,8 @@ export default {
           let flowCrim = flowPerson_outPrison_rec[3].People[i];
           flowCrim.CriminalName =
             vm.criminalList[0][flowCrim.CriminalID].CriminalName;
+          flowCrim.CriminalID =
+            vm.criminalList[0][flowCrim.CriminalID].CriminalID;
           vm.FlnkIDList_4.push(flowCrim);
         }
 
@@ -2021,8 +2023,8 @@ export default {
       if (vm.onlinestatus === false) {
         setInterval(function() {
           //todo暂时取消五秒刷新
-          // vm.$router.push({ path: "/" });
-          // window.location.reload();
+          vm.$router.push({ path: "/" });
+          window.location.reload();
         }, 5000);
       }
     };
@@ -2032,8 +2034,8 @@ export default {
       console.log("WebSocketError!", evt);
       setInterval(function() {
         //todo暂时取消五秒刷新
-        // vm.$router.push({ path: "/" });
-        // window.location.reload();
+        vm.$router.push({ path: "/" });
+        window.location.reload();
       }, 5000);
     };
 
