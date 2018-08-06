@@ -152,7 +152,6 @@ export default {
       vm.mapPhoto = MapUrl + mapInfo.MapUrl;
       vm.mapHeight = mapInfo.Height;
       vm.mapWidth = mapInfo.Width;
-      debugger
 
       let divH = this.$refs.myMap.clientHeight,
         divW = this.$refs.myMap.clientWidth;
@@ -180,7 +179,6 @@ export default {
           vm.chartsChange = vm.chartsDatas;
           
         }
-        debugger
 
         vm.float_personnelListAll = vm.FlnkIDList2.length;
         vm.float_personnelAllPages =

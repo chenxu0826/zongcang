@@ -601,6 +601,7 @@ export default {
     //开始快捷登记
     startFastRegister: function(reason) {
       var vm = this;
+      vm.outCriminals.length = 0;
       vm.alertKJDJreason = false;
       vm.alertKJDJ = true;
       vm.selectReason = reason.DictCodeName;
@@ -642,26 +643,18 @@ export default {
               DoorID: localStorage.getItem("DoorID")
             })
           };
-          var send27 = {
-            Header: {
-              MsgID: "201501260000000035",
-              MsgType: 27
-            },
-            Body: JSON.stringify({
-              OrgID: localStorage.getItem("OrgID"),
-              DoorID: localStorage.getItem("DoorID")
-            })
-          };
           //发送数据
           if (vm.ws.readyState == WebSocket.OPEN) {
             vm.ws.send(JSON.stringify(send2));
           }
-          if (vm.ws.readyState == WebSocket.OPEN) {
-            vm.ws.send(JSON.stringify(send27));
-          }
           /*外出登记罪犯信息*/
+          vm.outCriminals.length = 0;
           var receiveData = vm.receiveDataMsgType22;
-          if (receiveData != "" && receiveData != null) {
+          if (
+            receiveData != "" &&
+            receiveData != null &&
+            receiveData.length != 0
+          ) {
             var outCriminal = []; //外出罪犯
             for (var i = 0; i < receiveData.length; i++) {
               var Criminal = receiveData[i];
@@ -675,7 +668,7 @@ export default {
             }
           }
         }
-      }, 1000);
+      }, 200);
 
       //获取民警是否刷卡，以及刷卡信息
       vm.getPoliceSwipeCardInterval = setInterval(function() {
@@ -728,6 +721,8 @@ export default {
         success: function(result) {
           if (result.RET == 1) {
             vm.alertText = "提交成功";
+            vm.outCriminals.length = 0;
+            vm.receiveDataMsgType22.length = 0;
             setTimeout(function() {
               vm.alertText = "";
               vm.alertKJDJ = false;
@@ -737,11 +732,39 @@ export default {
           } else {
             vm.canRouterChange();
             vm.alertText = "提交失败";
+            vm.outCriminals.length = 0;
+            vm.receiveDataMsgType22.length = 0;
             setTimeout(function() {
               vm.alertText = "";
               vm.alertKJDJ = false;
               vm.alertKJDJreason = true;
             }, 2000);
+          }
+        }
+      });
+    },
+
+    cancelFastRegister: function() {
+      var vm = this;
+      var send3 = {
+        Header: {
+          MsgID: "201501260000000035",
+          MsgType: 26
+        },
+        Body: JSON.stringify({
+          OrgID: localStorage.getItem("OrgID"),
+          DoorID: localStorage.getItem("DoorID")
+        })
+      };
+      //发送数据
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(send3),
+        success: function(result) {
+          if (result.RET == 1) {
+            localStorage.setItem("moveTypes", "0");
+          } else {
+            console.log("取消失败");
           }
         }
       });
@@ -775,9 +798,6 @@ export default {
           vm.setLocalStorage("AreaID", vm.prisonSelect[0].AreaID);
           vm.setLocalStorage("AreaType", vm.prisonSelect[0].AreaType);
           vm.setLocalStorage("MapFlnkID", vm.prisonSelect[0].MapFlnkID);
-        },
-        error: function(err) {
-          console.log(err);
         }
       });
     },
@@ -1276,10 +1296,16 @@ export default {
       } else if (chose == "alertLXXQ") {
         this.alertLXXQ = false;
       } else if (chose == "alertKJDJreason") {
+        this.outCriminals.length = 0;
+        this.receiveDataMsgType22.length = 0;
         this.alertKJDJreason = false;
+        this.cancelFastRegister();
       } else if (chose == "alertKJDJ") {
+        this.outCriminals.length = 0;
+        this.receiveDataMsgType22.length = 0;
         clearInterval(this.getPoliceSwipeCardInterval);
         clearInterval(this.starPerInterval);
+        this.cancelFastRegister();
         this.alertKJDJ = false;
       }
     },
@@ -1571,6 +1597,7 @@ export default {
     var vm = this;
     vm.changeSize();
     /* Coding By YanM */
+    debugger
     this.initPrison();
 
     /* 打开websocket */

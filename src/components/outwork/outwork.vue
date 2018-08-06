@@ -265,14 +265,12 @@ export default {
                     vm.ws.send(JSON.stringify(personnel_distribution));
                   }
                   var receiveDataMsgType25 = vm.receiveDataMsgType25;
-                  debugger;
                   var getCriminalLists = [];
                   if (
                     receiveDataMsgType25 != "" &&
                     receiveDataMsgType25 != null &&
                     receiveDataMsgType25.length != 0
                   ) {
-                    debugger;
                     vm.inPages =
                       Math.ceil(vm.inCriminalList.length / 48) == 0
                         ? 1
@@ -294,7 +292,6 @@ export default {
                       }
                     }
                   } else {
-                    debugger;
                     vm.inCriminalList = [];
                     vm.outCriminalList = [];
                   }
