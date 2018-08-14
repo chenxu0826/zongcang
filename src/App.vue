@@ -463,7 +463,7 @@
 <script>
 import navheader from "./components/navheader.vue"; // 引入组件头部导航
 import menufooter from "./components/menufooter.vue"; // 引入组件底部菜单
-import { BasicUrl, IMG, ajaxUrl } from "./config";
+import { BasicUrl, IMG, ajaxUrl, MapUrl } from "./config";
 import global from "./plugins/vue.global.js";
 import { ajax } from "./assets/ajaxWebApiMethod";
 import { mapState } from "vuex";
@@ -568,10 +568,62 @@ export default {
       cardPerson: state => state.mutualsupervision.cardPerson,
       receiveDataMsgType22: state => state.outregister.receiveDataMsgType22,
       policeList: state => state.outregister.policeList,
-      chest_card: state => state.cardbind.chest_card
+      chest_card: state => state.cardbind.chest_card,
+      rootMapInfo: state => state.home.rootMapInfo, //监狱总地图数据
+      configInfo: state => state.configInfo //系统功能配置信息
     })
   },
   methods: {
+    getConfigInfo: function() {
+      var vm = this;
+            var json = `{
+          "menulist": [
+              {
+                  "name": "监区概况",
+                  "path": "/"
+              },
+              {
+                  "name": "出工收工",
+                  "path": "/outwork"
+              },
+              {
+                  "name": "人员清点",
+                  "path": "/crimalcheck"
+              },
+              {
+                  "name": "工具清点",
+                  "path": "/toolcheck"
+              },
+              {
+                  "name": "外出登记",
+                  "path": "/outRegisterFast"
+              },
+              {
+                  "name": "互监组管理",
+                  "path": "/mutualsupervision"
+              }
+          ],
+          "rootMapPosition": false
+      }`;
+      var tempJson = JSON.parse(json);
+      vm.$store.commit("setConfigInfo", tempJson);
+      // $.ajax({
+      //   type: "get",
+      //   contentType: "application/json; charset=utf-8",
+      //   dataType: "json",
+      //   async: false,
+      //   url: MapUrl + "/dist/config.json",
+      //   success: function(result) {
+      //     vm.$store.commit("setConfigInfo", result);
+      //   },
+      //   complete: function(XHR, TS) {
+      //     XHR = null; // 回收资源
+      //   },
+      //   error: function(e) {
+      //     console.log(e);
+      //   }
+      // });
+    },
     // 快捷登记(选择事由)弹窗显示
     fastRegisterAlertOpen: function(msg) {
       //获取外出事由
@@ -1356,6 +1408,9 @@ export default {
     /*查看区域人员详情*/
     viewRYDetail: function(areaId) {
       var vm = this;
+      if (vm.configInfo.rootMapPosition == true) {
+        return;
+      }
       var viewCmd = {
         Header: {
           MsgID: "201501260000000031",
@@ -1547,7 +1602,6 @@ export default {
       vm.$ajax({
         url: BasicUrl + "HomeIndex/GetMapList",
         success: function(result) {
-          //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
           var map_hash = new Array();
           // 重构警员信息哈希数据
           for (var i = 0; i < result.length; i++) {
@@ -1572,23 +1626,66 @@ export default {
         }
       });
 
-      /*区域配置信息*/
-      vm.$ajax({
-        url: BasicUrl + "HomeIndex/GetQYGuid",
-        data: { MapID: localStorage.getItem("MapFlnkID") },
-        success: function(result) {
-          //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-          var area_hash = new Array();
-          // 重构警员信息哈希数据
-          for (var i = 0; i < result.length; i++) {
-            area_hash[result[i].FlnkID] = {
-              FlnkID: result[i].FlnkID,
-              CenterX: result[i].CenterCoordinate.split(",")[0],
-              CenterY: result[i].CenterCoordinate.split(",")[1],
-              AreaName: result[i].AreaName
-            };
+      if (vm.configInfo.rootMapPosition == true) {
+        vm.$ajax({
+          url: BasicUrl + "HomeIndex/GetMapBigAreaList",
+          success: function(result) {
+            var area_hash = new Array();
+            for (var i = 0; i < result.length; i++) {
+              area_hash[result[i].FlnkID] = {
+                FlnkID: result[i].FlnkID,
+                CenterX: result[i].CenterCoordinate.split(",")[0],
+                CenterY: result[i].CenterCoordinate.split(",")[1],
+                AreaName: result[i].AreaName
+              };
+            }
+            vm.$store.commit("setAreaList", area_hash);
           }
-          vm.$store.commit("setAreaList", area_hash);
+        });
+      } else {
+        /*区域配置信息*/
+        vm.$ajax({
+          url: BasicUrl + "HomeIndex/GetQYGuid",
+          data: { MapID: localStorage.getItem("MapFlnkID") },
+          success: function(result) {
+            var area_hash = new Array();
+            for (var i = 0; i < result.length; i++) {
+              area_hash[result[i].FlnkID] = {
+                FlnkID: result[i].FlnkID,
+                CenterX: result[i].CenterCoordinate.split(",")[0],
+                CenterY: result[i].CenterCoordinate.split(",")[1],
+                AreaName: result[i].AreaName
+              };
+            }
+            vm.$store.commit("setAreaList", area_hash);
+          }
+        });
+      }
+    },
+    initRootPrisonMapInfo: function() {
+      var vm = this;
+      /* 监狱的总图数据 */
+      vm.$ajax({
+        url: BasicUrl + "HomeIndex/GetMapRootInfo",
+        success: function(result) {
+          var rootMapInfoTemp = {
+            FlnkID: result[0].FlnkID,
+            Height: result[0].Height,
+            HostID: result[0].HostID,
+            IsDelete: result[0].IsDelete,
+            MapCode: result[0].MapCode,
+            MapName: result[0].MapName,
+            MapType: result[0].MapType,
+            MapUrl: result[0].MapUrl,
+            OrderIndex: result[0].OrderIndex,
+            ParentID: result[0].ParentID,
+            Pinyin: result[0].Pinyin,
+            Scale: result[0].Scale,
+            UpdateTime: result[0].UpdateTime,
+            Width: result[0].Width
+          };
+          vm.$store.commit("setRootMapInfo", rootMapInfoTemp);
+          vm.allDataInit();
         }
       });
     }
@@ -1596,27 +1693,50 @@ export default {
   mounted() {
     var vm = this;
     vm.changeSize();
-    /* Coding By YanM */
-    debugger
-    this.initPrison();
+    vm.getConfigInfo();
+    vm.initPrison();
+    if (vm.configInfo.rootMapPosition == true) {
+      vm.initRootPrisonMapInfo();
+    } else {
+      vm.allDataInit();
+    }
 
     /* 打开websocket */
     vm.ws.onopen = function() {
+      console.log("websocket----onopen")
       vm.$store.commit("setOnlinestatus", true);
+      vm.$store.commit("setIswebsocket", 1);
       setInterval(function() {
-        var flowPerson_outPrison = {
-          Header: {
-            MsgID: "201501260000000001",
-            MsgType: 11
-          },
-          Body: JSON.stringify({
-            MapID: vm.getLocalStorage("MapFlnkID"),
-            OrgID: vm.getLocalStorage("OrgID"),
-            AreaIDs: "",
-            AreaType: 1901, //最小区域
-            PSType: "2002"
-          })
-        };
+        if (vm.configInfo.rootMapPosition == true) {
+          var flowPerson_outPrison = {
+            Header: {
+              MsgID: "201501260000000001",
+              MsgType: 11
+            },
+            Body: JSON.stringify({
+              MapID: vm.rootMapInfo.FlnkID,
+              OrgID: vm.getLocalStorage("OrgID"),
+              AreaIDs: "00000000-0000-0000-0000-000000000000",
+              AreaType: 1903, //最大区域
+              PSType: "2002"
+            })
+          };
+        } else {
+          var flowPerson_outPrison = {
+            Header: {
+              MsgID: "201501260000000001",
+              MsgType: 11
+            },
+            Body: JSON.stringify({
+              MapID: vm.getLocalStorage("MapFlnkID"),
+              OrgID: vm.getLocalStorage("OrgID"),
+              AreaIDs: "",
+              AreaType: 1901, //最小区域
+              PSType: "2002"
+            })
+          };
+        }
+
         /* 流动人员 && 外监进入人员-24 */
         var personnel_distribution = {
           Header: {
@@ -1646,16 +1766,15 @@ export default {
       }, 2000);
     };
 
-    vm.allDataInit();
-
     /* websocket接收信息 */
     vm.ws.onmessage = function(event) {
+      console.log("websocket----onmessage")
       vm.$store.commit("setSocketAllData", event.data);
       var msg = JSON.parse(vm.SocketAllData);
       if (msg == null) {
         return;
       }
-      vm.$store.commit("setIswebsocket", 1);
+      
       /*过滤进出工数据*/
       if (msg.Header.MsgType === 25) {
         if (JSON.parse(msg.Body) != null && JSON.parse(msg.Body).length != 0) {
@@ -2057,7 +2176,9 @@ export default {
     };
 
     /* 关闭状态 */
-    vm.ws.onclose = function() {
+    vm.ws.onclose = function(event) {
+      console.log("websocket----onclose")
+      console.log(event)
       vm.$store.commit("setOnlinestatus", false);
       if (vm.onlinestatus === false) {
         setInterval(function() {
@@ -2070,6 +2191,7 @@ export default {
 
     /* 错误信息 */
     vm.ws.onerror = function(evt) {
+      console.log("websocket----onerror")
       console.log("WebSocketError!", evt);
       setInterval(function() {
         //todo暂时取消五秒刷新

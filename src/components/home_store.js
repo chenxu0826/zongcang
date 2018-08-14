@@ -6,6 +6,7 @@ export default {
     'chartsDatas': [],//人员分布图表渲染数据
     'crimalCount_outCrimalCount': {},//监区人数 && 外出人数（监外）
     'Iswebsocket': 0,//是否建立websocket
+    'rootMapInfo':{}//监狱的总图
   },
   mutations: {
     setFlnkIDList1(state, Payload) {
@@ -26,7 +27,9 @@ export default {
     setIswebsocket(state, Payload) {
       state.Iswebsocket = Payload;
     },
-
+    setRootMapInfo(state, Payload) {
+      state.rootMapInfo = Payload;
+    },
 
   }
 }

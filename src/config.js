@@ -14,6 +14,8 @@ export const BasicUrl = 'http://'+window.location.host+'/api/'
 // export const BasicUrl = 'http://10.58.1.130:80/api/'//开发临时使用
 // export const BasicUrl = 'http://192.168.0.105:1111/api/'//开发临时使用
 
+console.log("window.location.host:"+window.location.host)
+
 $.ajax({
   type: "get",
   contentType: "application/json; charset=utf-8",
@@ -22,6 +24,7 @@ $.ajax({
   async: false,
   url: BasicUrl + 'HomeIndex/GetGateWayConfig' + "?callback=?",
   success: function (result) {
+    console.log("HomeIndex/GetGateWayConfig:"+JSON.stringify(result))
     localStorage.setItem('IP', result[0].GateWayIP)
     localStorage.setItem('WebSocketPort', result[0].TcpReceivePort)
     localStorage.setItem('TcpPort', result[0].ReceivePort)
@@ -35,7 +38,6 @@ $.ajax({
 })
 
 /* 服务请求接口地址 */
-//export const ajaxUrl = 'http://' + localStorage.getItem('IP') + ':' + localStorage.getItem('TcpPort')
 export const ajaxUrl = 'http://' + localStorage.getItem('IP') + ':' + localStorage.getItem('TcpPort')
 
 /* 静态资源地址 */
@@ -54,8 +56,6 @@ export default {
     Vue.prototype.setLocalStorage = (keyName, keyValue) => {
       localStorage.setItem(keyName, keyValue)
     }
-
-    Vue.prototype.ws = new WebSocket('ws:' + '127.0.0.1' + ':' + '5000')
 
     /* websocket地址配置 */
     if (localStorage.getItem('IP') != null) {

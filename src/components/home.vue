@@ -111,7 +111,9 @@ export default {
       FlnkIDList4: state => state.home.FlnkIDList4,
       chartsDatas: state => state.home.chartsDatas,
       Iswebsocket: state => state.home.Iswebsocket,
-      mapList: state => state.mapList
+      mapList: state => state.mapList,
+      rootMapInfo: state => state.home.rootMapInfo, //监狱总地图数据
+      configInfo: state => state.configInfo //系统功能配置信息
     })
   },
   methods: {
@@ -145,27 +147,35 @@ export default {
     },
     //获取地图信息
     getMap: function() {
-      let vm = this;
-      let map = vm.getLocalStorage("MapFlnkID");
+      try {
+        let vm = this;
+        let mapInfo = {};
+        if (vm.configInfo.rootMapPosition == true) {
+          mapInfo = vm.rootMapInfo;
+        } else {
+          let map = vm.getLocalStorage("MapFlnkID");
+          mapInfo = vm.mapList[0][map];
+        }
+        vm.mapPhoto = MapUrl + mapInfo.MapUrl;
+        vm.mapHeight = mapInfo.Height;
+        vm.mapWidth = mapInfo.Width;
 
-      let mapInfo = vm.mapList[0][map];
-      vm.mapPhoto = MapUrl + mapInfo.MapUrl;
-      vm.mapHeight = mapInfo.Height;
-      vm.mapWidth = mapInfo.Width;
+        let divH = this.$refs.myMap.clientHeight,
+          divW = this.$refs.myMap.clientWidth;
 
-      let divH = this.$refs.myMap.clientHeight,
-        divW = this.$refs.myMap.clientWidth;
-
-      let hScale = divH / vm.mapHeight;
-      let wScale = divW / vm.mapWidth;
-      if (hScale < wScale) {
-        this.$refs.myImg.height = divH;
-        this.$refs.myImg.width = vm.mapWidth * hScale;
-        this.mapScale = hScale;
-      } else {
-        this.$refs.myImg.height = vm.mapHeight * wScale;
-        this.$refs.myImg.width = divW;
-        this.mapScale = wScale;
+        let hScale = divH / vm.mapHeight;
+        let wScale = divW / vm.mapWidth;
+        if (hScale < wScale) {
+          this.$refs.myImg.height = divH;
+          this.$refs.myImg.width = vm.mapWidth * hScale;
+          this.mapScale = hScale;
+        } else {
+          this.$refs.myImg.height = vm.mapHeight * wScale;
+          this.$refs.myImg.width = divW;
+          this.mapScale = wScale;
+        }
+      } catch (error) {
+        console.log(error)
       }
     }
   },
@@ -177,7 +187,6 @@ export default {
       setInterval(function() {
         if (vm.chartsChange !== vm.chartsDatas) {
           vm.chartsChange = vm.chartsDatas;
-          
         }
 
         vm.float_personnelListAll = vm.FlnkIDList2.length;
@@ -196,7 +205,7 @@ export default {
           //  vm.float_personnelA = 1
         }
       }, 1000);
-    }, 500);
+    }, 200);
 
     //5秒钟没有数据 刷新界面
     setInterval(function() {
@@ -205,7 +214,7 @@ export default {
         vm.$router.push({ path: "/" });
         window.location.reload();
       }
-    }, 5000);
+    }, 20000);
   }
 };
 </script>

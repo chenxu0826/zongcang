@@ -12,33 +12,52 @@
 
 <script>
 import { BasicUrl, IMG, ajaxUrl, MapUrl } from "../config";
+import { mapState } from "vuex";
 
 export default {
   name: "menufooter",
   data() {
     return {
-      menuList: [] //menufooter菜单配置信息  属性--- name：显示名称，path：路由地址
+      menuList: [], //menufooter菜单配置信息  属性--- name：显示名称，path：路由地址
+      getMenuListInterval: ""
     };
+  },
+  computed: {
+    ...mapState({
+      configInfo: state => state.configInfo //系统功能配置信息
+    })
   },
   mounted: function() {
     let vm = this;
     //todo上线的时候要把这段解开来实现菜单配置动态化
-    $.ajax({
-      type: "get",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      url: MapUrl + "/dist/menuList.json",
-      success: function(result) {
-        vm.menuList = result;
-      },
+    // $.ajax({
+    //   type: "get",
+    //   contentType: "application/json; charset=utf-8",
+    //   dataType: "json",
+    //   url: MapUrl + "/dist/menuList.json",
+    //   success: function(result) {
+    //     vm.menuList = result;
+    //   },
 
-      complete: function(XHR, TS) {
-        XHR = null; // 回收资源
-      },
-      error: function(e) {
-        console.log(e);
+    //   complete: function(XHR, TS) {
+    //     XHR = null; // 回收资源
+    //   },
+    //   error: function(e) {
+    //     console.log(e);
+    //   }
+    // });
+    
+    
+    vm.getMenuListInterval = setInterval(function() {
+      if (
+        vm.configInfo.menulist != null &&
+        vm.configInfo.menulist != undefined &&
+        vm.configInfo.menulist.length != 0
+      ) {
+        vm.menuList = vm.configInfo.menulist;
+        clearInterval(vm.getMenuListInterval);
       }
-    });
+    }, 200);
 
     // let menuJson =
     //   '[{"name":"监区概况","path":"/"},{"name":"出工收工","path":"/outwork"},{"name":"人员清点","path":"/crimalcheck"},{"name":"工具清点","path":"/toolcheck"},{"name":"外出登记","path":"/outRegisterFast"},{"name": "互监组管理", "path": "/mutualsupervision" }]';

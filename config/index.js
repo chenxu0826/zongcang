@@ -15,6 +15,16 @@ module.exports = {
     // npm install --save-dev compression-webpack-plugin
     productionGzip: false,
     productionGzipExtensions: ['js', 'css'],
+    proxyTable: {
+      '/api': {  //使用"/api"来代替"http://www.baidu.com" 
+        target: 'http://192.168.0.101:20002', //源地址 
+        changeOrigin: true, //改变源 
+        pathRewrite: {
+          '^/api': '/api' //路径重写 
+        }
+      }
+
+    },
     // Run the build command with an extra argument to
     // View the bundle analyzer report after build finishes:
     // `npm run build --report`
@@ -27,7 +37,16 @@ module.exports = {
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api': {  //使用"/api"来代替"http://www.baidu.com" 
+        target: 'http://192.168.0.101:1111', //源地址 
+        changeOrigin: true, //改变源 
+        pathRewrite: {
+          '^/api': '/api' //路径重写 
+        }
+      }
+
+    },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)

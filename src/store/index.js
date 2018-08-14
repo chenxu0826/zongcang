@@ -18,6 +18,7 @@ export default new vuex.Store({
     'areaList': [],
     "SocketAllData": {},
     "criminalList": [], //罪犯基础信息集合
+    'configInfo': {},//系统功能配置信息
   },
   modules: {
     home: home_store,
@@ -27,7 +28,7 @@ export default new vuex.Store({
     outregister: outregister_store,
     toolcheck: toolcheck_store,
     cardbind: cardbind_store,
-    outwork:outwork_store
+    outwork: outwork_store
   },
   mutations: {
     setMapList(state, Payload) {
@@ -41,6 +42,9 @@ export default new vuex.Store({
     },
     setCriminalList(state, Payload) {
       state.criminalList[0] = Payload;
+    },
+    setConfigInfo(state, Payload) {
+      state.configInfo = Payload;
     }
   }
 })
