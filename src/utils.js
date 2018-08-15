@@ -13,12 +13,15 @@ Utils.install = function (Vue, options) {
         XHR = null; //回收资源
       }
     }
+    if (args.async == undefined || args.async == null) {
+      args.async = false
+    }
     $.ajax({
       type: "get",
       contentType: "application/json; charset=utf-8",
       dataType: "jsonp",
       jsonp: "callback",
-      async: false,
+      async: args.async,
       data: args.data,
       url: args.url,
       success: args.success,

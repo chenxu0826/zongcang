@@ -205,7 +205,7 @@ export default {
           //  vm.float_personnelA = 1
         }
       }, 1000);
-    }, 200);
+    }, 1000);
 
     //5秒钟没有数据 刷新界面
     setInterval(function() {
@@ -214,7 +214,7 @@ export default {
         vm.$router.push({ path: "/" });
         window.location.reload();
       }
-    }, 20000);
+    }, 5000);
   }
 };
 </script>

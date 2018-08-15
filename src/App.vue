@@ -576,53 +576,58 @@ export default {
   methods: {
     getConfigInfo: function() {
       var vm = this;
-            var json = `{
-          "menulist": [
-              {
-                  "name": "监区概况",
-                  "path": "/"
-              },
-              {
-                  "name": "出工收工",
-                  "path": "/outwork"
-              },
-              {
-                  "name": "人员清点",
-                  "path": "/crimalcheck"
-              },
-              {
-                  "name": "工具清点",
-                  "path": "/toolcheck"
-              },
-              {
-                  "name": "外出登记",
-                  "path": "/outRegisterFast"
-              },
-              {
-                  "name": "互监组管理",
-                  "path": "/mutualsupervision"
-              }
-          ],
-          "rootMapPosition": false
-      }`;
-      var tempJson = JSON.parse(json);
-      vm.$store.commit("setConfigInfo", tempJson);
-      // $.ajax({
-      //   type: "get",
-      //   contentType: "application/json; charset=utf-8",
-      //   dataType: "json",
-      //   async: false,
-      //   url: MapUrl + "/dist/config.json",
-      //   success: function(result) {
-      //     vm.$store.commit("setConfigInfo", result);
-      //   },
-      //   complete: function(XHR, TS) {
-      //     XHR = null; // 回收资源
-      //   },
-      //   error: function(e) {
-      //     console.log(e);
-      //   }
-      // });
+      // var json = `{
+      //     "menulist": [
+      //         {
+      //             "name": "监区概况",
+      //             "path": "/"
+      //         },
+      //         {
+      //             "name": "出工收工",
+      //             "path": "/outwork"
+      //         },
+      //         {
+      //             "name": "人员清点",
+      //             "path": "/crimalcheck"
+      //         },
+      //         {
+      //             "name": "工具清点",
+      //             "path": "/toolcheck"
+      //         },
+      //         {
+      //             "name": "外出登记",
+      //             "path": "/outRegisterFast"
+      //         },
+      //         {
+      //             "name": "互监组管理",
+      //             "path": "/mutualsupervision"
+      //         }
+      //     ],
+      //     "rootMapPosition": false
+      // }`;
+      // var tempJson = JSON.parse(json);
+      // vm.$store.commit("setConfigInfo", tempJson);
+      $.ajax({
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: true,
+        url: MapUrl + "/dist/config.json",
+        success: function(result) {
+          vm.$store.commit("setConfigInfo", result);
+          if (vm.configInfo.rootMapPosition == true) {
+            vm.initRootPrisonMapInfo();
+          } else {
+            vm.allDataInit();
+          }
+        },
+        complete: function(XHR, TS) {
+          XHR = null; // 回收资源
+        },
+        error: function(e) {
+          console.log(e);
+        }
+      });
     },
     // 快捷登记(选择事由)弹窗显示
     fastRegisterAlertOpen: function(msg) {
@@ -842,6 +847,7 @@ export default {
       var vm = this;
       vm.$ajax({
         url: BasicUrl + "HomeIndex/GetBindJQ",
+        async: true,
         success: function(result) {
           vm.prisonSelect = result;
           vm.$store.commit("setMessage", vm.prisonSelect[0].AreaName);
@@ -1473,6 +1479,7 @@ export default {
       /* 罪犯基础数据 */
       vm.$ajax({
         url: BasicUrl + "CriminalCnt/GetCriminalList" + "?callback=?",
+        async: true,
         success: function(result) {
           //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
           var personlist_hash = [];
@@ -1512,6 +1519,7 @@ export default {
       vm.$ajax({
         data: { OrgID: localStorage.getItem("OrgID") },
         url: BasicUrl + "CriminalCnt/GetCurOrgCriminalCount",
+        async: true,
         success: function(result) {
           //alert(localStorage.getItem('OrgID'))参数传递正确取回的值却是错的(其他监区的值)
           //alert(JSON.stringify(result[0]))
@@ -1522,6 +1530,7 @@ export default {
       /* 获取配置项 */
       vm.$ajax({
         url: BasicUrl + "HomeIndex/GetSysConfig",
+        async: true,
         success: function(result) {
           for (let i = 0; i < result.length; i++) {
             if (result[i].FieldName == "KnockOffTime") {
@@ -1540,6 +1549,7 @@ export default {
       /* 工具基础信息 */
       vm.$ajax({
         data: { OrgID: localStorage.getItem("OrgID") },
+        async: true,
         url: BasicUrl + "ToolCnt/GetToolList" + "?callback=?",
         success: function(result) {
           if (result != undefined || result != null) {
@@ -1564,6 +1574,7 @@ export default {
       /* 全部警员信息 */
       vm.$ajax({
         data: { OrgID: localStorage.getItem("OrgID") },
+        async: true,
         url: BasicUrl + "HomeIndex/GetPoliceList",
         success: function(result) {
           //所有警员信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
@@ -1601,6 +1612,7 @@ export default {
       /* 全部地图数据 */
       vm.$ajax({
         url: BasicUrl + "HomeIndex/GetMapList",
+        async: true,
         success: function(result) {
           var map_hash = new Array();
           // 重构警员信息哈希数据
@@ -1629,6 +1641,7 @@ export default {
       if (vm.configInfo.rootMapPosition == true) {
         vm.$ajax({
           url: BasicUrl + "HomeIndex/GetMapBigAreaList",
+          async: true,
           success: function(result) {
             var area_hash = new Array();
             for (var i = 0; i < result.length; i++) {
@@ -1647,6 +1660,7 @@ export default {
         vm.$ajax({
           url: BasicUrl + "HomeIndex/GetQYGuid",
           data: { MapID: localStorage.getItem("MapFlnkID") },
+          async: true,
           success: function(result) {
             var area_hash = new Array();
             for (var i = 0; i < result.length; i++) {
@@ -1693,17 +1707,12 @@ export default {
   mounted() {
     var vm = this;
     vm.changeSize();
-    vm.getConfigInfo();
     vm.initPrison();
-    if (vm.configInfo.rootMapPosition == true) {
-      vm.initRootPrisonMapInfo();
-    } else {
-      vm.allDataInit();
-    }
+    vm.getConfigInfo();
 
     /* 打开websocket */
     vm.ws.onopen = function() {
-      console.log("websocket----onopen")
+      console.log("websocket----onopen");
       vm.$store.commit("setOnlinestatus", true);
       vm.$store.commit("setIswebsocket", 1);
       setInterval(function() {
@@ -1768,13 +1777,13 @@ export default {
 
     /* websocket接收信息 */
     vm.ws.onmessage = function(event) {
-      console.log("websocket----onmessage")
+      console.log("websocket----onmessage");
       vm.$store.commit("setSocketAllData", event.data);
       var msg = JSON.parse(vm.SocketAllData);
       if (msg == null) {
         return;
       }
-      
+
       /*过滤进出工数据*/
       if (msg.Header.MsgType === 25) {
         if (JSON.parse(msg.Body) != null && JSON.parse(msg.Body).length != 0) {
@@ -2177,8 +2186,8 @@ export default {
 
     /* 关闭状态 */
     vm.ws.onclose = function(event) {
-      console.log("websocket----onclose")
-      console.log(event)
+      console.log("websocket----onclose");
+      console.log(event);
       vm.$store.commit("setOnlinestatus", false);
       if (vm.onlinestatus === false) {
         setInterval(function() {
@@ -2191,7 +2200,7 @@ export default {
 
     /* 错误信息 */
     vm.ws.onerror = function(evt) {
-      console.log("websocket----onerror")
+      console.log("websocket----onerror");
       console.log("WebSocketError!", evt);
       setInterval(function() {
         //todo暂时取消五秒刷新
