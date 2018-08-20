@@ -10,6 +10,7 @@ import outregister_store from '../components/outregister/outregister_store.js'
 import toolcheck_store from '../components/toolcheck/toolcheck_store.js'
 import cardbind_store from '../components/cardbind/cardbind_store.js'
 import outwork_store from '../components/outwork/outwork_store.js';
+import cellAdjust_store from '../components/cellAdjust/cellAdjust_store.js'
 
 
 export default new vuex.Store({
@@ -28,7 +29,8 @@ export default new vuex.Store({
     outregister: outregister_store,
     toolcheck: toolcheck_store,
     cardbind: cardbind_store,
-    outwork: outwork_store
+    outwork: outwork_store,
+    cellAdjust: cellAdjust_store
   },
   mutations: {
     setMapList(state, Payload) {

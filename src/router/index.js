@@ -8,6 +8,7 @@ import outregister from '@/components/outregister/outregister'
 import position from '@/components/position/position'
 import mutualsupervision from '@/components/mutualsupervision/mutualsupervision'
 import cardbind from '@/components/cardbind/cardbind'
+import cellAdjust from '@/components/cellAdjust/cellAdjust'
 
 Vue.use(Router)
 
@@ -60,6 +61,12 @@ export default new Router({
       path: '/cardbind',
       name: 'cardbind',
       component: cardbind
+    },
+    {
+      //监房调整
+      path: '/cellAdjust',
+      name: 'cellAdjust',
+      component: cellAdjust
     }
   ]
 })

@@ -3,10 +3,35 @@
     <!--头部-->
     <navheader @workOut="playAudio" @getPosition="onClickPosition()"></navheader>
 
-    <router-view @openLogin="loginOpen" @hasCheaked="onHasCheaked" @hasCheakedTool="onHasCheakedTool" @canRouterChange="canRouterChange" @viewRYXQ="viewRYDetail" @viewLXRY="viewLXRYDetail"></router-view>
+    <router-view @openLogin="loginOpen" @hasCheaked="onHasCheaked" @hasCheakedTool="onHasCheakedTool" @canRouterChange="canRouterChange" @viewRYXQ="viewRYDetail" @viewLXRY="viewLXRYDetail" @viewJFTZ="viewJFTZ"></router-view>
 
     <menufooter @routerTip="routerTip" @openLogin="loginOpen" @openFastRegisterAlert="fastRegisterAlertOpen">
     </menufooter>
+
+    <!--监房调整刷卡对话框 start-->
+    <div class="alertTip alertJQXZ" v-show="alertJFTZ">
+      <div class="alertBody " style="margin: -204px -316px;width: 632px;height: 337px;">
+        <div class="bodyHead">
+          <div class="title">等待犯人刷卡</div>
+          <div @click="close('alertJFTZ')" class="close">X</div>
+        </div>
+        <div class="bodyCon" style="height:291px;overflow-y:scroll;padding:0px">
+          <br>
+          <el-row>
+            <el-col :span="24" style="font-size:45px">
+              该床铺信息即将更新为:<br> {{adjustPersonInfo.name}}
+            </el-col>
+          </el-row>
+        </div>
+        <div class="partsFoot" style="height:60px">
+          <div style="margin: 0 20px;font-size:25px;display:flex;justify-content:space-between">
+            <font style="color:red;">{{JFTZtext}}</font>
+            <strong>请刷卡提交</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--快捷登记刷卡对话框 end-->
 
     <!--快捷登记事由选择 start-->
     <div class="alertTip alertJQXZ" v-show="alertKJDJreason">
@@ -476,6 +501,8 @@ export default {
   },
   data() {
     return {
+      alertJFTZ: false, //监房调整模态框
+
       //快捷登记相关模态框状态
       alertKJDJreason: false,
       alertKJDJ: false,
@@ -570,7 +597,12 @@ export default {
       policeList: state => state.outregister.policeList,
       chest_card: state => state.cardbind.chest_card,
       rootMapInfo: state => state.home.rootMapInfo, //监狱总地图数据
-      configInfo: state => state.configInfo //系统功能配置信息
+      configInfo: state => state.configInfo, //系统功能配置信息
+      adjustPersonInfo: state => state.cellAdjust.adjustPersonInfo, //监房调整弹框显示的罪犯信息
+      JFTZtext: state => state.cellAdjust.JFTZtext, //监房调整弹框信息
+      getPersonCardInfoInterval: state =>
+        state.cellAdjust.getPersonCardInfoInterval, //获取犯人刷卡信息的定时任务
+      selectedBedDom: state => state.cellAdjust.selectedBedDom //选中的床位的Dom
     })
   },
   methods: {
@@ -601,12 +633,21 @@ export default {
       //         {
       //             "name": "互监组管理",
       //             "path": "/mutualsupervision"
+      //         },
+      //         {
+      //           "name":"监房调整",
+      //           "path":"/cellAdjust"
       //         }
       //     ],
-      //     "rootMapPosition": false
+      //     "rootMapPosition": true
       // }`;
       // var tempJson = JSON.parse(json);
       // vm.$store.commit("setConfigInfo", tempJson);
+      // if (vm.configInfo.rootMapPosition == true) {
+      //   vm.initRootPrisonMapInfo();
+      // } else {
+      //   vm.allDataInit();
+      // }
       $.ajax({
         type: "get",
         contentType: "application/json; charset=utf-8",
@@ -628,6 +669,11 @@ export default {
           console.log(e);
         }
       });
+    },
+
+    //监房调整等待刷卡弹窗提示
+    viewJFTZ: function(msg) {
+      this.alertJFTZ = msg;
     },
     // 快捷登记(选择事由)弹窗显示
     fastRegisterAlertOpen: function(msg) {
@@ -1365,6 +1411,14 @@ export default {
         clearInterval(this.starPerInterval);
         this.cancelFastRegister();
         this.alertKJDJ = false;
+      } else if (chose == "alertJFTZ") {
+        clearInterval(this.getPersonCardInfoInterval);
+        vm.$store.commit("setReceiveDataMsgType8", 0); //清空刷卡数据
+        vm.$store.commit("setAdjustPersonInfo", "");
+        vm.$store.commit("setJFTZtext", "");
+        this.alertJFTZ = false;
+        this.selectedBedDom.css("background-color", "#D7D7D7");
+        this.selectedBedDom.css("color", "black");
       }
     },
 
@@ -1824,6 +1878,7 @@ export default {
       } else if (msg.Header.MsgType === 8) {
         /*互监组管理刷卡*/
         vm.$store.commit("setReceiveDataMsgType8", JSON.parse(msg.Body));
+
         var receiveData = vm.receiveDataMsgType8;
 
         if (receiveData != "" || receiveData != null) {

@@ -133,6 +133,8 @@ export default {
           this.$router.push({ path: "/cardbind" });
           vm.$emit("openLogin", true);
         }
+      } else if (path === "/cellAdjust") {
+        this.$router.push({ path: "/cellAdjust" });
       }
     }
   }
