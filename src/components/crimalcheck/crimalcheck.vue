@@ -40,7 +40,7 @@
           <div class="partsBody" style="height:260px;">
             <div class="bodyHead">
               <div class="title">外出未点人员{{outCriminals.length}}人</div>
-              <div class="titleDescribe">（合法人数：{{legalCount}}人，非法人数：{{illegalCount}}人）</div>
+              <div class="titleDescribe">（正常外出人数：{{legalCount}}人，异常外出人数：{{illegalCount}}人）</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
               <el-col :span="2" v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="index">
