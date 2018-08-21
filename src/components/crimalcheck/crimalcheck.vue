@@ -5,32 +5,33 @@
     <el-col :span="22">
       <div class="li2_parts">
         <div class="tabHead">
-          <div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">人员清点</div>
-          <div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">清点记录</div>
+          <div :class="['tab', { tabing: isB1}]" v-on:click="toggle1()">人员清点</div>
+          <div :class="['tab', { tabing: isB2}]" v-on:click="toggle2()">清点记录</div>
         </div>
         <div class="tab1" v-show="isShow1">
           <div class="partsBody" style="height:392px;">
             <div class="bodyHead">
               <div class="title">监内未点人员{{inCriminals.length}}人</div>
-              <div class="titleDescribe">（本监区总人数：{{orgCriminalCount}}人，<span @click="$emit('hasCheaked')" style="color: #1443cd">已点人数{{hascelled}}人</span>）</div>
+              <div class="titleDescribe">（本监区总人数：{{orgCriminalCount}}人，
+                <span @click="$emit('hasCheaked')" style="color: #1443cd">已点人数{{hascelled}}人</span>）</div>
             </div>
             <div class="bodyCon">
-              <el-col :span="2"  v-for="(criminal,index) in inCriminals.slice(inA-1,inB)" :key="index">
-                <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseIn(index)" >
+              <el-col :span="2" v-for="(criminal,index) in inCriminals.slice(inA-1,inB)" :key="index">
+                <div :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseIn(index)">
                   <div style="height: 91px;width: 97px;">
-                  <img :src="criminal.Photo" width="96" height="85" alt=""/>
+                    <img :src="criminal.Photo" width="96" height="85" alt="" />
                   </div>
                   <span class="criminalName">{{ criminal.CriminalName }}</span>
                 </div>
               </el-col>
             </div>
-            <el-row >
+            <el-row>
               <el-col :span="8" style="height: 10px"></el-col>
-              <el-col :span="8" >
+              <el-col :span="8">
                 <div class="pages">
-                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="inBack()" alt=""/></span>
+                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="inBack()" alt="" /></span>
                   <span class="pagesText">{{inNowPage}}/{{inPages}}</span>
-                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="inGo()" alt=""/></span>
+                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="inGo()" alt="" /></span>
                 </div>
               </el-col>
               <el-col :span="8" style="height: 10px"></el-col>
@@ -39,25 +40,32 @@
           <div class="partsBody" style="height:260px;">
             <div class="bodyHead">
               <div class="title">外出未点人员{{outCriminals.length}}人</div>
+              <div class="titleDescribe">（合法人数：{{legalCount}}人，非法人数：{{illegalCount}}人）</div>
             </div>
             <div class="bodyCon" style="height: 135px;">
-              <el-col :span="2"  v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="index">
-                <div  :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)" >
+              <el-col :span="2" v-for="(criminal,index) in outCriminals.slice(outA-1,outB)" :key="index">
+                <div v-if="criminal.legal == true" :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)">
                   <div style="height: 91px;width: 97px;">
-                       <img :src="criminal.Photo" width="96" height="85" alt=""/>
+                    <img :src="criminal.Photo" width="96" height="85" alt="" />
+                  </div>
+                  <span class="criminalName">{{ criminal.CriminalName}}</span>
+                </div>
+                <div v-if="criminal.legal == false" style="background:#f15a22" :class="['criminal', {choosedcriminal: criminal.ischoose}]" v-on:click="chooseOut(index)">
+                  <div style="height: 91px;width: 97px;">
+                    <img :src="criminal.Photo" width="96" height="85" alt="" />
                   </div>
                   <span class="criminalName">{{ criminal.CriminalName}}</span>
                 </div>
               </el-col>
 
             </div>
-            <el-row >
+            <el-row>
               <el-col :span="8" style="height: 10px"></el-col>
-              <el-col :span="8" >
+              <el-col :span="8">
                 <div class="pages">
-                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="outBack()" alt=""/></span>
+                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="outBack()" alt="" /></span>
                   <span class="pagesText">{{outNowPage}}/{{outPages}}</span>
-                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="outGo()" alt=""/></span>
+                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="outGo()" alt="" /></span>
                 </div>
               </el-col>
               <el-col :span="8" style="height: 10px"></el-col>
@@ -76,7 +84,7 @@
 
             <div class="bodyCon">
 
-              <table  border="1" cellspacing="0" cellpadding="0" width="100%">
+              <table border="1" cellspacing="0" cellpadding="0" width="100%">
                 <tr>
                   <th>清点类型</th>
                   <th>清点时间</th>
@@ -100,13 +108,13 @@
               </table>
 
             </div>
-            <el-row >
+            <el-row>
               <el-col :span="8" style="height: 10px"></el-col>
-              <el-col :span="8" >
+              <el-col :span="8">
                 <div class="pages">
-                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="getRecordback()" alt=""/></span>
+                  <span class="pageControl"><img src="../../assets/q1.png" v-on:click="getRecordback()" alt="" /></span>
                   <span class="pagesText">{{recordPage+1}}/{{Math.ceil(recordCount/20)==0?1:Math.ceil(recordCount/20)}}</span>
-                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="getRecordGo()" alt=""/></span>
+                  <span class="pageControl"><img src="../../assets/q2.png" v-on:click="getRecordGo()" alt="" /></span>
                 </div>
               </el-col>
               <el-col :span="8" style="height: 10px"></el-col>
@@ -116,7 +124,7 @@
 
       </div>
     </el-col>
-    <el-col :span="1"  style="height:10px"></el-col>
+    <el-col :span="1" style="height:10px"></el-col>
   </el-row>
 
 </template>
@@ -159,6 +167,8 @@ export default {
       outNowPage: 1, //外出未点当前页
       outListAll: 0, //外出未点总数
       outChoose: [], //外出选中人员
+      legalCount: 0, //外出合法人数
+      illegalCount: 0, //外出非法人数
       outA: 1,
       outB: 12,
       alertText: ""
@@ -472,14 +482,16 @@ export default {
         var receiveData = vm.receiveDataMsgType31;
         if (receiveData != "" && receiveData != null) {
           var hasNotCall = []; //监内未点2402
-          var outHasNotCall = []; //外出未点2403
+          var outHasNotCall = []; //外出未点2403和2404
+
           for (var i = 0; i < receiveData.length; i++) {
             if (receiveData[i].Status == "2402") {
               var notCall = receiveData[i];
               notCall["ischoose"] = false;
               notCall["CriminalName"] =
                 vm.criminalList[0][notCall["PersonID"]]["CriminalName"];
-              notCall["Photo"] = vm.criminalList[0][notCall["PersonID"]]["Photo"];
+              notCall["Photo"] =
+                vm.criminalList[0][notCall["PersonID"]]["Photo"];
               for (var m = 0; m < vm.inChoose.length; m++) {
                 if (vm.inChoose[m] == notCall["PersonID"]) {
                   notCall["ischoose"] = true;
@@ -491,8 +503,16 @@ export default {
                 Math.ceil(vm.inCriminals.length / 24) == 0
                   ? 1
                   : Math.ceil(vm.inCriminals.length / 24);
-            } else if (receiveData[i].Status == "2403") {
+            } else if (
+              receiveData[i].Status == "2403" ||
+              receiveData[i].Status == "2404"
+            ) {
               var outNotCall = receiveData[i];
+              if (receiveData[i].Status == "2403") {
+                outNotCall["legal"] = true;
+              } else if (receiveData[i].Status == "2404") {
+                outNotCall["legal"] = false;
+              }
               outNotCall["ischoose"] = false;
               outNotCall["CriminalName"] =
                 vm.criminalList[0][outNotCall["PersonID"]]["CriminalName"];
@@ -506,12 +526,24 @@ export default {
 
               outHasNotCall.push(outNotCall);
               vm.outCriminals = outHasNotCall;
+
               vm.outPages =
                 Math.ceil(vm.outCriminals.length / 12) == 0
                   ? 1
                   : Math.ceil(vm.outCriminals.length / 12);
             }
           }
+          var illegalCountTemp = 0;
+          var legalCountTemp = 0;
+          for (var item of vm.outCriminals) {
+            if (item.legal == false) {
+              illegalCountTemp++;
+            } else if (item.legal == true) {
+              legalCountTemp++;
+            }
+          }
+          vm.illegalCount = illegalCountTemp;
+          vm.legalCount = legalCountTemp;
           if (hasNotCall.length == 0) {
             vm.inCriminals = [];
           }
