@@ -3,8 +3,8 @@
 /* 基础数据接口地址 */
 
 /* 上线版本 */
-// export const BasicUrl = 'http://'+window.location.host+'/api/'
-export const BasicUrl = 'http://192.168.0.105:1111/api/'//开发临时使用
+export const BasicUrl = 'http://'+window.location.host+'/api/'
+// export const BasicUrl = 'http://192.168.0.105:1111/api/'//开发临时使用
 
 $.ajax({
   type: "get",
@@ -31,8 +31,8 @@ export const ajaxUrl = 'http://' + localStorage.getItem('IP') + ':' + localStora
 
 /* 静态资源地址 */
 export const IMG = ''
-// export const MapUrl = 'http://' + window.location.host
-export const MapUrl = "http://192.168.0.105:1111"
+export const MapUrl = 'http://' + window.location.host
+// export const MapUrl = "http://192.168.0.105:1111"
 export default {
   /*全局弹窗显示变量*/
   install(Vue) {

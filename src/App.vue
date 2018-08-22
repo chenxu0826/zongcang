@@ -59,7 +59,7 @@
           <br>
           <el-row>
             <el-col :span="4" v-for="(criminal,index) in outCriminals" :key="index">
-              <div class="criminal">
+              <div class="criminal" @click="deleteOutCriminal(criminal)">
                 <div style="height: 91px;width:90px;">
                   <img :src="criminal.Photo" width="98%" height="85" alt="" />
                 </div>
@@ -69,8 +69,8 @@
           </el-row>
         </div>
         <div class="partsFoot" style="height:60px">
-          <div class="alertText">{{alertText}}</div>
-          <div style="margin: 0 20px;font-size:25px;display:flex;justify-content:space-between">
+          <div style="margin: 0 20px;font-size:25px;display:flex;justify-content:space-between;line-height:60px">
+            <font style="color:black">点击照片删除</font>
             <font style="color:red;">{{KJDJtext}}</font>
             <strong>请刷卡提交</strong>
           </div>
@@ -577,7 +577,7 @@ export default {
       starPerInterval: "", //获取外出登记的人员明细的Interval任务
       getPoliceSwipeCardInterval: "", //获取等待民警刷卡触发提交请求的Interval任务
       outCriminals: [], //外出罪犯信息
-      KJDJtext: ""
+      KJDJtext: "" //快捷登记提交或删除结果提示信息
     };
   },
   computed: {
@@ -608,67 +608,67 @@ export default {
   methods: {
     getConfigInfo: function() {
       var vm = this;
-      var json = `{
-          "menulist": [
-              {
-                  "name": "监区概况",
-                  "path": "/"
-              },
-              {
-                  "name": "出工收工",
-                  "path": "/outwork"
-              },
-              {
-                  "name": "人员清点",
-                  "path": "/crimalcheck"
-              },
-              {
-                  "name": "工具清点",
-                  "path": "/toolcheck"
-              },
-              {
-                  "name": "外出登记",
-                  "path": "/outRegisterFast"
-              },
-              {
-                  "name": "互监组管理",
-                  "path": "/mutualsupervision"
-              },
-              {
-                "name":"监房调整",
-                "path":"/cellAdjust"
-              }
-          ],
-          "rootMapPosition": true
-      }`;
-      var tempJson = JSON.parse(json);
-      vm.$store.commit("setConfigInfo", tempJson);
-      if (vm.configInfo.rootMapPosition == true) {
-        vm.initRootPrisonMapInfo();
-      } else {
-        vm.allDataInit();
-      }
-      // $.ajax({
-      //   type: "get",
-      //   contentType: "application/json; charset=utf-8",
-      //   dataType: "json",
-      //   async: true,
-      //   url: MapUrl + "/dist/config.json",
-      //   success: function(result) {
-      //     vm.$store.commit("setConfigInfo", result);
-      //     if (vm.configInfo.rootMapPosition == true) {
-      //       vm.initRootPrisonMapInfo();
-      //     } else {
-      //       vm.allDataInit();
-      //     }
-      //   },
-      //   complete: function(XHR, TS) {
-      //     XHR = null; // 回收资源
-      //   },
-      //   error: function(e) {
-      //     console.log(e);
-      //   }
-      // });
+      // var json = `{
+      //     "menulist": [
+      //         {
+      //             "name": "监区概况",
+      //             "path": "/"
+      //         },
+      //         {
+      //             "name": "出工收工",
+      //             "path": "/outwork"
+      //         },
+      //         {
+      //             "name": "人员清点",
+      //             "path": "/crimalcheck"
+      //         },
+      //         {
+      //             "name": "工具清点",
+      //             "path": "/toolcheck"
+      //         },
+      //         {
+      //             "name": "外出登记",
+      //             "path": "/outRegisterFast"
+      //         },
+      //         {
+      //             "name": "互监组管理",
+      //             "path": "/mutualsupervision"
+      //         },
+      //         {
+      //           "name":"监房调整",
+      //           "path":"/cellAdjust"
+      //         }
+      //     ],
+      //     "rootMapPosition": true
+      // }`;
+      // var tempJson = JSON.parse(json);
+      // vm.$store.commit("setConfigInfo", tempJson);
+      // if (vm.configInfo.rootMapPosition == true) {
+      //   vm.initRootPrisonMapInfo();
+      // } else {
+      //   vm.allDataInit();
+      // }
+      $.ajax({
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: true,
+        url: MapUrl + "/dist/config.json",
+        success: function(result) {
+          vm.$store.commit("setConfigInfo", result);
+          if (vm.configInfo.rootMapPosition == true) {
+            vm.initRootPrisonMapInfo();
+          } else {
+            vm.allDataInit();
+          }
+        },
+        complete: function(XHR, TS) {
+          XHR = null; // 回收资源
+        },
+        error: function(e) {
+          console.log(e);
+        }
+      });
     },
 
     //监房调整等待刷卡弹窗提示
@@ -793,6 +793,38 @@ export default {
         }
       }, 500);
     },
+    //删除单个外出登记罪犯
+    deleteOutCriminal: function(criminal) {
+      var vm = this;
+      var sendJson = {
+        Header: {
+          MsgID: "201501260000000031",
+          MsgType: 21
+        },
+        Body: JSON.stringify({
+          OrgID: localStorage.getItem("OrgID"),
+          DoorID: localStorage.getItem("DoorID"),
+          PeopleID: criminal.CriminalID
+        })
+      };
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(sendJson),
+        success: function(result) {
+          if (result.RET == 1) {
+            vm.KJDJtext = "删除成功";
+            setTimeout(function() {
+              vm.KJDJtext = "";
+            }, 2000);
+          } else {
+            vm.KJDJtext = "删除失败";
+            setTimeout(function() {
+              vm.KJDJtext = "";
+            }, 2000);
+          }
+        }
+      });
+    },
 
     //提交外出登记信息
     submitOutRegister: function() {
@@ -823,22 +855,22 @@ export default {
         data: JSON.stringify(sendOutRegister),
         success: function(result) {
           if (result.RET == 1) {
-            vm.alertText = "提交成功";
+            vm.KJDJtext = "提交成功";
             vm.outCriminals.length = 0;
             vm.receiveDataMsgType22.length = 0;
             setTimeout(function() {
-              vm.alertText = "";
+              vm.KJDJtext = "";
               vm.alertKJDJ = false;
               vm.alertKJDJreason = false;
               vm.outCriminals = [];
             }, 2000);
           } else {
             vm.canRouterChange();
-            vm.alertText = "提交失败";
+            vm.KJDJtext = "提交失败";
             vm.outCriminals.length = 0;
             vm.receiveDataMsgType22.length = 0;
             setTimeout(function() {
-              vm.alertText = "";
+              vm.KJDJtext = "";
               vm.alertKJDJ = false;
               vm.alertKJDJreason = true;
             }, 2000);
