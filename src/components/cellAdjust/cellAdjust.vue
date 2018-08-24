@@ -21,7 +21,7 @@
                         <div class="title">床铺信息</div>
                     </div>
                     <div class="bodyCon">
-                        <el-col :span="2" v-for="(item,index) in bedsInfo" :key="index">
+                        <el-col :span="2" v-for="(item,index) in bedsInfo" :key="index" style="margin-bottom:10px">
                             <div class="bed" v-on:click="updateBed(index,$event)">{{item.BedID}}<br>{{item.CriminalName}}</div>
                         </el-col>
                     </div>
