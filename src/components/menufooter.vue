@@ -3,7 +3,7 @@
     <el-row class="menu_title_wrap" style="display:flex;justify-content:space-between;">
 
       <div class="menu_title" style="float:left" v-for="(item,index) in menuList" :key="index">
-        <div @click="gopage(item.path)">{{item.name}}</div>
+        <div @click="gopage(item.path,$event)">{{item.name}}</div>
       </div>
 
     </el-row>
@@ -37,13 +37,31 @@ export default {
       ) {
         vm.menuList = vm.configInfo.menulist;
         clearInterval(vm.getMenuListInterval);
+
+        setTimeout(function() {
+          $(".menu_title:eq(0)").css("border-bottom", "3px solid #fff");
+        }, 200);
       }
     }, 200);
   },
   methods: {
-    gopage: function(path) {
-      //菜单切换
+    //在点击了出收工却没有登录直接关闭导致自动返回到“监区概况”的时候的CSS样式的特殊处理
+    cancelOutworkCss: function() {
+      $(".menu_title:eq(1)").css("border-bottom", "");
+      $(".menu_title:eq(0)").css("border-bottom", "3px solid #fff");
+    },
+    //菜单切换
+    gopage: function(path, e) {
       var vm = this;
+      if (path != "/outRegisterFast") {
+        $(e.srcElement)
+          .parent()
+          .siblings()
+          .css("border-bottom", "");
+        $(e.srcElement)
+          .parent()
+          .css("border-bottom", "3px solid #fff");
+      }
       if (path === "/outRegisterFast") {
         vm.$emit("openFastRegisterAlert", true);
       }

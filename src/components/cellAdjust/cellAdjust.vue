@@ -3,9 +3,6 @@
         <el-col :span="1" style="height:10px"></el-col>
         <el-col :span="22">
             <div class="li2_parts">
-                <div class="tabHead">
-                    <div class="tab" style="background:white;color:#004bdc">监房调整</div>
-                </div>
                 <div class="partsBody" style="height:392px;">
                     <div class="bodyHead">
                         <div class="title">监房信息</div>
@@ -16,7 +13,7 @@
                         </el-col>
                     </div>
                 </div>
-                <div class="partsBody" style="height:290px;">
+                <div class="partsBody" style="height:335px;">
                     <div class="bodyHead">
                         <div class="title">床铺信息</div>
                     </div>

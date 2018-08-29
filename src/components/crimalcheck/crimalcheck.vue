@@ -99,9 +99,9 @@
                   <td>{{record.CountTypeName}}</td>
                   <td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>
                   <td>{{record.ShouldCount}}</td>
-                  <td>{{record.RealCount}}</td>
-                  <td>{{record.UnCount}}</td>
-                  <td>{{record.OutterCount}}</td>
+                  <td @click="viewDetail(record,2401)">{{record.RealCount}}</td>
+                  <td @click="viewDetail(record,2402)">{{record.UnCount}}</td>
+                  <td @click="viewDetail(record,2403)">{{record.OutCount}}</td>
                   <td>{{record.PoliceName}}</td>
                   <td>{{record.StatusName}}</td>
                 </tr>
@@ -181,6 +181,13 @@ export default {
     })
   },
   methods: {
+    viewDetail: function(record, status) {
+      this.$emit("viewPersonCheckRecordDetail", {
+        record: record,
+        status: status
+      });
+    },
+
     toggle1: function() {
       this.isShow1 = true;
       this.isShow2 = false;

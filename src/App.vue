@@ -3,10 +3,34 @@
     <!--头部-->
     <navheader @workOut="playAudio" @getPosition="onClickPosition()"></navheader>
 
-    <router-view @openLogin="loginOpen" @hasCheaked="onHasCheaked" @hasCheakedTool="onHasCheakedTool" @canRouterChange="canRouterChange" @viewRYXQ="viewRYDetail" @viewLXRY="viewLXRYDetail" @viewJFTZ="viewJFTZ"></router-view>
+    <router-view @openLogin="loginOpen" @hasCheaked="onHasCheaked" @hasCheakedTool="onHasCheakedTool" @canRouterChange="canRouterChange" @viewRYXQ="viewRYDetail" @viewLXRY="viewLXRYDetail" @viewJFTZ="viewJFTZ" @viewPersonCheckRecordDetail="viewPersonCheckRecordDetail"></router-view>
 
-    <menufooter @routerTip="routerTip" @openLogin="loginOpen" @openFastRegisterAlert="fastRegisterAlertOpen">
+    <menufooter ref="menufooter" @routerTip="routerTip" @openLogin="loginOpen" @openFastRegisterAlert="fastRegisterAlertOpen">
     </menufooter>
+
+    <!-- 人员清点记录详情的弹出框 -->
+    <div class="alertTip alertYDMD" v-show="alertRyqdRecrodDetail">
+      <div class="alertBody " style="margin: -300px -400px;width: 800px;height: 600px;">
+        <div class="bodyHead">
+          <div class="title"></div>
+          <div v-on:click="close('alertRyqdRecrodDetail')" class="close">X</div>
+        </div>
+        <div class="bodyCon" style="height: 490px; overflow-y:auto;">
+          <table border="1" cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+              <th>罪犯姓名</th>
+              <th>点名状态</th>
+              <th v-if="ryqdRecrodDetailCountTimeView">点名时间</th>
+            </tr>
+            <tr v-for="(item,index) in ryqdRecrodDetailList" :key="index">
+              <td>{{item.CriminalName}}</td>
+              <td>{{item.StatusName}}</td>
+              <td v-if="ryqdRecrodDetailCountTimeView">{{item.CountTime}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <!--监房调整刷卡对话框 start-->
     <div class="alertTip alertJQXZ" v-show="alertJFTZ">
@@ -532,6 +556,9 @@ export default {
       nowfloatPersonB: 9, //实时流动人员分页
       /* Coding By YanM */
       /* mj B*/
+      alertRyqdRecrodDetail: false, //人员清点记录详情的弹出框
+      ryqdRecrodDetailList: [], //人员清点记录详情的数据
+      ryqdRecrodDetailCountTimeView: false, //人员清点记录详情的数据中点名时间是否显示
       GetCriminalCalledList: [], //已点罪犯
       criminalCalledIsLastPage: false, //已点罪犯是否是最后一页
       criminalCount: 0, //已点罪犯总页码
@@ -606,69 +633,96 @@ export default {
     })
   },
   methods: {
+    //查看清点记录的详细信息（已点、未点、外出未点）
+    viewPersonCheckRecordDetail: function(args) {
+      var vm = this;
+      var record = args.record;
+      var status = args.status;
+      if (status == 2401) {
+        vm.ryqdRecrodDetailCountTimeView = true;
+      } else {
+        vm.ryqdRecrodDetailCountTimeView = false;
+      }
+      vm.ryqdRecrodDetailList.length = 0;
+
+      vm.$ajax({
+        data: {
+          OrgID: localStorage.getItem("OrgID"),
+          CountRecordID: record.FlnkID,
+          Status: status
+        },
+        url:
+          BasicUrl + "CriminalCnt/GetCriminalRecordDetailList" + "?callback=?",
+        success: function(result) {
+          vm.ryqdRecrodDetailList = result;
+          vm.alertRyqdRecrodDetail = true;
+        }
+      });
+    },
+    //获取底部菜单数据
     getConfigInfo: function() {
       var vm = this;
-      var json = `{
-          "menulist": [
-              {
-                  "name": "监区概况",
-                  "path": "/"
-              },
-              {
-                  "name": "出工收工",
-                  "path": "/outwork"
-              },
-              {
-                  "name": "人员清点",
-                  "path": "/crimalcheck"
-              },
-              {
-                  "name": "工具清点",
-                  "path": "/toolcheck"
-              },
-              {
-                  "name": "外出登记",
-                  "path": "/outRegisterFast"
-              },
-              {
-                  "name": "互监组管理",
-                  "path": "/mutualsupervision"
-              },
-              {
-                "name":"监房调整",
-                "path":"/cellAdjust"
-              }
-          ],
-          "rootMapPosition": true
-      }`;
-      var tempJson = JSON.parse(json);
-      vm.$store.commit("setConfigInfo", tempJson);
-      if (vm.configInfo.rootMapPosition == true) {
-        vm.initRootPrisonMapInfo();
-      } else {
-        vm.allDataInit();
-      }
-      // $.ajax({
-      //   type: "get",
-      //   contentType: "application/json; charset=utf-8",
-      //   dataType: "json",
-      //   async: true,
-      //   url: MapUrl + "/dist/config.json",
-      //   success: function(result) {
-      //     vm.$store.commit("setConfigInfo", result);
-      //     if (vm.configInfo.rootMapPosition == true) {
-      //       vm.initRootPrisonMapInfo();
-      //     } else {
-      //       vm.allDataInit();
-      //     }
-      //   },
-      //   complete: function(XHR, TS) {
-      //     XHR = null; // 回收资源
-      //   },
-      //   error: function(e) {
-      //     console.log(e);
-      //   }
-      // });
+      // var json = `{
+      //     "menulist": [
+      //         {
+      //             "name": "监区概况",
+      //             "path": "/"
+      //         },
+      //         {
+      //             "name": "出工收工",
+      //             "path": "/outwork"
+      //         },
+      //         {
+      //             "name": "人员清点",
+      //             "path": "/crimalcheck"
+      //         },
+      //         {
+      //             "name": "工具清点",
+      //             "path": "/toolcheck"
+      //         },
+      //         {
+      //             "name": "外出登记",
+      //             "path": "/outRegisterFast"
+      //         },
+      //         {
+      //             "name": "互监组管理",
+      //             "path": "/mutualsupervision"
+      //         },
+      //         {
+      //           "name":"监房调整",
+      //           "path":"/cellAdjust"
+      //         }
+      //     ],
+      //     "rootMapPosition": true
+      // }`;
+      // var tempJson = JSON.parse(json);
+      // vm.$store.commit("setConfigInfo", tempJson);
+      // if (vm.configInfo.rootMapPosition == true) {
+      //   vm.initRootPrisonMapInfo();
+      // } else {
+      //   vm.allDataInit();
+      // }
+      $.ajax({
+        type: "get",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: true,
+        url: MapUrl + "/dist/config.json",
+        success: function(result) {
+          vm.$store.commit("setConfigInfo", result);
+          if (vm.configInfo.rootMapPosition == true) {
+            vm.initRootPrisonMapInfo();
+          } else {
+            vm.allDataInit();
+          }
+        },
+        complete: function(XHR, TS) {
+          XHR = null; // 回收资源
+        },
+        error: function(e) {
+          console.log(e);
+        }
+      });
     },
 
     //监房调整等待刷卡弹窗提示
@@ -684,7 +738,6 @@ export default {
         data: { OrgID: localStorage.getItem("OrgID") },
         url: BasicUrl + "Move/GetMoveReasonList" + "?callback=?",
         success: function(result) {
-          debugger;
           if (result != "" && result != null) {
             for (var j = 0; j < result.length; j++) {
               if (result[j].DictCode == 3006) {
@@ -881,7 +934,7 @@ export default {
         }
       });
     },
-
+    //取消外出快捷登记
     cancelFastRegister: function() {
       var vm = this;
       var send3 = {
@@ -1027,6 +1080,7 @@ export default {
       this.alertYHDL = false;
       this.policeLogin.account = "";
       this.policeLogin.password = "";
+      this.$refs.menufooter.cancelOutworkCss();
     },
 
     closeWeb: function() {
@@ -1417,6 +1471,8 @@ export default {
     close: function(chose) {
       if (chose == "alertYHDL") {
         this.alertYHDL = false;
+      } else if (chose == "alertRyqdRecrodDetail") {
+        this.alertRyqdRecrodDetail = false;
       } else if (chose == "alertJQXZ") {
         this.alertJQXZ = false;
       } else if (chose == "alertBJXX") {
@@ -2060,6 +2116,14 @@ export default {
       } else if (msg.Header.MsgType === 24) {
         /* 流动人员 && 外监进入人员-返回数据-24 */
         var flowPerson_outPrison_rec = JSON.parse(msg.Body);
+        if (
+          flowPerson_outPrison_rec == null ||
+          flowPerson_outPrison_rec == undefined ||
+          flowPerson_outPrison_rec.length == 0
+        ) {
+          console.log("24号协议数据为空");
+          return;
+        }
         //console.log(msg.Body)
         vm.movePeople = [];
         // 2、非法流动
@@ -2129,7 +2193,6 @@ export default {
       } else if (msg.Header.MsgType === 4) {
         /* 计划任务-返回数据-4 */
         var plan_task = JSON.parse(msg.Body);
-        debugger;
 
         if (
           plan_task.PlanTypeName != "巡更计划" &&
@@ -2146,7 +2209,7 @@ export default {
             vm.$store.commit("setToolPlan", "工具清点计划");
             vm.$store.commit("setToolplanStartTime", vm.planStartTime);
             vm.$store.commit("setToolplanEndTime", vm.planEndTime);
-            vm.$store.commit("setToolNextTime", vm.NextTime);
+            vm.$store.commit("setToolNextTime", plan_task.NextTime);
             if (localStorage.getItem("canRouter") == 1) {
               vm.$router.push({ path: "/toolcheck" });
             } else {
@@ -2166,7 +2229,7 @@ export default {
             vm.$store.commit("setPersonPlan", "人员清点计划");
             vm.$store.commit("setPersonplanStartTime", vm.planStartTime);
             vm.$store.commit("setPersonplanEndTime", vm.planEndTime);
-            vm.$store.commit("personNextTime", vm.NextTime);
+            vm.$store.commit("setPersonNextTime", plan_task.NextTime);
             if (localStorage.getItem("canRouter") == 1) {
               vm.$router.push({ path: "/crimalcheck" });
             } else {
