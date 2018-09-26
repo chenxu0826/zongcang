@@ -662,67 +662,67 @@ export default {
     //获取底部菜单数据
     getConfigInfo: function() {
       var vm = this;
-      // var json = `{
-      //     "menulist": [
-      //         {
-      //             "name": "监区概况",
-      //             "path": "/"
-      //         },
-      //         {
-      //             "name": "出工收工",
-      //             "path": "/outwork"
-      //         },
-      //         {
-      //             "name": "人员清点",
-      //             "path": "/crimalcheck"
-      //         },
-      //         {
-      //             "name": "工具清点",
-      //             "path": "/toolcheck"
-      //         },
-      //         {
-      //             "name": "外出登记",
-      //             "path": "/outRegisterFast"
-      //         },
-      //         {
-      //             "name": "互监组管理",
-      //             "path": "/mutualsupervision"
-      //         },
-      //         {
-      //           "name":"监房调整",
-      //           "path":"/cellAdjust"
-      //         }
-      //     ],
-      //     "rootMapPosition": true
-      // }`;
-      // var tempJson = JSON.parse(json);
-      // vm.$store.commit("setConfigInfo", tempJson);
-      // if (vm.configInfo.rootMapPosition == true) {
-      //   vm.initRootPrisonMapInfo();
-      // } else {
-      //   vm.allDataInit();
-      // }
-      $.ajax({
-        type: "get",
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        async: true,
-        url: MapUrl + "/dist/config.json",
-        success: function(result) {
-          vm.$store.commit("setConfigInfo", result);
-          if (vm.configInfo.rootMapPosition == true) {
-            vm.initRootPrisonMapInfo();
-          } else {
-            vm.allDataInit();
-          }
-        },
-        complete: function(XHR, TS) {
-          XHR = null; // 回收资源
-        },
-        error: function(e) {
-          console.log(e);
-        }
-      });
+      var json = `{
+          "menulist": [
+              {
+                  "name": "监区概况",
+                  "path": "/"
+              },
+              {
+                  "name": "出工收工",
+                  "path": "/outwork"
+              },
+              {
+                  "name": "人员清点",
+                  "path": "/crimalcheck"
+              },
+              {
+                  "name": "工具清点",
+                  "path": "/toolcheck"
+              },
+              {
+                  "name": "外出登记",
+                  "path": "/outRegisterFast"
+              },
+              {
+                  "name": "互监组管理",
+                  "path": "/mutualsupervision"
+              },
+              {
+                "name":"监房调整",
+                "path":"/cellAdjust"
+              }
+          ],
+          "rootMapPosition": true
+      }`;
+      var tempJson = JSON.parse(json);
+      vm.$store.commit("setConfigInfo", tempJson);
+      if (vm.configInfo.rootMapPosition == true) {
+        vm.initRootPrisonMapInfo();
+      } else {
+        vm.allDataInit();
+      }
+      // $.ajax({
+      //   type: "get",
+      //   contentType: "application/json; charset=utf-8",
+      //   dataType: "json",
+      //   async: true,
+      //   url: MapUrl + "/dist/config.json",
+      //   success: function(result) {
+      //     vm.$store.commit("setConfigInfo", result);
+      //     if (vm.configInfo.rootMapPosition == true) {
+      //       vm.initRootPrisonMapInfo();
+      //     } else {
+      //       vm.allDataInit();
+      //     }
+      //   },
+      //   complete: function(XHR, TS) {
+      //     XHR = null; // 回收资源
+      //   },
+      //   error: function(e) {
+      //     console.log(e);
+      //   }
+      // });
     },
 
     //监房调整等待刷卡弹窗提示

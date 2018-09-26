@@ -175,7 +175,7 @@ export default {
           this.mapScale = wScale;
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   },
