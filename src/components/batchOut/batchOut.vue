@@ -1,216 +1,272 @@
 <template>
-  <!--外出登记-->
-  <el-row class="menu_title_wrap home">
-    <el-col :span="1" style="height:10px"></el-col>
-    <el-col :span="22">
-      <div class="li3_parts">
-        <!--键盘模块Star-->
-        <div  class="searchMode" v-show="searchModeShow">
-          <p style="font-size: 20px;color: #f00000;">请输入外出时长（分钟）</p>
-          <input class="searchInput" maxlength="18" v-model="seachNum"  type="text">
-          <div class="searchBottons">
-            <div class="listY" v-on:click="enterNum('1')">1</div>
-            <div class="listY" v-on:click="enterNum('2')">2</div>
-            <div class="listY" v-on:click="enterNum('3')">3</div>
-            <div class="listY" v-on:click="enterNum('4')">4</div>
-            <div class="listY" v-on:click="enterNum('5')">5</div>
-            <div class="listY" v-on:click="enterNum('6')">6</div>
-            <div class="listY" v-on:click="enterNum('7')">7</div>
-            <div class="listY" v-on:click="enterNum('8')">8</div>
-            <div class="listY" v-on:click="enterNum('9')">9</div>
-            <div class="listY" v-on:click="enterNum('0')">0</div>
-            <div class="listY" v-on:click="enterNum('-')" style="font-size: 23px;width:77px;">清除</div>
-
-            <div class="listY" style="font-size: 23px;" v-on:click="setTime()">确定</div>
-            <!--<div class="listY" style="font-size: 23px;" v-on:click="searchModeShow=false">关闭</div>-->
-          </div>
-        </div>
-        <!--键盘模块End-->
-        <!--<div class="tabHead"style="height:40px;">-->
-          <!--<div  :class="['tab', { tabing: isB1}]"  v-on:click="toggle1()">外出登记</div>-->
-          <!--<div  :class="['tab', { tabing: isB2}]"  v-on:click="toggle2()">登记记录</div>-->
-        <!--</div>-->
-        <div class="tab1" v-show="isShow1">
-          <div class="partsBody">
-            <div class="bodyHead">
-              <div class="title">外出登记</div>
-            </div>
-            <div class="bodyCon">
-              <el-row >
-                <el-col :span="12">
-
-                  <el-row >
-                    <el-row >
-                      <div class="deailHead">
-                        外出事由 <span v-show="TimeShow" style="font-size: 16px;color: #f53a2a;font-weight: 800;">(外出时长{{seachNum}}分钟)</span>
-                      </div>
-                      <div class="deailBody" style="height:269px;">
-                        <el-col :span="4" v-for="(reason,index) in reasonList.slice(reasonA-1,reasonB)" :key="index">
-                          <div :class="['choose', {choosed: reason.ischoose}]" v-on:click="chooseReason(index,reason.Str3,reason.Str4)"  >
-                            {{reason.DictCodeName}}
-                          </div>
-                        </el-col>
-                      </div>
-                    </el-row>
-                    <el-row >
-                      <el-col :span="3" style="height: 10px"></el-col>
-                      <el-col :span="18" >
-                        <div class="pages">
-                          <span class="pageControl"><img src="../../assets/q1.png" v-on:click="ReasonBack()" alt=""/></span>
-                          <span class="pagesText">{{reasonNowPage}}/{{reasonPages}}</span>
-                          <span class="pageControl"><img src="../../assets/q2.png" v-on:click="ReasonGo()" alt=""/></span>
-                        </div>
-                      </el-col>
-                      <el-col :span="3" style="height: 10px"></el-col>
-                    </el-row>
-
-                  </el-row>
-
-                  <div style="height:0px;"></div>
-                  <el-row >
-                    <div class="deailHead">
-                      外出地点
-                    </div>
-                    <div class="deailBody" style="height:110px;">
-                      <el-col :span="4" v-for="(areaName,index) in areaNameList.slice(areaA-1,areaB)" :key="index">
-                        <div  :class="['choose1', {choosed1: areaName.ischoose}]" v-on:click="chooseArea(index)">
-                          {{areaName.AreaName}}
-                        </div>
-                      </el-col>
-                    </div>
-                  </el-row>
-                  <el-row >
-                    <el-col :span="3" style="height: 10px"></el-col>
-                    <el-col :span="18" >
-                      <div class="pages">
-                        <span class="pageControl"><img  v-on:click="areaBack()" src="../../assets/q1.png" alt=""/></span>
-                        <span class="pagesText">{{areaNowPage}}/{{areaPages}}</span>
-                        <span class="pageControl"><img  v-on:click="areaGo()" src="../../assets/q2.png" alt=""/></span>
-                      </div>
-                    </el-col>
-                    <el-col :span="3" style="height: 10px"></el-col>
-                  </el-row>
-                </el-col>
-                <el-col :span="1" style="height:10px;">
-                  <!--中间空隙-->
-                </el-col>
-                <el-col :span="11">
-                  <el-row >
-                    <div class="deailHead">
-                      外出人员({{outCriminals.length}}人)
-                    </div>
-                    <div class="deailBody" style="height:269px;">
-                      <el-col :span="4"  v-for="(criminal,index) in outCriminals.slice(outCriminalsA-1,outCriminalsB)" :key="index">
-                        <div  class="criminal">
-                          <div style="height: 91px;width:90px;">
-                            <img :src="criminal.Photo" width="98%" height="85" alt=""/>
-                          </div>
-                          <span class="criminalName">{{ criminal.CriminalName}}</span>
-                        </div>
-                      </el-col>
-                    </div>
-                  </el-row>
-                  <el-row >
-                    <el-col :span="3" style="height: 10px"></el-col>
-                    <el-col :span="18" >
-                      <div class="pages">
-                        <span class="pageControl"><img src="../../assets/q1.png" v-on:click="outcriminalBack()" alt=""/></span>
-                        <span class="pagesText">{{outNowPage}}/{{outPages}}</span>
-                        <span class="pageControl"><img src="../../assets/q2.png" v-on:click="outcriminalGo()" alt=""/></span>
-                      </div>
-                    </el-col>
-                    <el-col :span="3" style="height: 10px"></el-col>
-                  </el-row>
-                  <div style="height:0px;"></div>
-                  <el-row >
-                    <div class="deailHead">
-                      陪同民警
-                    </div>
-                    <div class="deailBody" style="height:131px;">
-                      <el-col :span="4"  v-for="(police,index) in outPolices.slice(outPoliceA-1,outPoliceB)" :key="index">
-                        <div  class="criminal"  >
-                          <div style="height: 91px;width: 90px;">
-                            <img :src="police.Photo" width="98%" height="85" alt=""/>
-                          </div>
-                          <span class="criminalName">{{ police.PoliceName}}</span>
-                        </div>
-                      </el-col>
-                    </div>
-                  </el-row>
-                  <el-row >
-                    <el-col :span="3" style="height: 10px"></el-col>
-                    <el-col :span="18" >
-                      <!--<div class="pages">-->
-                      <!--<span class="pageControl"><img src="../../assets/q1.png" v-on:click="outPoliceBack()" alt=""/></span>-->
-                      <!--<span class="pagesText">{{outPoliceNowPage}}/{{outPolicePages}}</span>-->
-                      <!--<span class="pageControl"><img src="../../assets/q2.png" v-on:click="outPoliceGo()" alt=""/></span>-->
-                      <!--</div>-->
-                    </el-col>
-                    <el-col :span="3" style="height: 10px"></el-col>
-                  </el-row>
-
-                </el-col>
-              </el-row>
-            </div>
-          </div>
-          <div class="partsFoot">
-            <div class="alertText">{{alertText}}</div>
-            <div style="margin: 20px 2px;float: right">
-              <div class="sure" v-on:click="submitOutRegister()">提交</div>
-              <div class="sure" v-on:click="cancel()">取消</div>
-            </div>
-          </div>
-        </div>
-        <!--<div class="tab2" v-show="isShow2">-->
-          <!--<div class="partsBody" style="height:697px;">-->
-
-            <!--<div class="bodyCon">-->
-
-              <!--<table  border="1" width="100%">-->
-                <!--<tr>-->
-                  <!--<th>清点类型</th>-->
-                  <!--<th>清点时间</th>-->
-                  <!--<th>应点总数</th>-->
-                  <!--<th>实点总数</th>-->
-                  <!--<th>柜内已点</th>-->
-                  <!--<th>柜外已点</th>-->
-                  <!--<th>未点总数</th>-->
-                  <!--<th>清点人姓名</th>-->
-                  <!--<th>清点状态</th>-->
-                <!--</tr>-->
-                <!--<tr v-for="(record,index) in records" :key="index">-->
-                  <!--<td>{{record.CountTypeName}}</td>-->
-                  <!--<td>{{(record.CountTime==""||record.CountTime==null)?"":record.CountTime.replace("T"," ")}}</td>-->
-                  <!--<td>{{record.ShouldCount}}</td>-->
-                  <!--<td>{{record.RealCount}}</td>-->
-                  <!--<td>{{record.InnerCount}}</td>-->
-                  <!--<td>{{record.OutterCount}}</td>-->
-                  <!--<td>{{record.UnCount}}</td>-->
-                  <!--<td>{{record.PoliceName}}</td>-->
-                  <!--<td>{{record.StatusName}}</td>-->
-                <!--</tr>-->
-              <!--</table>-->
-
-            <!--</div>-->
-            <!--<el-row >-->
-              <!--<el-col :span="8" style="height: 10px"></el-col>-->
-              <!--<el-col :span="8" >-->
-                <!--<div class="pages">-->
-                  <!--<span class="pageControl"><img src="../../assets/q1.png" v-on:click="getRecordback()" alt=""/></span>-->
-                  <!--<span class="pagesText">{{recordPage+1}}/{{Math.ceil(recordCount/20)==0?1:Math.ceil(recordCount/20)}}</span>-->
-                  <!--<span class="pageControl"><img src="../../assets/q2.png" v-on:click="getRecordGo()" alt=""/></span>-->
-                <!--</div>-->
-              <!--</el-col>-->
-              <!--<el-col :span="8" style="height: 10px"></el-col>-->
-            <!--</el-row>-->
-          <!--</div>-->
-        <!--</div>-->
-
-      </div>
+  <!--批量外出-->
+  <el-row class="outwork">
+    <el-col :span="24" style="height:210px">
+      <p>出工中（已出<font class="fontYellow">50</font>人,剩余<font class="fontYellow">200</font>人）</p>
     </el-col>
-    <el-col :span="1"  style="height:10px"></el-col>
-  </el-row>
+    <el-row>
+      <el-col :span="1" style="height:10px">
 
+      </el-col>
+      <el-col :span="22">
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+        <el-col :span="2" style="padding:15px 5px;">
+          <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
+            <el-col :span="24">
+              <img src="../../assets/crimal_1_03.jpg" style="width:100px">
+            </el-col>
+              <el-col :span="24">
+                张三犯
+              </el-col>
+          </div>
+        </el-col>
+
+      </el-col>
+      <el-col :span="1" style="background-color:red">
+
+      </el-col>
+    </el-row>
+
+  </el-row>
 </template>
 
 <script>
@@ -218,7 +274,7 @@ import { BasicUrl, IMG, ajaxUrl } from "../../config";
 import { mapState } from "vuex";
 
 export default {
-  name: "navheader",
+  name: "batchOut",
   data() {
     return {
       orgTime: "0",

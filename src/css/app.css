@@ -59,12 +59,10 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  /*width: 100%;*/
+  width: 1920px;
   background: url("../assets/bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  width: 1584px;
-  height: 1024px;
   overflow: hidden;
 }
 

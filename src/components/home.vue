@@ -87,10 +87,10 @@
           <h4 class="home_title">流动人员：15人</h4>
           <el-col :span="6" style="padding:0px 30px">
             <div class="personCard">
-              <el-col :span="10" style="padding:10px 40px">
+              <el-col :span="10" class="personPhoto">
                 <img src="../assets/crimal_1_03.jpg">
               </el-col>
-                <el-col :span="14" style="padding:5px">
+                <el-col :span="14" style="padding:10px">
                   <p>姓名：张三犯</p>
                   <p>番号：32000000001</p>
                   <p>去向：会见</p>
@@ -208,7 +208,7 @@ export default {
   mounted() {
     var vm = this;
 
-    //this.$router.push({ path: "/crimalcheck" });
+    this.$router.push({ path: "/batchOut" });
 
     localStorage.setItem("canRouter", 1);
     setTimeout(function() {

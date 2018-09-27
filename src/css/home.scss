@@ -1,5 +1,5 @@
 .home {
-  height: 877px !important;
+  height: 933px !important;
 }
 
 .fontYellow {
@@ -58,7 +58,7 @@
   }
 
   .flow_persons {
-    height: 200px;
+    height: 240px;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
 
     overflow: hidden;
@@ -69,17 +69,23 @@
       box-shadow: 0 0 25px rgba(255, 54, 219, 0.9) inset;
       background: rgba(0, 0, 0, 0.2);
       width: 100%;
-      height: 140px;
+      height: 175px;
       border-radius: 5px;
 
-      img {
-        width: 80px;
-        height: 120px;
+      .personPhoto {
+        padding: 20px 65px;
+
+        img {
+          width: 100px;
+          height: 135px;
+        }
       }
+
+
     }
 
     p {
-      font-size: 10pt;
+      font-size: 12pt;
       line-height: 7px
     }
 

@@ -4,7 +4,7 @@ import home from '@/components/home'
 import outwork from '@/components/outwork/outwork'
 import crimalcheck from '@/components/crimalcheck/crimalcheck'
 import toolcheck from '@/components/toolcheck/toolcheck'
-import outregister from '@/components/outregister/outregister'
+import batchOut from '@/components/batchOut/batchOut'
 import position from '@/components/position/position'
 import mutualsupervision from '@/components/mutualsupervision/mutualsupervision'
 import cardbind from '@/components/cardbind/cardbind'
@@ -39,10 +39,10 @@ export default new Router({
       component: toolcheck
     },
     {
-      // 外出登记
-      path: '/outregister',
-      name: 'outregister',
-      component: outregister
+      // 批量外出
+      path: '/batchOut',
+      name: 'batchOut',
+      component: batchOut
     },
     {
       // 定位展示
