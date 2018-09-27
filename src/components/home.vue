@@ -6,42 +6,53 @@
         <div class="prison_situation">
           <h4 class="home_title">监区概况</h4>
           <div class="content">
-            <el-col :span="2" style="height: 10px;"></el-col>
-            <el-col :span="10">
-              <p>在册：<font class="fontYellow">200</font>&nbsp;人</p>
-              <p>在监：<font class="fontYellow">198</font>&nbsp;人</p>
-              <p>监外：<font class="fontYellow">2</font>&nbsp;人</p>
-              <p>
-                <font class="fontYellow" style="font-size:10pt">下次14:00-15:00</font>
-              </p>
+            <el-col :span="3">
+              <img src="../assets/personIcon.png">
             </el-col>
-            <el-col :span="11">
-              <p>工具：<font class="fontBlue">300</font>&nbsp;件</p>
-              <p>固定：<font class="fontBlue">200</font>&nbsp;件</p>
-              <p>流动：<font class="fontBlue">50</font>&nbsp;件</p>
-              <p>
-                <font class="fontBlue" style="font-size:10pt">下次14:00-15:00</font>
-              </p>
+              <el-col :span="8">
+
+                <p>在册：<font class="fontYellow">200</font>&nbsp;人</p>
+                <p>在监：<font class="fontYellow">198</font>&nbsp;人</p>
+                <p>监外：<font class="fontYellow">2</font>&nbsp;人</p>
+                <p>
+                  <font class="fontYellow" style="font-size:12pt">下次14:00-15:00</font>
+                </p>
+              </el-col>
+              <el-col :span="3">
+                <img src="../assets/toolIcon.png">
             </el-col>
+                <el-col :span="8">
+                  <p>工具：<font class="fontBlue">300</font>&nbsp;件</p>
+                  <p>固定：<font class="fontBlue">200</font>&nbsp;件</p>
+                  <p>流动：<font class="fontBlue">50</font>&nbsp;件</p>
+                  <p>
+                    <font class="fontBlue" style="font-size:12pt">下次14:00-15:00</font>
+                  </p>
+                </el-col>
           </div>
         </div>
         <!--本监区情况-->
         <div class="prison_situation">
           <h4 class="home_title">本区域情况</h4>
           <div class="content">
-            <el-col :span="2" style="height: 10px;"></el-col>
-            <el-col :span="10">
-              <p>区域罪犯：<font class="fontYellow">200</font>&nbsp;人</p>
-              <p>外监来犯：<font class="fontYellow">1</font>&nbsp;人</p>
-              <p>值班民警：<font class="fontYellow">5</font>&nbsp;人</p>
-              <p>外来人员：<font class="fontYellow">3</font>&nbsp;人</p>
+            <el-col :span="3">
+              <img src="../assets/personIcon.png">
             </el-col>
-            <el-col :span="11">
-              <p>领出工具：<font class="fontBlue">3</font>&nbsp;件</p>
-              <p>今日报废：<font class="fontBlue">1</font>&nbsp;件</p>
-              <p>异常工具：<font class="fontBlue">5</font>&nbsp;件</p>
-              <p>今日报损：<font class="fontBlue">2</font>&nbsp;件</p>
+              <el-col :span="8">
+                <p>区域罪犯：<font class="fontYellow">200</font>&nbsp;人</p>
+                <p>外监来犯：<font class="fontYellow">1</font>&nbsp;人</p>
+                <p>值班民警：<font class="fontYellow">5</font>&nbsp;人</p>
+                <p>外来人员：<font class="fontYellow">3</font>&nbsp;人</p>
+              </el-col>
+              <el-col :span="3">
+                <img src="../assets/toolIcon.png">
             </el-col>
+                <el-col :span="8">
+                  <p>领出工具：<font class="fontBlue">3</font>&nbsp;件</p>
+                  <p>今日报废：<font class="fontBlue">1</font>&nbsp;件</p>
+                  <p>异常工具：<font class="fontBlue">5</font>&nbsp;件</p>
+                  <p>今日报损：<font class="fontBlue">2</font>&nbsp;件</p>
+                </el-col>
           </div>
         </div>
       </el-col>
@@ -74,7 +85,21 @@
       <el-col :span="24">
         <div class="flow_persons">
           <h4 class="home_title">流动人员：15人</h4>
-
+          <el-col :span="6" style="padding:0px 30px">
+            <div class="personCard">
+              <el-col :span="10" style="padding:10px 40px">
+                <img src="../assets/crimal_1_03.jpg">
+              </el-col>
+                <el-col :span="14" style="padding:5px">
+                  <p>姓名：张三犯</p>
+                  <p>番号：32000000001</p>
+                  <p>去向：会见</p>
+                  <p>陪同民警：李四警</p>
+                  <p>流动信息：</p>
+                  <p>16:21进入会见室</p>
+                </el-col>
+            </div>
+          </el-col>
         </div>
       </el-col>
     </div>
@@ -182,6 +207,9 @@ export default {
   },
   mounted() {
     var vm = this;
+
+    //this.$router.push({ path: "/crimalcheck" });
+
     localStorage.setItem("canRouter", 1);
     setTimeout(function() {
       vm.getMap();

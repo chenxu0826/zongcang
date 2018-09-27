@@ -6,7 +6,7 @@
       </el-col>
         <el-col :span="22">
           <el-col :span="14">
-            <p>南京监狱现场管控系统</p>
+            <p class="bold">南京监狱现场管控系统</p>
           </el-col>
           <el-col :span="7" class="location">
             <p>(一监区厂房)</p>
@@ -19,7 +19,7 @@
         </el-col>
           <el-col :span="22">
             <el-col :span="14">
-              <p>南京监狱现场管控系统</p>
+              <p class="bold">南京监狱现场管控系统</p>
             </el-col>
             <el-col :span="7" class="location">
               <p>(一监区厂房)</p>
