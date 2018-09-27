@@ -1,53 +1,55 @@
 .navheader {
-  .headTip {
-    position: absolute !important;
-    margin: -15px 35px !important;
-    font-size: 20px !important;
-    color: #28ff00 !important;
-    width: 556px !important;
-  }
   p {
     margin: 0;
   }
+
   height: 122px;
   color: #fff;
   font-size: 20px;
+
   .logo {
     padding: 30px;
+
     p {
       margin: 0;
       text-align: left;
       line-height: 54px;
-      margin-left: 40px;
+      margin-left: 10px;
       font-size: 36px;
     }
   }
+
   .logo-hui {
     p {
       color: #bbb;
     }
+
+
+
   }
-  .navoption {
-    padding: 30px 30px 0 0;
-    float: right;
+
+  .location {
+    height: 45px;
+    line-height: 45px;
+    text-align: left;
+
     p {
-      text-align: left;
-      font-size: 14px;
-      font-weight: bold;
-      line-height: 28px;
-      span {
-        margin: 0 5px;
-      }
+      font-size: 13pt;
     }
-    .nowposition {
-      cursor: pointer;
+  }
+
+  .navRight {
+    padding: 30px;
+    float: right;
+
+    .title {
+
+      height: 57px;
+      line-height: 57px;
     }
-    .nav-plan {
-      color: #28ff00;
-    }
-    .nav-plan-time {
-      color: #ffd800;
-      float: right;
+
+    .floatRight {
+      text-align: right;
     }
   }
 }

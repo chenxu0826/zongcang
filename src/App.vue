@@ -87,8 +87,8 @@
                 <div style="height: 91px;width:90px;">
                   <img :src="criminal.Photo" width="98%" height="85" alt="" />
                 </div>
-                <span class="criminalName">{{ criminal.CriminalName}}</span>
-              </div>
+                  <span class="criminalName">{{ criminal.CriminalName}}</span>
+                </div>
             </el-col>
           </el-row>
         </div>
@@ -147,7 +147,7 @@
                   <el-row>
                     <el-col :span="4" v-for="(group,index) in groupTeam" :key="index">
                       <div><img width="100%" :src="group.Photo" alt=""></div>
-                      <span>{{group.CriminalName}} <br> {{group.CriminalID}} </span>
+                        <span>{{group.CriminalName}} <br> {{group.CriminalID}} </span>
                     </el-col>
                   </el-row>
                   <el-row>
@@ -185,8 +185,8 @@
               <el-col :span="8">
                 <div class="pages">
                   <span class="pageControl"><img src="./assets/q1.png" v-on:click="alarmBack()" alt="" /></span>
-                  <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
-                  <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt="" /></span>
+                    <span class="pagesText">{{alarmNowPage}}/{{alarmPages}}</span>
+                    <span class="pageControl"><img src="./assets/q2.png" v-on:click="alarmGo()" alt="" /></span>
                 </div>
               </el-col>
               <el-col :span="8" style="height: 10px"></el-col>
@@ -217,8 +217,8 @@
               <el-col :span="7" v-for="(item,index) in nowfloatPerson.slice(1,10)" :key="index">
                 <div class="moveCrimal">
                   <div><img :src="item.Photo" width="70%" height="100" alt=""></div>
-                  <span>{{item.ObjectName}} <br> {{item.EventTime}}<br>{{item.EventName}}</span>
-                </div>
+                    <span>{{item.ObjectName}} <br> {{item.EventTime}}<br>{{item.EventName}}</span>
+                  </div>
               </el-col>
             </el-col>
             <el-col :span="12">
@@ -228,8 +228,8 @@
                 <div class="moveCrimal">
                   <div style="height:50px;"></div>
                   <div><img :src="nowfloatPersonFirst.Photo" width="100%" height="250" alt=""></div>
-                  <span style="font-size: 20px;font-weight:800">{{nowfloatPersonFirst.ObjectName}} <br> {{nowfloatPersonFirst.EventTime}}<br>{{nowfloatPersonFirst.EventName}} </span>
-                </div>
+                    <span style="font-size: 20px;font-weight:800">{{nowfloatPersonFirst.ObjectName}} <br> {{nowfloatPersonFirst.EventTime}}<br>{{nowfloatPersonFirst.EventName}} </span>
+                  </div>
               </el-col>
               <el-col :span="7" style="height: 10px">
               </el-col>
@@ -277,8 +277,8 @@
           <el-col :span="8">
             <div class="pages">
               <span class="pageControl"><img src="./assets/q1.png" v-on:click="getCriminalback()" alt="" /></span>
-              <span class="pagesText">{{criminalPage + 1}}/{{Math.ceil(criminalCount / 18) == 0 ? 1 : Math.ceil(criminalCount / 18)}}</span>
-              <span class="pageControl"><img src="./assets/q2.png" v-on:click="getCriminalGo()" alt="" /></span>
+                <span class="pagesText">{{criminalPage + 1}}/{{Math.ceil(criminalCount / 18) == 0 ? 1 : Math.ceil(criminalCount / 18)}}</span>
+                <span class="pageControl"><img src="./assets/q2.png" v-on:click="getCriminalGo()" alt="" /></span>
             </div>
           </el-col>
           <el-col :span="8" style="height: 10px"></el-col>
@@ -363,8 +363,8 @@
           <el-col :span="8">
             <div class="pages">
               <span class="pageControl"><img src="./assets/q1.png" v-on:click="getToolback()" alt="" /></span>
-              <span class="pagesText" style="font-size: 28px">{{toolPage + 1}}/{{Math.ceil(toolCount / 18) == 0 ? 1 : Math.ceil(toolCount / 18)}}</span>
-              <span class="pageControl"><img src="./assets/q2.png" v-on:click="getToolGo()" alt="" /></span>
+                <span class="pagesText" style="font-size: 28px">{{toolPage + 1}}/{{Math.ceil(toolCount / 18) == 0 ? 1 : Math.ceil(toolCount / 18)}}</span>
+                <span class="pageControl"><img src="./assets/q2.png" v-on:click="getToolGo()" alt="" /></span>
             </div>
           </el-col>
           <el-col :span="8" style="height: 10px"></el-col>
@@ -378,135 +378,135 @@
       <div class="alarmImg">
         <img class="alarmIco" src='./assets/a1.png' alt="">
       </div>
-      <div class="alarmNum">{{alarmList.length > 999 ? "999+" : alarmList.length}}</div>
-      <div class="alarmText">{{alarmText}}</div>
+        <div class="alarmNum">{{alarmList.length > 999 ? "999+" : alarmList.length}}</div>
+        <div class="alarmText">{{alarmText}}</div>
 
-    </div>
-    <!--报警弹框 end-->
+      </div>
+      <!--报警弹框 end-->
 
-    <!--用户登录 star-->
-    <div class="alertTip alertYHDL" v-show="alertYHDL">
-      <div class="alertBody " style="margin: -204px -220px;width: 440px;height: 408px;">
-        <div class="bodyHead">
-          <div class="title">用户登录</div>
-          <div v-on:click="loginclose('alertYHDL')" class="close">X</div>
-        </div>
-        <div class="bodyCon">
-          <el-row class="menu_title_wrap">
-            <el-col :span="6">
-              <div style="height: 57px"></div>
-              <p>登录名：</p>
-              <div style="height:12px"></div>
-              <p>密码：</p>
+      <!--用户登录 star-->
+      <div class="alertTip alertYHDL" v-show="alertYHDL">
+        <div class="alertBody " style="margin: -204px -220px;width: 440px;height: 408px;">
+          <div class="bodyHead">
+            <div class="title">用户登录</div>
+            <div v-on:click="loginclose('alertYHDL')" class="close">X</div>
+          </div>
+          <div class="bodyCon">
+            <el-row class="menu_title_wrap">
+              <el-col :span="6">
+                <div style="height: 57px"></div>
+                <p>登录名：</p>
+                <div style="height:12px"></div>
+                <p>密码：</p>
+              </el-col>
+              <el-col :span="16">
+                <span class="tipHead">请民警登录或刷卡确认</span>
+                <input type="text" placeholder="请输入" v-model="policeLogin.account">
+                <input type="password" placeholder="请输入" v-model="policeLogin.password">
             </el-col>
-            <el-col :span="16">
-              <span class="tipHead">请民警登录或刷卡确认</span>
-              <input type="text" placeholder="请输入" v-model="policeLogin.account">
-              <input type="password" placeholder="请输入" v-model="policeLogin.password">
-            </el-col>
-            <el-col :span="2" style="height: 10px"></el-col>
-          </el-row>
-        </div>
-        <div class="partsFoot">
-          <div class="alertText">{{alertText}}</div>
-          <div style="margin: 20px 2px;float: right">
-            <div class="sure" @click="logonSbumit">确定</div>
+                <el-col :span="2" style="height: 10px"></el-col>
+            </el-row>
+          </div>
+          <div class="partsFoot">
+            <div class="alertText">{{alertText}}</div>
+            <div style="margin: 20px 2px;float: right">
+              <div class="sure" @click="logonSbumit">确定</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!--用户登录 end-->
+      <!--用户登录 end-->
 
-    <!--报警音频资源加载-->
-    <!--区域入侵报警-->
-    <audio id="waring1001" preload="preload">
-      <source src="resources/sound/systemsound/1001.mp3" type="audio/ogg" />
+      <!--报警音频资源加载-->
+      <!--区域入侵报警-->
+      <audio id="waring1001" preload="preload">
+        <source src="resources/sound/systemsound/1001.mp3" type="audio/ogg" />
     </audio>
-    <!--周界入侵报警-->
-    <audio id="waring1002" preload="preload">
-      <source src="resources/sound/systemsound/1002.mp3" type="audio/ogg" />
+        <!--周界入侵报警-->
+        <audio id="waring1002" preload="preload">
+          <source src="resources/sound/systemsound/1002.mp3" type="audio/ogg" />
     </audio>
-    <!--互监组超界报警-->
-    <audio id="waring1003" preload="preload">
-      <source src="resources/sound/systemsound/1003.mp3" type="audio/ogg" />
+          <!--互监组超界报警-->
+          <audio id="waring1003" preload="preload">
+            <source src="resources/sound/systemsound/1003.mp3" type="audio/ogg" />
     </audio>
-    <!--警囚比异常报警-->
-    <audio id="waring1004" preload="preload">
-      <source src="resources/sound/systemsound/1004.mp3" type="audio/ogg" />
+            <!--警囚比异常报警-->
+            <audio id="waring1004" preload="preload">
+              <source src="resources/sound/systemsound/1004.mp3" type="audio/ogg" />
     </audio>
-    <!--超时未到达报警-->
-    <audio id="waring1005" preload="preload">
-      <source src="resources/sound/systemsound/1005.mp3" type="audio/ogg" />
+              <!--超时未到达报警-->
+              <audio id="waring1005" preload="preload">
+                <source src="resources/sound/systemsound/1005.mp3" type="audio/ogg" />
     </audio>
-    <!--人员流动报警-->
-    <audio id="waring1006" preload="preload">
-      <source src="resources/sound/systemsound/1006.mp3" type="audio/ogg" />
+                <!--人员流动报警-->
+                <audio id="waring1006" preload="preload">
+                  <source src="resources/sound/systemsound/1006.mp3" type="audio/ogg" />
     </audio>
-    <!--罪犯脱岗报警-->
-    <audio id="waring1008" preload="preload">
-      <source src="resources/sound/systemsound/1008.mp3" type="audio/ogg" />
+                  <!--罪犯脱岗报警-->
+                  <audio id="waring1008" preload="preload">
+                    <source src="resources/sound/systemsound/1008.mp3" type="audio/ogg" />
     </audio>
-    <!--罪犯超区域报警-->
-    <audio id="waring1009" preload="preload">
-      <source src="resources/sound/systemsound/1009.mp3" type="audio/ogg" />
+                    <!--罪犯超区域报警-->
+                    <audio id="waring1009" preload="preload">
+                      <source src="resources/sound/systemsound/1009.mp3" type="audio/ogg" />
     </audio>
-    <!--离线报警-->
-    <audio id="waring1011" preload="preload">
-      <source src="resources/sound/systemsound/1011.mp3" type="audio/ogg" />
+                      <!--离线报警-->
+                      <audio id="waring1011" preload="preload">
+                        <source src="resources/sound/systemsound/1011.mp3" type="audio/ogg" />
     </audio>
-    <!--放风场滞留报警-->
-    <audio id="waring1020" preload="preload">
-      <source src="resources/sound/systemsound/1020.mp3" type="audio/ogg" />
+                        <!--放风场滞留报警-->
+                        <audio id="waring1020" preload="preload">
+                          <source src="resources/sound/systemsound/1020.mp3" type="audio/ogg" />
     </audio>
-    <!--厕所滞留报警-->
-    <audio id="waring1021" preload="preload">
-      <source src="resources/sound/systemsound/1021.mp3" type="audio/ogg" />
+                          <!--厕所滞留报警-->
+                          <audio id="waring1021" preload="preload">
+                            <source src="resources/sound/systemsound/1021.mp3" type="audio/ogg" />
     </audio>
-    <!--提押滞留报警-->
-    <audio id="waring1022" preload="preload">
-      <source src="resources/sound/systemsound/1022.mp3" type="audio/ogg" />
+                            <!--提押滞留报警-->
+                            <audio id="waring1022" preload="preload">
+                              <source src="resources/sound/systemsound/1022.mp3" type="audio/ogg" />
     </audio>
-    <!--断带报警-->
-    <audio id="waring1030" preload="preload">
-      <source src="resources/sound/systemsound/1030.mp3" type="audio/ogg" />
+                              <!--断带报警-->
+                              <audio id="waring1030" preload="preload">
+                                <source src="resources/sound/systemsound/1030.mp3" type="audio/ogg" />
     </audio>
-    <!--按钮报警-->
-    <audio id="waring1031" preload="preload">
-      <source src="resources/sound/systemsound/1031.mp3" type="audio/ogg" />
+                                <!--按钮报警-->
+                                <audio id="waring1031" preload="preload">
+                                  <source src="resources/sound/systemsound/1031.mp3" type="audio/ogg" />
     </audio>
-    <!--电池电量低-->
-    <audio id="waring1032" preload="preload">
-      <source src="resources/sound/systemsound/1032.mp3" type="audio/ogg" />
+                                  <!--电池电量低-->
+                                  <audio id="waring1032" preload="preload">
+                                    <source src="resources/sound/systemsound/1032.mp3" type="audio/ogg" />
     </audio>
-    <!--外来人员超区域报警-->
-    <audio id="waring1040" preload="preload">
-      <source src="resources/sound/systemsound/1040.mp3" type="audio/ogg" />
+                                    <!--外来人员超区域报警-->
+                                    <audio id="waring1040" preload="preload">
+                                      <source src="resources/sound/systemsound/1040.mp3" type="audio/ogg" />
     </audio>
-    <!--外来车辆超区域报警-->
-    <audio id="waring1041" preload="preload">
-      <source src="resources/sound/systemsound/1041.mp3" type="audio/ogg" />
+                                      <!--外来车辆超区域报警-->
+                                      <audio id="waring1041" preload="preload">
+                                        <source src="resources/sound/systemsound/1041.mp3" type="audio/ogg" />
     </audio>
-    <!--民警脱岗报警-->
-    <audio id="waring1050" preload="preload">
-      <source src="resources/sound/systemsound/1050.mp3" type="audio/ogg" />
+                                        <!--民警脱岗报警-->
+                                        <audio id="waring1050" preload="preload">
+                                          <source src="resources/sound/systemsound/1050.mp3" type="audio/ogg" />
     </audio>
-    <!--请及时点名-->
-    <audio id="waring1052" preload="preload">
-      <source src="resources/sound/systemsound/1052.mp3" type="audio/ogg" />
+                                          <!--请及时点名-->
+                                          <audio id="waring1052" preload="preload">
+                                            <source src="resources/sound/systemsound/1052.mp3" type="audio/ogg" />
     </audio>
-    <!--人员清点音频资源加载-->
-    <audio id="personPlan" preload="preload">
-      <source src="resources/sound/systemsound/prisoner_check.mp3" type="audio/ogg" />
+                                            <!--人员清点音频资源加载-->
+                                            <audio id="personPlan" preload="preload">
+                                              <source src="resources/sound/systemsound/prisoner_check.mp3" type="audio/ogg" />
     </audio>
-    <!--工具清点音频资源加载-->
-    <audio id="toolPlan" preload="preload">
-      <source src="resources/sound/systemsound/tool_check.mp3" type="audio/ogg" />
+                                              <!--工具清点音频资源加载-->
+                                              <audio id="toolPlan" preload="preload">
+                                                <source src="resources/sound/systemsound/tool_check.mp3" type="audio/ogg" />
     </audio>
-    <!--收工音频资源加载-->
-    <audio id="workOut" preload="preload">
-      <source src="resources/sound/systemsound/workBack.mp3" type="audio/ogg" />
+                                                <!--收工音频资源加载-->
+                                                <audio id="workOut" preload="preload">
+                                                  <source src="resources/sound/systemsound/workBack.mp3" type="audio/ogg" />
     </audio>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -2347,8 +2347,8 @@ export default {
       if (vm.onlinestatus === false) {
         setInterval(function() {
           //todo暂时取消五秒刷新
-          vm.$router.push({ path: "/" });
-          window.location.reload();
+          // vm.$router.push({ path: "/" });
+          // window.location.reload();
         }, 5000);
       }
     };
@@ -2359,8 +2359,8 @@ export default {
       console.log("WebSocketError!", evt);
       setInterval(function() {
         //todo暂时取消五秒刷新
-        vm.$router.push({ path: "/" });
-        window.location.reload();
+        // vm.$router.push({ path: "/" });
+        // window.location.reload();
       }, 5000);
     };
 

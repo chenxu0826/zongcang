@@ -1,12 +1,6 @@
 <template>
   <div class="menufooter">
-    <el-row class="menu_title_wrap" style="display:flex;justify-content:space-between;">
-
-      <div class="menu_title" style="float:left" v-for="(item,index) in menuList" :key="index">
-        <div @click="gopage(item.path,$event)">{{item.name}}</div>
-      </div>
-
-    </el-row>
+    滚动字幕内容————滚动字幕内容————滚动字幕内容————滚动字幕内容————滚动字幕内容————
   </div>
 </template>
 

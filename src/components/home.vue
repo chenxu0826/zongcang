@@ -2,68 +2,61 @@
   <div class="home">
     <div class="body">
       <el-col :span="7">
-        <!--人员概况-->
+        <!--监区概况-->
         <div class="prison_situation">
           <h4 class="home_title">监区概况</h4>
           <div class="content">
             <el-col :span="2" style="height: 10px;"></el-col>
             <el-col :span="10">
+              <p>在册：<font class="fontYellow">200</font>&nbsp;人</p>
+              <p>在监：<font class="fontYellow">198</font>&nbsp;人</p>
+              <p>监外：<font class="fontYellow">2</font>&nbsp;人</p>
               <p>
-                监区人数：{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}人</p>
-              <p>
-                在监人数：{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 : (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}人</p>
-              <p>异常人员：{{FlnkIDList2.length - FlnkIDList1.length}}人</p>
+                <font class="fontYellow" style="font-size:10pt">下次14:00-15:00</font>
+              </p>
             </el-col>
             <el-col :span="11">
-              <p>外出人数（监内）：{{FlnkIDList1.length}}人</p>
-              <p>外出人数（监外）：{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}人</p>
-              <p v-on:click="viewLXRY">离线人数：{{FlnkIDList4.length}}人</p>
+              <p>工具：<font class="fontBlue">300</font>&nbsp;件</p>
+              <p>固定：<font class="fontBlue">200</font>&nbsp;件</p>
+              <p>流动：<font class="fontBlue">50</font>&nbsp;件</p>
+              <p>
+                <font class="fontBlue" style="font-size:10pt">下次14:00-15:00</font>
+              </p>
             </el-col>
           </div>
         </div>
-        <!--流动人员信息-->
-        <div class="floating_personnel">
-          <h4 class="home_title">流动人员
-            <span class="float">（异常人员{{FlnkIDList2.length - FlnkIDList1.length}}人，</span>
-            <span class="out">正常流动{{FlnkIDList1.length}}人）</span>
-          </h4>
-          <el-row class="float_person_wrap">
-            <el-col :span="24" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key="index">
-
-              <div :class="['float_person_card illegal', {moveBlue: item.isBlue}]">
-                <el-col :span="7" class="photo">
-                  <img :src="item.Photo" alt="" width="100%" height="100%">
-                </el-col>
-                <el-col :span="16" class="crimal_content">
-                  <p>姓名：{{item.CriminalName}} ({{item.CriminalID}})</p>
-                  <p v-show="!item.isBlue">状态：{{item.Status}}</p>
-                  <p>当前区域：{{item.AreaName}}</p>
-                  <p v-show="item.isBlue">前往区域：{{item.Areas}}</p>
-                  <p v-show="item.isBlue">陪同民警：{{item.Polices}}</p>
-                  <p>外出时间：{{item.LeaveTime}}</p>
-                  <p v-show="item.isBlue">外出事由：{{item.Reason}}</p>
-                </el-col>
-              </div>
+        <!--本监区情况-->
+        <div class="prison_situation">
+          <h4 class="home_title">本区域情况</h4>
+          <div class="content">
+            <el-col :span="2" style="height: 10px;"></el-col>
+            <el-col :span="10">
+              <p>区域罪犯：<font class="fontYellow">200</font>&nbsp;人</p>
+              <p>外监来犯：<font class="fontYellow">1</font>&nbsp;人</p>
+              <p>值班民警：<font class="fontYellow">5</font>&nbsp;人</p>
+              <p>外来人员：<font class="fontYellow">3</font>&nbsp;人</p>
             </el-col>
-
-          </el-row>
-          <el-row>
-            <el-col :span="2" style="height: 10px"></el-col>
-            <el-col :span="20">
-              <div class="pages">
-                <span class="pageControl" @click="floating_personnelBack"><img src="../assets/q1.png" alt="" /></span>
-                <span class="pagesText">{{float_personnelNowPage}}/{{float_personnelAllPages}}</span>
-                <span class="pageControl" @click="floating_personnelGo"><img src="../assets/q2.png" alt="" /></span>
-              </div>
+            <el-col :span="11">
+              <p>领出工具：<font class="fontBlue">3</font>&nbsp;件</p>
+              <p>今日报废：<font class="fontBlue">1</font>&nbsp;件</p>
+              <p>异常工具：<font class="fontBlue">5</font>&nbsp;件</p>
+              <p>今日报损：<font class="fontBlue">2</font>&nbsp;件</p>
             </el-col>
-            <el-col :span="2" style="height: 10px"></el-col>
-          </el-row>
+          </div>
         </div>
       </el-col>
 
       <el-col :span="17">
         <div class="member_distribute">
-          <h4 class="home_title">人员分布</h4>
+          <el-col :span="10">
+            <h4 class="home_title">地图结构</h4>
+          </el-col>
+          <el-col :span="14" style="line-height:40px">
+            <font style="border-bottom:3px solid #fff">&nbsp;全监&nbsp;</font>&nbsp;&nbsp;
+            <font style="border-bottom:3px solid #fff">&nbsp;厂房&nbsp;</font>&nbsp;&nbsp;
+            <font style="border-bottom:3px solid #fff">&nbsp;监舍&nbsp;</font>
+          </el-col>
+
           <div class="map" ref="myMap">
             <div class="getCenter">
               <img :src="mapPhoto" ref="myImg">
@@ -74,6 +67,14 @@
               </div>
             </div>
           </div>
+
+        </div>
+      </el-col>
+
+      <el-col :span="24">
+        <div class="flow_persons">
+          <h4 class="home_title">流动人员：15人</h4>
+
         </div>
       </el-col>
     </div>
@@ -210,10 +211,10 @@ export default {
     //5秒钟没有数据 刷新界面
     setInterval(function() {
       //todo暂时取消5秒刷新页面
-      if (vm.Iswebsocket == 0) {
-        vm.$router.push({ path: "/" });
-        window.location.reload();
-      }
+      // if (vm.Iswebsocket == 0) {
+      //   vm.$router.push({ path: "/" });
+      //   window.location.reload();
+      // }
     }, 5000);
   }
 };

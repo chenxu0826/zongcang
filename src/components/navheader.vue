@@ -1,41 +1,39 @@
 <template>
-  <el-row class="navheader" >
-    <el-col :span="6" class="logo" v-if="onlinestatus == true">
-      <el-col :span="2"><img src="../assets/hui.png" alt=""></el-col>
-      <el-col :span="22"><p style="width: 500px">区域定位管控系统</p><p class="headTip">{{alertText1}}</p>
+  <el-row class="navheader">
+    <el-col :span="12" class="logo" v-if="onlinestatus == true">
+      <el-col :span="2">
+        <img src="../assets/hui.png" alt="">
       </el-col>
-    </el-col>
-    <el-col :span="8" class="logo logo-hui" v-else>
-      <el-col :span="2"><img src="../assets/hu.png" alt=""></el-col>
-      <el-col :span="22"><p  style="width: 500px">区域定位管控系统</p><p class="headTip">{{alertText1}}</p>
+        <el-col :span="22">
+          <el-col :span="14">
+            <p>南京监狱现场管控系统</p>
+          </el-col>
+          <el-col :span="7" class="location">
+            <p>(一监区厂房)</p>
+          </el-col>
+        </el-col>
       </el-col>
-    </el-col>
-    <!--<el-col :span="8" class="logo"></el-col>-->
-    <el-col :span="12" class="navoption">
-      <el-col :span="23">
-        <p>
-          <span @click="$emit('getPosition')" class="nowposition">当前位置：{{ message }}</span>
-          <span>{{localYear}}</span>
-          <span>{{localWeek}}</span>
-          <span>{{localTime}}</span>
-        </p>
-        <!--<p v-if="plan">-->
-          <!--<span class="nav-plan">{{ plan }}</span><span class="nav-plan-time">计划清点：{{ planStartTime }} - {{planEndTime}}</span>-->
-        <!--</p>-->
-        <!--<p v-if="NextTime">-->
-          <!--<span class="nav-plan">下次{{ plan }}</span><span class="nav-plan-time">计划清点：{{ NextTime }}</span>-->
-        <!--</p>-->
-        <p v-if="personPlan">
-          <span class="nav-plan">{{ personPlan }}:{{ personplanStartTime }} - {{personplanEndTime}} ;　下次{{ personPlan }}:{{ personNextTime }}</span>
-        </p>
-        <p v-if="toolPlan">
-          <span class="nav-plan">{{ toolPlan }}:{{ toolplanStartTime }} - {{toolplanEndTime}} ;　下次{{ toolPlan }}:{{ toolNextTime }}</span>
-        </p>
-      </el-col>
-      <el-col :span="1">
-        <a @click="$emit('aaa')" class="nav-mobile"><img src="../assets/mobile.png" alt=""></a>
-      </el-col>
-    </el-col>
+      <el-col :span="12" class="logo logo-hui" v-else>
+        <el-col :span="2">
+          <img src="../assets/hu.png" alt="">
+        </el-col>
+          <el-col :span="22">
+            <el-col :span="14">
+              <p>南京监狱现场管控系统</p>
+            </el-col>
+            <el-col :span="7" class="location">
+              <p>(一监区厂房)</p>
+            </el-col>
+          </el-col>
+        </el-col>
+        <el-col :span="12" class="navRight">
+          <el-col :span="16" class="title floatRight">
+            上工中
+          </el-col>
+          <el-col :span="8" class="title">
+            今日上工:196人
+          </el-col>
+        </el-col>
   </el-row>
 </template>
 
