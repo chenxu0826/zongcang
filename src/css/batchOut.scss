@@ -1,0 +1,29 @@
+.batchOut {
+  height: 933px;
+  color: white;
+
+  .title {
+    text-align: left;
+    color: #00CCFF;
+    font-size: 18pt;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+
+  .content {
+    height: 180px;
+
+    .contentTitle {
+      color: #00CCFF;
+      font-size: 30pt;
+      text-align: left;
+      margin-top:30px
+    }
+    .contentText {
+      color: #FFFF66;
+      font-size: 30pt;
+      text-align: left;
+      font-weight: bold;
+    }
+  }
+}

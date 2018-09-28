@@ -1,8 +1,24 @@
 <template>
   <!--批量外出-->
-  <el-row class="outwork">
-    <el-col :span="24" style="height:210px">
-      <p>出工中（已出<font class="fontYellow">50</font>人,剩余<font class="fontYellow">200</font>人）</p>
+  <el-row class="batchOut">
+    <el-col :span="1" style="height:10px"></el-col>
+    <el-col :span="22" class="title">批量外出（30）</el-col>
+    <el-col :span="1" style="height:10px"></el-col>
+
+    <el-col :span="24" class="content">
+      <el-row>
+        <el-col :span="2" style="height:10px"></el-col>
+        <el-col :span="5" class="contentTitle">外出事由</el-col>
+        <el-col :span="7" class="contentTitle">外出地点</el-col>
+        <el-col :span="10" class="contentTitle">陪同民警</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="2" style="height:10px"></el-col>
+        <el-col :span="5" class="contentText">外出就医</el-col>
+        <el-col :span="7" class="contentText">江苏省公安医院</el-col>
+        <el-col :span="10" class="contentText">张三警、李四警、王五警</el-col>
+      </el-row>
+
     </el-col>
     <el-row>
       <el-col :span="1" style="height:10px">
@@ -881,6 +897,6 @@ export default {
 };
 </script>
 
-<style>
-@import "../../css/outregister.css";
+<style lang="scss">
+@import "../../css/batchOut.scss";
 </style>

@@ -208,7 +208,7 @@ export default {
   mounted() {
     var vm = this;
 
-    this.$router.push({ path: "/batchOut" });
+    this.$router.push({ path: "/crimalcheck" });
 
     localStorage.setItem("canRouter", 1);
     setTimeout(function() {

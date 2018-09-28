@@ -15,15 +15,16 @@ Vue.use(Vuex)
 Vue.use(ElementUI)
 Vue.use(global)
 Vue.use(config)
-Vue.use(Utils)//自定义的工具类
+Vue.use(Utils) //自定义的工具类
 
 Vue.config.productionTip = false
+Vue.prototype.$echarts = echarts
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  store,//使用store
+  store, //使用store
   template: '<App/>',
   components: {
     App
