@@ -267,9 +267,12 @@
           <p>
             <img src="../../assets/personIcon.png" style="width:50px;margin-top:10px;" />
           </p>
-            <p>总人数：<font class="yellowFont">200</font>人</p>
-            <p>已清点：<font class="yellowFont">120</font>人</p>
-            <p>未清点：<font class="yellowFont">80</font>人</p>
+            <div style="text-align:left;margin-left:20%">
+              <p>总人数：<font class="yellowFont">200</font>人</p>
+              <p>已清点：<font class="yellowFont">120</font>人</p>
+              <p>未清点：<font class="yellowFont">80</font>人</p>
+            </div>
+
         </el-col>
         <el-col :span="12">
           <div id="myChart" style="width:250px;height:250px"></div>
@@ -360,47 +363,13 @@ import echartsLiquidfill from "echarts-liquidfill";
 export default {
   name: "crimalcheck",
   data() {
-    return {
-      isShow1: true,
-      isShow2: false,
-      isB1: true,
-      isB2: false,
-      records: [],
-      recordPage: 0,
-      recordIsLastPage: false,
-      recordCount: 0,
-      hascelled: 0,
-      orgCriminalCount: 0,
-
-      inCriminals: [],
-      inPages: 1, //监内未点总页数
-      inNowPage: 1, //监内未点当前页
-      inListAll: 0, //监内未点总数
-      inChoose: [], //监内选中人员
-      inA: 1,
-      inB: 24,
-
-      outCriminals: [],
-      outPages: 1, //外出未点总页数
-      outNowPage: 1, //外出未点当前页
-      outListAll: 0, //外出未点总数
-      outChoose: [], //外出选中人员
-      legalCount: 0, //外出合法人数
-      illegalCount: 0, //外出非法人数
-      outA: 1,
-      outB: 12,
-      alertText: ""
-    };
+    return {};
   },
   computed: {
-    ...mapState({
-      criminalList: state => state.criminalList,
-      receiveDataMsgType31: state => state.crimalcheck.receiveDataMsgType31
-    })
+    ...mapState({})
   },
   methods: {},
   mounted() {
-    // 请求人员清点详情命令
     var vm = this;
 
     var myChart = vm.$echarts.init(document.getElementById("myChart"));

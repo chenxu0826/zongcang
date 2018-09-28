@@ -1,0 +1,74 @@
+.toolcheck {
+  height: 933px;
+  color: white;
+
+  .card {
+    padding: 15px 5px;
+    position: relative;
+
+    .content {
+      height: 160px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .circle {
+      width: 35px;
+      height: 35px;
+      background-color: #169BD5;
+      border-radius: 50%;
+      -moz-border-radius: 50%;
+      -webkit-border-radius: 50%;
+      position: absolute;
+      left: 8px;
+      top: 18px;
+      line-height: 35px;
+    }
+  }
+
+  .title {
+    text-align: left;
+    color: #00CCFF;
+    font-size: 18pt;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+
+  .situationCard {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    margin-top: 15px;
+    height: 250px;
+
+    p {
+      font-size: 18pt;
+      line-height: 20px;
+    }
+  }
+
+  .issueCard {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    margin-top: 20px;
+
+    img {
+      width: 100px;
+      height: 100px;
+    }
+
+    .content {
+      text-align: left;
+      padding-top: 20px;
+    }
+
+    p {
+      line-height: 20px;
+    }
+  }
+
+  .bludFont {
+    color: #66FFCC;
+    font-weight: bold;
+  }
+}

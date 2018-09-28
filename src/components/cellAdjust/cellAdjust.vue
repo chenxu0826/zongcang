@@ -208,6 +208,5 @@ export default {
 </script>
 
 <style>
-@import "../../css/toolcheck.css";
 @import "../../css/cellAdjust.css";
 </style>

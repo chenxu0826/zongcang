@@ -208,7 +208,7 @@ export default {
   mounted() {
     var vm = this;
 
-    this.$router.push({ path: "/crimalcheck" });
+    this.$router.push({ path: "/toolcheck" });
 
     localStorage.setItem("canRouter", 1);
     setTimeout(function() {
