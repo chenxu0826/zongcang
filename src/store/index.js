@@ -12,11 +12,7 @@ import outwork_store from '../components/outwork/outwork_store.js';
 
 export default new vuex.Store({
   state: {
-    'mapList': [], //地图基础数据
-    'areaList': [],
-    "SocketAllData": {},
-    "criminalList": [], //罪犯基础信息集合
-    'configInfo': {},//系统功能配置信息
+    
   },
   modules: {
     home: home_store,
@@ -27,20 +23,6 @@ export default new vuex.Store({
     outwork: outwork_store,
   },
   mutations: {
-    setMapList(state, Payload) {
-      state.mapList[0] = Payload;
-    },
-    setAreaList(state, Payload) {
-      state.areaList[0] = Payload;
-    },
-    setSocketAllData(state, Payload) {
-      state.SocketAllData = Payload;
-    },
-    setCriminalList(state, Payload) {
-      state.criminalList[0] = Payload;
-    },
-    setConfigInfo(state, Payload) {
-      state.configInfo = Payload;
-    }
+    
   }
 })

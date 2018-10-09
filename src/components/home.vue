@@ -113,137 +113,14 @@ import { mapState } from "vuex";
 export default {
   name: "home",
   data() {
-    return {
-      float_personnelAllPages: "1", //非法流动总页数
-      float_personnelNowPage: 1, //非法流动当前页
-      float_personnelListAll: 0, //非法流动总数
-      float_personnelA: 1,
-      float_personnelB: 3, //3个一页
-
-      chartsChange: [],
-
-      mapScale: 0,
-      mapPhoto: "", //地图信息
-      mapHeight: 600,
-      mapWidth: 800
-    };
+    return {};
   },
   computed: {
-    ...mapState({
-      crimalCount_outCrimalCount: state =>
-        state.home.crimalCount_outCrimalCount, //监区人数 && 外出人数（监外）
-      FlnkIDList1: state => state.home.FlnkIDList1,
-      FlnkIDList2: state => state.home.FlnkIDList2,
-      FlnkIDList4: state => state.home.FlnkIDList4,
-      chartsDatas: state => state.home.chartsDatas,
-      Iswebsocket: state => state.home.Iswebsocket,
-      mapList: state => state.mapList,
-      rootMapInfo: state => state.home.rootMapInfo, //监狱总地图数据
-      configInfo: state => state.configInfo //系统功能配置信息
-    })
+    ...mapState({})
   },
-  methods: {
-    //点击离线人员弹出详情窗口
-    viewLXRY: function() {
-      this.$emit("viewLXRY");
-    },
-    //点击数据弹出窗口
-    select: function(areaid) {
-      this.$emit("viewRYXQ", areaid);
-    },
-
-    //流动人员翻页
-    floating_personnelGo: function() {
-      if (this.float_personnelNowPage < this.float_personnelAllPages) {
-        this.float_personnelNowPage = this.float_personnelNowPage + 1;
-        this.float_personnelA = this.float_personnelA + 3;
-        this.float_personnelB = this.float_personnelB + 3;
-      } else {
-        //        alert("已经最后一页了")
-      }
-    },
-    floating_personnelBack: function() {
-      if (this.float_personnelNowPage === 1) {
-        //        alert("已经是第一页了")
-      } else {
-        this.float_personnelNowPage = this.float_personnelNowPage - 1;
-        this.float_personnelA = this.float_personnelA - 3;
-        this.float_personnelB = this.float_personnelB - 3;
-      }
-    },
-    //获取地图信息
-    getMap: function() {
-      try {
-        let vm = this;
-        let mapInfo = {};
-        if (vm.configInfo.rootMapPosition == true) {
-          mapInfo = vm.rootMapInfo;
-        } else {
-          let map = vm.getLocalStorage("MapFlnkID");
-          mapInfo = vm.mapList[0][map];
-        }
-        vm.mapPhoto = MapUrl + mapInfo.MapUrl;
-        vm.mapHeight = mapInfo.Height;
-        vm.mapWidth = mapInfo.Width;
-
-        let divH = this.$refs.myMap.clientHeight,
-          divW = this.$refs.myMap.clientWidth;
-
-        let hScale = divH / vm.mapHeight;
-        let wScale = divW / vm.mapWidth;
-        if (hScale < wScale) {
-          this.$refs.myImg.height = divH;
-          this.$refs.myImg.width = vm.mapWidth * hScale;
-          this.mapScale = hScale;
-        } else {
-          this.$refs.myImg.height = vm.mapHeight * wScale;
-          this.$refs.myImg.width = divW;
-          this.mapScale = wScale;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  },
+  methods: {},
   mounted() {
     var vm = this;
-
-    this.$router.push({ path: "/toolcheck" });
-
-    localStorage.setItem("canRouter", 1);
-    setTimeout(function() {
-      vm.getMap();
-      setInterval(function() {
-        if (vm.chartsChange !== vm.chartsDatas) {
-          vm.chartsChange = vm.chartsDatas;
-        }
-
-        vm.float_personnelListAll = vm.FlnkIDList2.length;
-        vm.float_personnelAllPages =
-          Math.ceil(vm.FlnkIDList2.length / 3) === 0
-            ? 1
-            : Math.ceil(vm.FlnkIDList2.length / 3);
-
-        if (vm.float_personnelNowPage > vm.float_personnelAllPages) {
-          vm.float_personnelNowPage = vm.float_personnelAllPages;
-          vm.float_personnelB = vm.float_personnelNowPage * 3;
-          vm.float_personnelA = vm.float_personnelB - 2;
-
-          //  vm.float_personnelNowPage=1
-          //  vm.float_personnelB = 3
-          //  vm.float_personnelA = 1
-        }
-      }, 1000);
-    }, 1000);
-
-    //5秒钟没有数据 刷新界面
-    setInterval(function() {
-      //todo暂时取消5秒刷新页面
-      // if (vm.Iswebsocket == 0) {
-      //   vm.$router.push({ path: "/" });
-      //   window.location.reload();
-      // }
-    }, 5000);
   }
 };
 </script>
