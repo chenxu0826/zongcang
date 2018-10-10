@@ -9,7 +9,7 @@
             <p class="bold">南京监狱现场管控系统</p>
           </el-col>
           <el-col :span="10" class="location">
-            <p>(一监区厂房)</p>
+            <p>({{siteName}})</p>
           </el-col>
         </el-col>
       </el-col>
@@ -22,7 +22,7 @@
               <p class="bold">南京监狱现场管控系统</p>
             </el-col>
             <el-col :span="10" class="location">
-              <p>(一监区厂房)</p>
+              <p>({{siteName}})</p>
             </el-col>
           </el-col>
         </el-col>
@@ -44,14 +44,45 @@ import { mapState } from "vuex";
 export default {
   name: "navheader",
   data() {
-    return {};
+    return {
+      siteName: "" //监区的地点名称
+    };
   },
   computed: {
     ...mapState({})
   },
   beforeCreate() {},
-  methods: {},
-  mounted() {}
+  methods: {
+    /* 初始化默认监区 */
+    initPrison: function() {
+      var vm = this;
+      vm.$ajax({
+        url: BasicUrl + "HomeIndex/GetBindJQ",
+        async: true,
+        success: function(result) {
+          vm.prisonSelect = result;
+          if (
+            vm.prisonSelect[0].AreaName == "" ||
+            vm.prisonSelect[0].AreaName == undefined ||
+            vm.prisonSelect[0].AreaName == null
+          ) {
+            vm.siteName = "初始化信息屏位置失败";
+          } else {
+            vm.siteName = vm.prisonSelect[0].AreaName;
+          }
+          vm.setLocalStorage("OrgID", vm.prisonSelect[0].OrgID);
+          vm.setLocalStorage("DoorID", vm.prisonSelect[0].Door);
+          vm.setLocalStorage("AreaID", vm.prisonSelect[0].AreaID);
+          vm.setLocalStorage("AreaType", vm.prisonSelect[0].AreaType);
+          vm.setLocalStorage("MapFlnkID", vm.prisonSelect[0].MapFlnkID);
+        }
+      });
+    }
+  },
+  mounted() {
+    var vm = this;
+    vm.initPrison();
+  }
 };
 </script>
 <style lang="scss">

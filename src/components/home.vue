@@ -11,9 +11,9 @@
             </el-col>
               <el-col :span="8">
 
-                <p>在册：<font class="fontYellow">200</font>&nbsp;人</p>
-                <p>在监：<font class="fontYellow">198</font>&nbsp;人</p>
-                <p>监外：<font class="fontYellow">2</font>&nbsp;人</p>
+                <p>在册：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}</font>&nbsp;人</p>
+                <p>在监：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 : (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}</font>&nbsp;人</p>
+                <p>监外：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}</font>&nbsp;人</p>
                 <p>
                   <font class="fontYellow" style="font-size:12pt">下次14:00-15:00</font>
                 </p>
@@ -116,7 +116,11 @@ export default {
     return {};
   },
   computed: {
-    ...mapState({})
+    ...mapState({
+      crimalCount_outCrimalCount: state =>
+        state.home.crimalCount_outCrimalCount, //监区人数 && 外出人数（监外）
+      FlnkIDList4: state => state.home.FlnkIDList4
+    })
   },
   methods: {},
   mounted() {

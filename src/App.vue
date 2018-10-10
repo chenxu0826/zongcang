@@ -24,10 +24,14 @@ export default {
     menufooter: menufooter // 引入组件底部菜单
   },
   data() {
-    return {};
+    return {
+      FlnkIDList_4: [] //在监人数（非在线）ID
+    };
   },
   computed: {
-    ...mapState({})
+    ...mapState({
+      criminalList: state => state.criminalList
+    })
   },
   methods: {
     /*自适应各种屏幕*/
@@ -47,11 +51,156 @@ export default {
       $("#app").css("-webkit-transform-origin", "0 0");
       $("#app").css("-moz-transform-origin", "0 0");
       $("#app").css("-o-transform-origin", "0 0");
+    },
+    /* 初始化所有基础全量数据 */
+    allBaseDataInit: function() {
+      var vm = this;
+      /* 罪犯基础数据 */
+      vm.$ajax({
+        url: BasicUrl + "CriminalCnt/GetCriminalList" + "?callback=?",
+        async: true,
+        success: function(result) {
+          //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
+          var personlist_hash = [];
+          // 重构罪犯信息哈希数据
+          for (let i = 0; i < result.length; i++) {
+            personlist_hash[result[i].FlnkID] = {
+              FlnkID: result[i].FlnkID,
+              CriminalID: result[i].CriminalID,
+              CriminalName: result[i].CriminalName,
+              Sex: result[i].Sex,
+              MZ: result[i].MZ,
+              SFZ: result[i].SFZ,
+              ZM: result[i].ZM,
+              XQ: result[i].XQ,
+              ZFLB: result[i].ZFLB,
+              Photo: IMG + result[i].Photo,
+              ThumbUrl: result[i].ThumbUrl,
+              OrgID: result[i].OrgID,
+              RoomID: result[i].RoomID,
+              BedID: result[i].BedID,
+              InterimOrgID: result[i].InterimOrgID,
+              ManageLevel: result[i].ManageLevel,
+              IsZDRY: result[i].IsZDRY,
+              Pinyin: result[i].Pinyin,
+              DBID: result[i].DBID,
+              Status: result[i].Status,
+              HostID: result[i].HostID,
+              IsDelete: result[i].IsDelete,
+              UpdateTime: result[i].UpdateTime
+            };
+          }
+          //所有罪犯信息缓存(传进vue的数据用于渲染页面)
+          vm.$store.commit("setCriminalList", personlist_hash);
+        }
+      });
+
+      /* 监区人数 && 外出人数（监外） */
+      vm.$ajax({
+        data: { OrgID: localStorage.getItem("OrgID") },
+        url: BasicUrl + "CriminalCnt/GetCurOrgCriminalCount",
+        async: true,
+        success: function(result) {
+          vm.$store.commit("setCrimalCount_outCrimalCount", result[0]);
+        }
+      });
     }
   },
   mounted() {
     var vm = this;
     vm.changeSize();
+    vm.allBaseDataInit();
+    /* 打开websocket */
+    vm.ws.onopen = function() {
+      console.log("websocket----onopen");
+      vm.$store.commit("setOnlinestatus", true);
+      vm.$store.commit("setIswebsocket", 1);
+      setInterval(function() {
+        /* 流动人员 && 外监进入人员-24 */
+        var personnel_distribution = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 24
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID")
+          })
+        };
+        /* 保持心跳 */
+        var keep_heart = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 1
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID")
+          })
+        };
+        /* 保持心跳-参数-01 */
+        vm.ws.send(JSON.stringify(keep_heart));
+        /* 流动人员 && 外监进入人员-参数-24 */
+        vm.ws.send(JSON.stringify(personnel_distribution));
+      }, 2000);
+    };
+
+    /* websocket接收信息 */
+    vm.ws.onmessage = function(event) {
+      console.log("websocket----onmessage");
+      var msg = JSON.parse(event.data);
+      if (msg == null) {
+        return;
+      }
+
+      if (msg.Header.MsgType === 24) {
+        /* 流动人员 && 外监进入人员-返回数据-24 */
+        var flowPerson_outPrison_rec = JSON.parse(msg.Body);
+        if (
+          flowPerson_outPrison_rec == null ||
+          flowPerson_outPrison_rec == undefined ||
+          flowPerson_outPrison_rec.length == 0
+        ) {
+          console.log("24号协议数据为空");
+          return;
+        }
+
+        // 4、在监人数（非在线）
+        vm.FlnkIDList_4.length = 0;
+        for (let i = 0; i < flowPerson_outPrison_rec[3].People.length; i++) {
+          let flowCrim = flowPerson_outPrison_rec[3].People[i];
+          flowCrim.CriminalName =
+            vm.criminalList[0][flowCrim.CriminalID].CriminalName;
+          flowCrim.CriminalID =
+            vm.criminalList[0][flowCrim.CriminalID].CriminalID;
+          vm.FlnkIDList_4.push(flowCrim);
+        }
+        vm.$store.commit("setFlnkIDList4", vm.FlnkIDList_4);
+      }
+    };
+
+    /* 关闭状态 */
+    vm.ws.onclose = function(event) {
+      console.log("websocket----onclose");
+      console.log(event);
+      vm.$store.commit("setOnlinestatus", false);
+      if (vm.onlinestatus === false) {
+        setInterval(function() {
+          //todo暂时取消五秒刷新
+          vm.$router.push({ path: "/" });
+          window.location.reload();
+        }, 5000);
+      }
+    };
+
+    /* 错误信息 */
+    vm.ws.onerror = function(evt) {
+      console.log("websocket----onerror");
+      console.log("WebSocketError!", evt);
+      setInterval(function() {
+        //todo暂时取消五秒刷新
+        vm.$router.push({ path: "/" });
+        window.location.reload();
+      }, 5000);
+    };
   }
 };
 </script>
