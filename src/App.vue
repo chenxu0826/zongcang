@@ -25,7 +25,8 @@ export default {
   },
   data() {
     return {
-      FlnkIDList_4: [] //在监人数（非在线）ID
+      FlnkIDList_4: [], //在监人数（非在线）ID
+      movePeople: [] //人员流动总集合
     };
   },
   computed: {
@@ -61,7 +62,7 @@ export default {
         async: true,
         success: function(result) {
           //所有罪犯信息缓存(哈希，便于快速查找缓存中的罪犯详细信息)
-          var personlist_hash = [];
+          var personlist_hash = {};
           // 重构罪犯信息哈希数据
           for (let i = 0; i < result.length; i++) {
             personlist_hash[result[i].FlnkID] = {
@@ -90,7 +91,6 @@ export default {
               UpdateTime: result[i].UpdateTime
             };
           }
-          //所有罪犯信息缓存(传进vue的数据用于渲染页面)
           vm.$store.commit("setCriminalList", personlist_hash);
         }
       });
@@ -104,12 +104,60 @@ export default {
           vm.$store.commit("setCrimalCount_outCrimalCount", result[0]);
         }
       });
+
+      /* 工具基础数据 */
+      vm.$ajax({
+        data: { OrgID: localStorage.getItem("OrgID") },
+        url: BasicUrl + "InfoScreen/GetToolListByOrgID",
+        async: true,
+        success: function(result) {
+          //所有工具信息缓存(哈希，便于快速查找缓存中的工具详细信息)
+          var toolList_hash = {};
+          // 重构工具信息哈希数据
+          for (let i = 0; i < result.length; i++) {
+            toolList_hash[result[i].FlnkID] = {
+              FlnkID: result[i].FlnkID,
+              IsUsed: result[i].IsUsed,
+              OrgID: result[i].OrgID,
+              OrgName: result[i].OrgName,
+              Photo: IMG + result[i].Photo,
+              ToolCardStatus: result[i].ToolCardStatus,
+              ToolCardStatusName: result[i].ToolCardStatusName,
+              ToolID: result[i].ToolID,
+              ToolName: result[i].ToolName,
+              ToolStatus: result[i].ToolStatus,
+              ToolType: result[i].ToolType,
+              ToolTypeName: result[i].ToolTypeName,
+              UsePersoner: result[i].UsePersoner,
+              UsedDate: result[i].UsedDate
+            };
+          }
+          toolList_hash["total"] = result.length;
+          //所有工具信息缓存
+          vm.$store.commit("setToolList", toolList_hash);
+        }
+      });
+    },
+
+    /* 首页渲染数据 */
+    homeData: function() {
+      let vm = this;
+
+      //人员流动总集合
+      vm.$store.commit("setFlnkIDList2", vm.movePeople);
+      //在监人数（非在线）ID
+      vm.$store.commit("setFlnkIDList4", vm.FlnkIDList_4);
     }
   },
   mounted() {
     var vm = this;
     vm.changeSize();
     vm.allBaseDataInit();
+    //基础数据5分钟更新一次
+    setInterval(function() {
+      vm.allBaseDataInit();
+    }, 300000);
+
     /* 打开websocket */
     vm.ws.onopen = function() {
       console.log("websocket----onopen");
@@ -163,6 +211,50 @@ export default {
           return;
         }
 
+        vm.movePeople = [];
+        // 2、非法流动
+        for (let i = 0; i < flowPerson_outPrison_rec[1].People.length; i++) {
+          let flowCrim = flowPerson_outPrison_rec[1].People[i];
+          let runPeople = {};
+          runPeople.AreaName = flowCrim.AreaName;
+          runPeople.Areas = flowCrim.Areas;
+          runPeople.LeaveTime = flowCrim.LeaveTime;
+          runPeople.Polices = flowCrim.Polices;
+          runPeople.Reason = flowCrim.Reason;
+          runPeople.Status = flowCrim.Status;
+          runPeople.CriminalID =
+            vm.criminalList[0][flowCrim.CriminalID].CriminalID;
+          runPeople.CriminalName =
+            vm.criminalList[0][flowCrim.CriminalID].CriminalName;
+          runPeople.Photo = vm.criminalList[0][flowCrim.CriminalID].Photo;
+          runPeople.isBlue = false;
+          vm.movePeople.push(runPeople);
+        }
+        // 1、外出人数（监内）
+        for (let i = 0; i < flowPerson_outPrison_rec[0].People.length; i++) {
+          let runPeople = {};
+          runPeople.AreaName = flowPerson_outPrison_rec[0].People[i].AreaName;
+          runPeople.Areas = flowPerson_outPrison_rec[0].People[i].Areas;
+          runPeople.LeaveTime = flowPerson_outPrison_rec[0].People[i].LeaveTime;
+          runPeople.Polices = flowPerson_outPrison_rec[0].People[i].Polices;
+          runPeople.Reason = flowPerson_outPrison_rec[0].People[i].Reason;
+          runPeople.Status = flowPerson_outPrison_rec[0].People[i].Status;
+          runPeople.CriminalID =
+            vm.criminalList[0][
+              flowPerson_outPrison_rec[0].People[i].CriminalID
+            ].CriminalID;
+          runPeople.CriminalName =
+            vm.criminalList[0][
+              flowPerson_outPrison_rec[0].People[i].CriminalID
+            ].CriminalName;
+          runPeople.Photo =
+            vm.criminalList[0][
+              flowPerson_outPrison_rec[0].People[i].CriminalID
+            ].Photo;
+          runPeople.isBlue = true;
+          vm.movePeople.push(runPeople); //这边取的非法流动其实是本监外出+非法流动
+        }
+
         // 4、在监人数（非在线）
         vm.FlnkIDList_4.length = 0;
         for (let i = 0; i < flowPerson_outPrison_rec[3].People.length; i++) {
@@ -173,8 +265,9 @@ export default {
             vm.criminalList[0][flowCrim.CriminalID].CriminalID;
           vm.FlnkIDList_4.push(flowCrim);
         }
-        vm.$store.commit("setFlnkIDList4", vm.FlnkIDList_4);
       }
+      /* 渲染所有数据 */
+      vm.homeData();
     };
 
     /* 关闭状态 */
@@ -196,9 +289,9 @@ export default {
       console.log("websocket----onerror");
       console.log("WebSocketError!", evt);
       setInterval(function() {
-        //todo暂时取消五秒刷新
-        vm.$router.push({ path: "/" });
-        window.location.reload();
+        // //todo暂时取消五秒刷新
+        // vm.$router.push({ path: "/" });
+        // window.location.reload();
       }, 5000);
     };
   }

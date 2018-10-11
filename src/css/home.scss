@@ -65,12 +65,18 @@
     text-align: left;
     position: relative;
 
-    .personCard {
+    .illegal {
       box-shadow: 0 0 25px rgba(255, 54, 219, 0.9) inset;
+    }
+
+    .personCard {
+
       background: rgba(0, 0, 0, 0.2);
       width: 100%;
       height: 175px;
       border-radius: 5px;
+
+
 
       .personPhoto {
         padding: 20px 65px;

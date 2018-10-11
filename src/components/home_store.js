@@ -2,6 +2,7 @@ export default {
   state: {
     'crimalCount_outCrimalCount': {}, //监区人数 && 外出人数（监外）
     'FlnkIDList4': [], //在监人数（非在线）
+    'FlnkIDList2': [], //非法流动
   },
   mutations: {
     setCrimalCount_outCrimalCount(state, Payload) {
@@ -9,6 +10,9 @@ export default {
     },
     setFlnkIDList4(state, Payload) {
       state.FlnkIDList4 = Payload;
+    },
+    setFlnkIDList2(state, Payload) {
+      state.FlnkIDList2 = Payload;
     },
 
   }

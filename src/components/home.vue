@@ -9,26 +9,26 @@
             <el-col :span="3">
               <img src="../assets/personIcon.png">
             </el-col>
-              <el-col :span="8">
+            <el-col :span="8">
 
-                <p>在册：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}</font>&nbsp;人</p>
-                <p>在监：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 : (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}</font>&nbsp;人</p>
-                <p>监外：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}</font>&nbsp;人</p>
-                <p>
-                  <font class="fontYellow" style="font-size:12pt">下次14:00-15:00</font>
-                </p>
-              </el-col>
-              <el-col :span="3">
-                <img src="../assets/toolIcon.png">
+              <p>在册：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}</font>&nbsp;人</p>
+              <p>在监：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 : (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}</font>&nbsp;人</p>
+              <p>监外：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}</font>&nbsp;人</p>
+              <p>
+                <font class="fontYellow" style="font-size:12pt">下次14:00-15:00</font>
+              </p>
             </el-col>
-                <el-col :span="8">
-                  <p>工具：<font class="fontBlue">300</font>&nbsp;件</p>
-                  <p>固定：<font class="fontBlue">200</font>&nbsp;件</p>
-                  <p>流动：<font class="fontBlue">50</font>&nbsp;件</p>
-                  <p>
-                    <font class="fontBlue" style="font-size:12pt">下次14:00-15:00</font>
-                  </p>
-                </el-col>
+            <el-col :span="3">
+              <img src="../assets/toolIcon.png">
+            </el-col>
+            <el-col :span="8">
+              <p>工具：<font class="fontBlue">{{isNaN(toolList["total"]) ? 0 : toolList["total"]}}</font>&nbsp;件</p>
+              <p>固定：<font class="fontBlue">200</font>&nbsp;件</p>
+              <p>流动：<font class="fontBlue">50</font>&nbsp;件</p>
+              <p>
+                <font class="fontBlue" style="font-size:12pt">下次14:00-15:00</font>
+              </p>
+            </el-col>
           </div>
         </div>
         <!--本监区情况-->
@@ -38,21 +38,21 @@
             <el-col :span="3">
               <img src="../assets/personIcon.png">
             </el-col>
-              <el-col :span="8">
-                <p>区域罪犯：<font class="fontYellow">200</font>&nbsp;人</p>
-                <p>外监来犯：<font class="fontYellow">1</font>&nbsp;人</p>
-                <p>值班民警：<font class="fontYellow">5</font>&nbsp;人</p>
-                <p>外来人员：<font class="fontYellow">3</font>&nbsp;人</p>
-              </el-col>
-              <el-col :span="3">
-                <img src="../assets/toolIcon.png">
+            <el-col :span="8">
+              <p>区域罪犯：<font class="fontYellow">200</font>&nbsp;人</p>
+              <p>外监来犯：<font class="fontYellow">1</font>&nbsp;人</p>
+              <p>值班民警：<font class="fontYellow">5</font>&nbsp;人</p>
+              <p>外来人员：<font class="fontYellow">3</font>&nbsp;人</p>
             </el-col>
-                <el-col :span="8">
-                  <p>领出工具：<font class="fontBlue">3</font>&nbsp;件</p>
-                  <p>今日报废：<font class="fontBlue">1</font>&nbsp;件</p>
-                  <p>异常工具：<font class="fontBlue">5</font>&nbsp;件</p>
-                  <p>今日报损：<font class="fontBlue">2</font>&nbsp;件</p>
-                </el-col>
+            <el-col :span="3">
+              <img src="../assets/toolIcon.png">
+            </el-col>
+            <el-col :span="8">
+              <p>领出工具：<font class="fontBlue">3</font>&nbsp;件</p>
+              <p>今日报废：<font class="fontBlue">1</font>&nbsp;件</p>
+              <p>异常工具：<font class="fontBlue">5</font>&nbsp;件</p>
+              <p>今日报损：<font class="fontBlue">2</font>&nbsp;件</p>
+            </el-col>
           </div>
         </div>
       </el-col>
@@ -84,20 +84,22 @@
 
       <el-col :span="24">
         <div class="flow_persons">
-          <h4 class="home_title">流动人员：15人</h4>
-          <el-col :span="6" style="padding:0px 30px">
-            <div class="personCard">
+          <h4 class="home_title">流动人员：{{FlnkIDList2.length}}人</h4>
+          <el-col :span="6" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key="index" style="padding:0px 30px">
+            <div class="personCard" :class="{illegal: !item.isBlue}">
               <el-col :span="10" class="personPhoto">
-                <img src="../assets/crimal_1_03.jpg">
+                <img :src="item.Photo">
               </el-col>
-                <el-col :span="14" style="padding:10px">
-                  <p>姓名：张三犯</p>
-                  <p>番号：32000000001</p>
-                  <p>去向：会见</p>
-                  <p>陪同民警：李四警</p>
-                  <p>流动信息：</p>
-                  <p>16:21进入会见室</p>
-                </el-col>
+              <el-col :span="14" style="padding:10px">
+                <p>姓名：{{item.CriminalName}}</p>
+                <p>番号：{{item.CriminalID}}</p>
+                <p v-show="!item.isBlue">状态：{{item.Status}}</p>
+                <p>当前区域：{{item.AreaName}}</p>
+                <p v-show="item.isBlue">陪同民警：{{item.Polices}}</p>
+                <p>外出时间：</p>
+                <p>{{item.LeaveTime}}</p>
+                <p v-show="item.isBlue">外出事由：{{item.Reason}}</p>
+              </el-col>
             </div>
           </el-col>
         </div>
@@ -113,18 +115,35 @@ import { mapState } from "vuex";
 export default {
   name: "home",
   data() {
-    return {};
+    return {
+      float_personnelA: 1,
+      float_personnelB: 4 //4个一页
+    };
   },
   computed: {
     ...mapState({
       crimalCount_outCrimalCount: state =>
         state.home.crimalCount_outCrimalCount, //监区人数 && 外出人数（监外）
-      FlnkIDList4: state => state.home.FlnkIDList4
+      FlnkIDList4: state => state.home.FlnkIDList4, //在监人数（非在线）
+      FlnkIDList2: state => state.home.FlnkIDList2, //非法流动
+      toolList: state => state.toolList //工具基础信息集合
     })
   },
-  methods: {},
+  methods: {
+    getMapList: function() {
+      var vm = this;
+      vm.$ajax({
+        url: BasicUrl + "HomeIndex/GetMapList",
+        async: true,
+        success: function(result) {
+          
+        }
+      });
+    }
+  },
   mounted() {
     var vm = this;
+    vm.getMapList();
   }
 };
 </script>

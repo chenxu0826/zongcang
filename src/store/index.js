@@ -13,6 +13,7 @@ import outwork_store from '../components/outwork/outwork_store.js';
 export default new vuex.Store({
   state: {
     "criminalList": [], //罪犯基础信息集合
+    "toolList": {} //工具基础信息集合
   },
   modules: {
     home: home_store,
@@ -25,6 +26,9 @@ export default new vuex.Store({
   mutations: {
     setCriminalList(state, Payload) {
       state.criminalList[0] = Payload;
+    },
+    setToolList(state, Payload) {
+      state.toolList = Payload;
     },
   }
 })
