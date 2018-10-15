@@ -59,23 +59,28 @@
 
       <el-col :span="17">
         <div class="member_distribute">
-          <el-col :span="10">
+          <el-col :span="3">
             <h4 class="home_title">地图结构</h4>
           </el-col>
-          <el-col :span="14" style="line-height:40px">
-            <font style="border-bottom:3px solid #fff">&nbsp;全监&nbsp;</font>&nbsp;&nbsp;
-            <font style="border-bottom:3px solid #fff">&nbsp;厂房&nbsp;</font>&nbsp;&nbsp;
-            <font style="border-bottom:3px solid #fff">&nbsp;监舍&nbsp;</font>
+          <el-col id="mapTitle" style="line-height:40px;position:absolute;display:flex;justify-content:center;">
+            <font v-for="item in mapList" :key="item" style="margin:0 10px">
+              {{item.MapName}}
+            </font>
           </el-col>
 
-          <div class="map" ref="myMap">
-            <div class="getCenter">
-              <img :src="mapPhoto" ref="myImg">
+          <div class="map">
+            <div class="getCenter" id="myMap">
+              <el-carousel indicator-position="none" arrow="never" height="550px" style="width:1300px" @change="carouselChange">
+                <el-carousel-item v-for="item in mapList" :key="item" style="display:flex;justify-content:center;">
+                  <img :src="prefixMapUrl + item.MapUrl" :height="item.Height" :width="item.Width">
+                </el-carousel-item>
+              </el-carousel>
+              <!-- <img :src="mapPhoto" ref="myImg"> -->
               <!--统计显示-->
               <!-- 位置原因点位有所偏移，暂行进行点位数据强制偏移，后期查找出原因进行修改 -->
-              <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale-20+'px',left:item.X*mapScale-30+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}">
+              <!-- <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale-20+'px',left:item.X*mapScale-30+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}">
                 {{item.CriminalCnt}}
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -117,7 +122,10 @@ export default {
   data() {
     return {
       float_personnelA: 1,
-      float_personnelB: 4 //4个一页
+      float_personnelB: 4, //4个一页
+      prefixMapUrl: "", //地图图片url的前缀
+      mapList: [], //所有地图数据集合
+      mapScale: [] //地图图片缩放比例
     };
   },
   computed: {
@@ -130,19 +138,65 @@ export default {
     })
   },
   methods: {
+    /* 轮播切换时触发的回调函数 */
+    carouselChange: function(currentIndex, prevIndex) {
+      $("#mapTitle")
+        .children()
+        .eq(currentIndex)
+        .siblings()
+        .css("border-bottom", "");
+      $("#mapTitle")
+        .children()
+        .eq(currentIndex)
+        .css("border-bottom", "3px solid #fff");
+    },
+    /* 重新处理地图的宽高比例以适应父div */
+    scaleMapImg: function() {
+      var vm = this;
+      var divH = $("#myMap").height();
+      var divW = $("#myMap").width();
+
+      for (var i in vm.mapList) {
+        var hScale = divH / vm.mapList[i].Height;
+        var wScale = divW / vm.mapList[i].Width;
+        if (hScale < wScale) {
+          vm.mapList[i].Height = divH;
+          vm.mapList[i].Width = vm.mapList[i].Width * hScale;
+          vm.mapScale.push(hScale);
+        } else {
+          vm.mapList[i].Height = vm.mapList[i].Height * wScale;
+          vm.mapList[i].Width = divW;
+          vm.mapScale.push(wScale);
+        }
+      }
+    },
+
+    /* 获取地图数据，包括全监总图(下标为[0])和与本区域相关的地图 */
     getMapList: function() {
       var vm = this;
       vm.$ajax({
-        url: BasicUrl + "HomeIndex/GetMapList",
+        url: BasicUrl + "HomeIndex/GetMapRootInfo",
         async: true,
         success: function(result) {
-          
+          vm.mapList.push(result[0]);
+          vm.$ajax({
+            data: { OrgID: localStorage.getItem("OrgID") },
+            url: BasicUrl + "InfoScreen/GetMapListByOrgID",
+            async: true,
+            success: function(result) {
+              for (var item of result) {
+                vm.mapList.push(item);
+              }
+              vm.scaleMapImg();
+            }
+          });
         }
       });
     }
   },
   mounted() {
     var vm = this;
+    vm.prefixMapUrl = MapUrl;
     vm.getMapList();
   }
 };

@@ -111,6 +111,10 @@ export default {
         url: BasicUrl + "InfoScreen/GetToolListByOrgID",
         async: true,
         success: function(result) {
+          if (result == null || result == undefined || result.length == 0) {
+            console.log("工具基础数据为空");
+            return;
+          }
           //所有工具信息缓存(哈希，便于快速查找缓存中的工具详细信息)
           var toolList_hash = {};
           // 重构工具信息哈希数据
