@@ -63,16 +63,20 @@
             <h4 class="home_title">地图结构</h4>
           </el-col>
           <el-col id="mapTitle" style="line-height:40px;position:absolute;display:flex;justify-content:center;">
-            <font v-for="item in mapList" :key="item" style="margin:0 10px">
+            <font v-for="(item,index) in mapList" :key="index" style="margin:0 10px">
               {{item.MapName}}
             </font>
           </el-col>
 
           <div class="map">
             <div class="getCenter" id="myMap">
-              <el-carousel indicator-position="none" arrow="never" height="550px" style="width:1300px" @change="carouselChange">
-                <el-carousel-item v-for="item in mapList" :key="item" style="display:flex;justify-content:center;">
+              <el-carousel indicator-position="none" arrow="never" :interval=10000 height="550px" style="width:1300px" @change="carouselChange">
+                <el-carousel-item v-for="(item,index) in mapList" :key="index" style="display:flex;justify-content:center;">
                   <img :src="prefixMapUrl + item.MapUrl" :height="item.Height" :width="item.Width">
+                  <div :style="{width:item.Width,height:item.Height}">
+                    <div v-for="(item,index) in positionObjectsMerged" :key="index" :style="{ position:'absolute',top:item.Y*currentmapScale+'px',left:item.X*currentmapScale+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}"></div>
+
+                  </div>
                 </el-carousel-item>
               </el-carousel>
               <!-- <img :src="mapPhoto" ref="myImg"> -->
@@ -125,7 +129,9 @@ export default {
       float_personnelB: 4, //4个一页
       prefixMapUrl: "", //地图图片url的前缀
       mapList: [], //所有地图数据集合
-      mapScale: [] //地图图片缩放比例
+      mapScale: [], //地图图片缩放比例集合
+      currentmapScale: 0, //当前播放的地图图片的缩放比例
+      LocationPointOffset: 0 //点位合并时使用的像素半径范围
     };
   },
   computed: {
@@ -134,12 +140,50 @@ export default {
         state.home.crimalCount_outCrimalCount, //监区人数 && 外出人数（监外）
       FlnkIDList4: state => state.home.FlnkIDList4, //在监人数（非在线）
       FlnkIDList2: state => state.home.FlnkIDList2, //非法流动
+      positionObjects: state => state.home.positionObjects, //点位数据(合并前)
       toolList: state => state.toolList //工具基础信息集合
-    })
+    }),
+    /* 合并后的点位数据 */
+    positionObjectsMerged: function() {
+      var vm = this;
+      var positionObjectsMerged = [];
+      for (var i = 0; i < vm.positionObjects.length; i++) {
+        if (vm.positionObjects[i].merged != ture) {
+          vm.positionObjects[i].count = 1;
+          for (var j = i + 1; j < vm.positionObjects.length; j++) {
+            //两点之间的距离
+            var distance = Math.sprt(
+              Math.pow(vm.positionObjects[i].X - vm.positionObjects[j].X, 2) +
+                Math.pow(vm.positionObjects[i].Y - vm.positionObjects[j].Y, 2)
+            );
+            if (distance <= vm.LocationPointOffset) {
+              vm.positionObjects[i].count++;
+              vm.positionObjects[j].merged = true;
+            }
+          }
+          positionObjectsMerged.push(vm.positionObjects[i]);
+        }
+      }
+      return positionObjectsMerged;
+    }
   },
   methods: {
+    /* 获取跟地图相关的配置信息 */
+    getMapConfig: function() {
+      var vm = this;
+      /* 获取点位合并时使用的像素半径范围的配置 */
+      vm.$ajax({
+        data: { ParamName: "LocationPointOffset" },
+        url: BasicUrl + "HomeIndex/GetConfigInfo" + "?callback=?",
+        success: function(result) {
+          vm.LocationPointOffset = parseInt(result[0].FieldValue);
+        }
+      });
+    },
+
     /* 轮播切换时触发的回调函数 */
     carouselChange: function(currentIndex, prevIndex) {
+      var vm = this;
       $("#mapTitle")
         .children()
         .eq(currentIndex)
@@ -149,6 +193,9 @@ export default {
         .children()
         .eq(currentIndex)
         .css("border-bottom", "3px solid #fff");
+      vm.$store.commit("setPositionObjects", []);
+      vm.currentmapScale = vm.mapScale[currentIndex];
+      vm.setLocalStorage("currentMapID", vm.mapList[currentIndex].FlnkID);
     },
     /* 重新处理地图的宽高比例以适应父div */
     scaleMapImg: function() {
@@ -198,6 +245,7 @@ export default {
     var vm = this;
     vm.prefixMapUrl = MapUrl;
     vm.getMapList();
+    vm.getMapConfig();
   }
 };
 </script>

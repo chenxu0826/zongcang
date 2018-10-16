@@ -32,7 +32,7 @@ export const ajaxUrl = 'http://' + localStorage.getItem('IP') + ':' + localStora
 /* 静态资源地址 */
 export const IMG = ''
 // export const MapUrl = 'http://' + window.location.host
-export const MapUrl = "http://10.58.4.62:1111"
+export const MapUrl = "http://10.58.4.62:8889"
 export default {
   /*全局弹窗显示变量*/
   install(Vue) {

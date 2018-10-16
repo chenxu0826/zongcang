@@ -165,9 +165,21 @@ export default {
     /* 打开websocket */
     vm.ws.onopen = function() {
       console.log("websocket----onopen");
-      vm.$store.commit("setOnlinestatus", true);
       vm.$store.commit("setIswebsocket", 1);
       setInterval(function() {
+        /* 请求指定楼层下各类人员的详细位置 10号协议 */
+        var GetPositionByMap = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 10
+          },
+          Body: JSON.stringify({
+            MapID: vm.getLocalStorage("currentMapID"),//正在播放的地图ID
+            OrgID: vm.getLocalStorage("OrgID"),
+            PSType: "TODO"
+          })
+        };
+
         /* 流动人员 && 外监进入人员-24 */
         var personnel_distribution = {
           Header: {
@@ -202,8 +214,11 @@ export default {
       if (msg == null) {
         return;
       }
-
-      if (msg.Header.MsgType === 24) {
+      if (msg.Header.MsgType === 10) {
+        /* 请求指定楼层（地图）下各类人员的详细位置（X,Y）-24 */
+        var positionObjects = JSON.parse(msg.Body);
+        vm.$store.commit("setPositionObjects", positionObjects);
+      } else if (msg.Header.MsgType === 24) {
         /* 流动人员 && 外监进入人员-返回数据-24 */
         var flowPerson_outPrison_rec = JSON.parse(msg.Body);
         if (
@@ -278,7 +293,6 @@ export default {
     vm.ws.onclose = function(event) {
       console.log("websocket----onclose");
       console.log(event);
-      vm.$store.commit("setOnlinestatus", false);
       if (vm.onlinestatus === false) {
         setInterval(function() {
           //todo暂时取消五秒刷新
