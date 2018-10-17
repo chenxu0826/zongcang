@@ -174,8 +174,23 @@ export default {
             MsgType: 10
           },
           Body: JSON.stringify({
-            MapID: vm.getLocalStorage("currentMapID"),//正在播放的地图ID
+            MapID: vm.getLocalStorage("currentMapID"), //正在播放的地图ID
             OrgID: vm.getLocalStorage("OrgID"),
+            PSType: "TODO"
+          })
+        };
+
+        /* 请求当前区域下的各类人员数量 11号协议 */
+        var getCount = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 11
+          },
+          Body: JSON.stringify({
+            MapID: vm.getLocalStorage("MapID"),
+            OrgID: vm.getLocalStorage("OrgID"),
+            AreaID: vm.getLocalStorage("AreaID"),
+            AreaType: vm.getLocalStorage("AreaType"),
             PSType: "TODO"
           })
         };
@@ -202,6 +217,10 @@ export default {
         };
         /* 保持心跳-参数-01 */
         vm.ws.send(JSON.stringify(keep_heart));
+        /* 请求指定楼层下各类人员的详细位置 10号协议 */
+        vm.ws.send(JSON.stringify(GetPositionByMap));
+        /* 请求当前区域下的各类人员数量 11号协议 */
+        vm.ws.send(JSON.stringify(getCount));
         /* 流动人员 && 外监进入人员-参数-24 */
         vm.ws.send(JSON.stringify(personnel_distribution));
       }, 2000);
@@ -215,9 +234,13 @@ export default {
         return;
       }
       if (msg.Header.MsgType === 10) {
-        /* 请求指定楼层（地图）下各类人员的详细位置（X,Y）-24 */
+        /* 请求指定楼层（地图）下各类人员的详细位置（X,Y）-10 */
         var positionObjects = JSON.parse(msg.Body);
         vm.$store.commit("setPositionObjects", positionObjects);
+      } else if (msg.Header.MsgType === 11) {
+        /* 请求当前区域下的各类人员数量 -11*/
+        var countObject = JSON.parse(msg.Body);
+        vm.$store.commit("setCountObject", countObject);
       } else if (msg.Header.MsgType === 24) {
         /* 流动人员 && 外监进入人员-返回数据-24 */
         var flowPerson_outPrison_rec = JSON.parse(msg.Body);

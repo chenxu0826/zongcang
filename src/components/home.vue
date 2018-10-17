@@ -39,10 +39,10 @@
               <img src="../assets/personIcon.png">
             </el-col>
             <el-col :span="8">
-              <p>区域罪犯：<font class="fontYellow">200</font>&nbsp;人</p>
-              <p>外监来犯：<font class="fontYellow">1</font>&nbsp;人</p>
-              <p>值班民警：<font class="fontYellow">5</font>&nbsp;人</p>
-              <p>外来人员：<font class="fontYellow">3</font>&nbsp;人</p>
+              <p>区域罪犯：<font class="fontYellow">{{orgCriminalCnt}}</font>&nbsp;人</p>
+              <p>外监来犯：<font class="fontYellow">{{isNaN(countObject.CriminalF) ? 0 : countObject.CriminalF}}</font>&nbsp;人</p>
+              <p>值班民警：<font class="fontYellow">{{isNaN(countObject.Police) ? 0 : countObject.Police}}</font>&nbsp;人</p>
+              <p>外来人员：<font class="fontYellow">{{isNaN(countObject.Outsider) ? 0 : countObject.Outsider}}</font>&nbsp;人</p>
             </el-col>
             <el-col :span="3">
               <img src="../assets/toolIcon.png">
@@ -141,8 +141,23 @@ export default {
       FlnkIDList4: state => state.home.FlnkIDList4, //在监人数（非在线）
       FlnkIDList2: state => state.home.FlnkIDList2, //非法流动
       positionObjects: state => state.home.positionObjects, //点位数据(合并前)
+      countObject: state => state.home.countObject, //区域各类人员数量统计对象
       toolList: state => state.toolList //工具基础信息集合
     }),
+    /* 本区域情况-区域罪犯 数量*/
+    orgCriminalCnt: function() {
+      var vm = this;
+      if (vm.countObject.CriminalCnt == undefined) {
+        console.log("11号协议无数据");
+        return 0;
+      }
+      var orgCriminalCnt =
+        vm.countObject.CriminalCnt.LooseManagement +
+        vm.countObject.CriminalCnt.StrictManagement +
+        vm.countObject.CriminalCnt.GeneralManagement +
+        vm.countObject.CriminalCnt.Investigate;
+      return orgCriminalCnt;
+    },
     /* 合并后的点位数据 */
     positionObjectsMerged: function() {
       var vm = this;
