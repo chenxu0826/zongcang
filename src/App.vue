@@ -274,7 +274,16 @@ export default {
       }
       if (msg.Header.MsgType === 4) {
         /* 计划任务推送 -4 */
-        planObject = JSON.parse(msg.body);
+        var planObject = JSON.parse(msg.body);
+        if (
+          planObject == null ||
+          planObject == undefined ||
+          planObject.length == 0
+        ) {
+          console.log("4号协议数据为空");
+          return;
+        }
+
         if (planObject.PlanType == vm.dict["人员清点计划"]) {
           vm.$store.commit("setPersonPlanObject", planObject);
         } else if (planObject.PlanType == vm.dict["工具清点计划"]) {
@@ -283,14 +292,38 @@ export default {
       } else if (msg.Header.MsgType === 10) {
         /* 请求指定楼层（地图）下各类人员的详细位置（X,Y）-10 */
         var positionObjects = JSON.parse(msg.Body);
+        if (
+          positionObjects == null ||
+          positionObjects == undefined ||
+          positionObjects.length == 0
+        ) {
+          console.log("10号协议数据为空");
+          return;
+        }
         vm.$store.commit("setPositionObjects", positionObjects);
       } else if (msg.Header.MsgType === 11) {
         /* 请求当前区域下的各类人员数量 -11*/
         var countObject = JSON.parse(msg.Body);
+        if (
+          countObject == null ||
+          countObject == undefined ||
+          countObject.length == 0
+        ) {
+          console.log("11号协议数据为空");
+          return;
+        }
         vm.$store.commit("setCountObject", countObject);
       } else if (msg.Header.MsgType === 13) {
         /* 在线人员查询 （此条查的是非在线） 13号协议 */
         var prisonerNotOnline = JSON.parse(msg.Body);
+        if (
+          prisonerNotOnline == null ||
+          prisonerNotOnline == undefined ||
+          prisonerNotOnline.length == 0
+        ) {
+          console.log("13号协议数据为空");
+          return;
+        }
         vm.$store.commit("setPrisonerNotOnline", prisonerNotOnline);
       } else if (msg.Header.MsgType === 24) {
         /* 流动人员 24号协议 */
