@@ -12,6 +12,7 @@ import outwork_store from '../components/outwork/outwork_store.js';
 
 export default new vuex.Store({
   state: {
+    "dict": {}, //字典数据集合
     "criminalList": [], //罪犯基础信息集合
     "toolList": {} //工具基础信息集合
   },
@@ -24,6 +25,9 @@ export default new vuex.Store({
     outwork: outwork_store,
   },
   mutations: {
+    setDict(state, Payload) {
+      state.dict = Payload;
+    },
     setCriminalList(state, Payload) {
       state.criminalList[0] = Payload;
     },

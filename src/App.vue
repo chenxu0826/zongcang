@@ -24,14 +24,12 @@ export default {
     menufooter: menufooter // 引入组件底部菜单
   },
   data() {
-    return {
-      FlnkIDList_4: [], //在监人数（非在线）ID
-      movePeople: [] //人员流动总集合
-    };
+    return {};
   },
   computed: {
     ...mapState({
-      criminalList: state => state.criminalList
+      criminalList: state => state.criminalList,
+      dict: state => state.dict //字典数据
     })
   },
   methods: {
@@ -52,6 +50,20 @@ export default {
       $("#app").css("-webkit-transform-origin", "0 0");
       $("#app").css("-moz-transform-origin", "0 0");
       $("#app").css("-o-transform-origin", "0 0");
+    },
+    /* 初始化字典数据 */
+    dictInit: function() {
+      var vm = this;
+      vm.$ajax({
+        url: BasicUrl + "InfoScreen/GetDictList" + "?callback=?",
+        success: function(result) {
+          var dictList = {};
+          for (var item of result) {
+            dictList[result.DictCodeName] = result.DictCode;
+          }
+          vm.$store.commit("setDict", dictList);
+        }
+      });
     },
     /* 初始化所有基础全量数据 */
     allBaseDataInit: function() {
@@ -148,14 +160,12 @@ export default {
       let vm = this;
 
       //人员流动总集合
-      vm.$store.commit("setFlnkIDList2", vm.movePeople);
-      //在监人数（非在线）ID
-      vm.$store.commit("setFlnkIDList4", vm.FlnkIDList_4);
     }
   },
   mounted() {
     var vm = this;
     vm.changeSize();
+    vm.dictInit();
     vm.allBaseDataInit();
     //基础数据5分钟更新一次
     setInterval(function() {
@@ -167,6 +177,16 @@ export default {
       console.log("websocket----onopen");
       vm.$store.commit("setIswebsocket", 1);
       setInterval(function() {
+        /* 保持心跳 */
+        var keep_heart = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 1
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID")
+          })
+        };
         /* 请求指定楼层下各类人员的详细位置 10号协议 */
         var GetPositionByMap = {
           Header: {
@@ -176,7 +196,7 @@ export default {
           Body: JSON.stringify({
             MapID: vm.getLocalStorage("currentMapID"), //正在播放的地图ID
             OrgID: vm.getLocalStorage("OrgID"),
-            PSType: "TODO"
+            PSType: vm.dict["罪犯"]
           })
         };
 
@@ -191,12 +211,25 @@ export default {
             OrgID: vm.getLocalStorage("OrgID"),
             AreaID: vm.getLocalStorage("AreaID"),
             AreaType: vm.getLocalStorage("AreaType"),
-            PSType: "TODO"
+            PSType: vm.dict["罪犯"]
           })
         };
 
-        /* 流动人员 && 外监进入人员-24 */
-        var personnel_distribution = {
+        /* 在线人员查询 （此条查的是非在线） 13号协议 */
+        var getIsOnline = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 13
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID"),
+            IsOnline: 0,
+            PSType: vm.dict["罪犯"]
+          })
+        };
+
+        /* 流动人员 24号协议 */
+        var getPrisonerFlowing = {
           Header: {
             MsgID: "201501260000000001",
             MsgType: 24
@@ -205,24 +238,30 @@ export default {
             OrgID: vm.getLocalStorage("OrgID")
           })
         };
-        /* 保持心跳 */
-        var keep_heart = {
+
+        /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
+        var toolCheckSituation = {
           Header: {
             MsgID: "201501260000000001",
-            MsgType: 1
+            MsgType: 43
           },
           Body: JSON.stringify({
             OrgID: vm.getLocalStorage("OrgID")
           })
         };
+
         /* 保持心跳-参数-01 */
         vm.ws.send(JSON.stringify(keep_heart));
         /* 请求指定楼层下各类人员的详细位置 10号协议 */
         vm.ws.send(JSON.stringify(GetPositionByMap));
         /* 请求当前区域下的各类人员数量 11号协议 */
         vm.ws.send(JSON.stringify(getCount));
-        /* 流动人员 && 外监进入人员-参数-24 */
-        vm.ws.send(JSON.stringify(personnel_distribution));
+        /* 在线人员查询 （此条查的是非在线） 13号协议 */
+        vm.ws.send(JSON.stringify(getIsOnline));
+        /* 流动人员 24号协议 */
+        vm.ws.send(JSON.stringify(getPrisonerFlowing));
+        /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
+        vm.ws.send(JSON.stringify(toolCheckSituation));
       }, 2000);
     };
 
@@ -233,7 +272,15 @@ export default {
       if (msg == null) {
         return;
       }
-      if (msg.Header.MsgType === 10) {
+      if (msg.Header.MsgType === 4) {
+        /* 计划任务推送 -4 */
+        planObject = JSON.parse(msg.body);
+        if (planObject.PlanType == vm.dict["人员清点计划"]) {
+          vm.$store.commit("setPersonPlanObject", planObject);
+        } else if (planObject.PlanType == vm.dict["工具清点计划"]) {
+          vm.$store.commit("setToolPlanObject", planObject);
+        }
+      } else if (msg.Header.MsgType === 10) {
         /* 请求指定楼层（地图）下各类人员的详细位置（X,Y）-10 */
         var positionObjects = JSON.parse(msg.Body);
         vm.$store.commit("setPositionObjects", positionObjects);
@@ -241,22 +288,26 @@ export default {
         /* 请求当前区域下的各类人员数量 -11*/
         var countObject = JSON.parse(msg.Body);
         vm.$store.commit("setCountObject", countObject);
+      } else if (msg.Header.MsgType === 13) {
+        /* 在线人员查询 （此条查的是非在线） 13号协议 */
+        var prisonerNotOnline = JSON.parse(msg.Body);
+        vm.$store.commit("setPrisonerNotOnline", prisonerNotOnline);
       } else if (msg.Header.MsgType === 24) {
-        /* 流动人员 && 外监进入人员-返回数据-24 */
-        var flowPerson_outPrison_rec = JSON.parse(msg.Body);
+        /* 流动人员 24号协议 */
+        var prisonerFlowing = JSON.parse(msg.Body);
         if (
-          flowPerson_outPrison_rec == null ||
-          flowPerson_outPrison_rec == undefined ||
-          flowPerson_outPrison_rec.length == 0
+          prisonerFlowing == null ||
+          prisonerFlowing == undefined ||
+          prisonerFlowing.length == 0
         ) {
           console.log("24号协议数据为空");
           return;
         }
 
-        vm.movePeople = [];
+        var movePeople = [];
         // 2、非法流动
-        for (let i = 0; i < flowPerson_outPrison_rec[1].People.length; i++) {
-          let flowCrim = flowPerson_outPrison_rec[1].People[i];
+        for (let i = 0; i < prisonerFlowing[1].People.length; i++) {
+          let flowCrim = prisonerFlowing[1].People[i];
           let runPeople = {};
           runPeople.AreaName = flowCrim.AreaName;
           runPeople.Areas = flowCrim.Areas;
@@ -270,43 +321,36 @@ export default {
             vm.criminalList[0][flowCrim.CriminalID].CriminalName;
           runPeople.Photo = vm.criminalList[0][flowCrim.CriminalID].Photo;
           runPeople.isBlue = false;
-          vm.movePeople.push(runPeople);
+          movePeople.push(runPeople);
         }
         // 1、外出人数（监内）
-        for (let i = 0; i < flowPerson_outPrison_rec[0].People.length; i++) {
+        for (let i = 0; i < prisonerFlowing[0].People.length; i++) {
           let runPeople = {};
-          runPeople.AreaName = flowPerson_outPrison_rec[0].People[i].AreaName;
-          runPeople.Areas = flowPerson_outPrison_rec[0].People[i].Areas;
-          runPeople.LeaveTime = flowPerson_outPrison_rec[0].People[i].LeaveTime;
-          runPeople.Polices = flowPerson_outPrison_rec[0].People[i].Polices;
-          runPeople.Reason = flowPerson_outPrison_rec[0].People[i].Reason;
-          runPeople.Status = flowPerson_outPrison_rec[0].People[i].Status;
+          runPeople.AreaName = prisonerFlowing[0].People[i].AreaName;
+          runPeople.Areas = prisonerFlowing[0].People[i].Areas;
+          runPeople.LeaveTime = prisonerFlowing[0].People[i].LeaveTime;
+          runPeople.Polices = prisonerFlowing[0].People[i].Polices;
+          runPeople.Reason = prisonerFlowing[0].People[i].Reason;
+          runPeople.Status = prisonerFlowing[0].People[i].Status;
           runPeople.CriminalID =
             vm.criminalList[0][
-              flowPerson_outPrison_rec[0].People[i].CriminalID
+              prisonerFlowing[0].People[i].CriminalID
             ].CriminalID;
           runPeople.CriminalName =
             vm.criminalList[0][
-              flowPerson_outPrison_rec[0].People[i].CriminalID
+              prisonerFlowing[0].People[i].CriminalID
             ].CriminalName;
           runPeople.Photo =
-            vm.criminalList[0][
-              flowPerson_outPrison_rec[0].People[i].CriminalID
-            ].Photo;
+            vm.criminalList[0][prisonerFlowing[0].People[i].CriminalID].Photo;
           runPeople.isBlue = true;
-          vm.movePeople.push(runPeople); //这边取的非法流动其实是本监外出+非法流动
+          movePeople.push(runPeople); //这边取的非法流动其实是本监外出+非法流动
         }
 
-        // 4、在监人数（非在线）
-        vm.FlnkIDList_4.length = 0;
-        for (let i = 0; i < flowPerson_outPrison_rec[3].People.length; i++) {
-          let flowCrim = flowPerson_outPrison_rec[3].People[i];
-          flowCrim.CriminalName =
-            vm.criminalList[0][flowCrim.CriminalID].CriminalName;
-          flowCrim.CriminalID =
-            vm.criminalList[0][flowCrim.CriminalID].CriminalID;
-          vm.FlnkIDList_4.push(flowCrim);
-        }
+        vm.$store.commit("setPrisonerFlowing", movePeople);
+      } else if (msg.Header.MsgType === 43) {
+        /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
+        var toolCheckSituation = JSON.parse(msg.Body);
+        vm.$store.commit("setToolCheckSituation", toolCheckSituation);
       }
       /* 渲染所有数据 */
       vm.homeData();

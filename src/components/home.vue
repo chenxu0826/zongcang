@@ -12,10 +12,10 @@
             <el-col :span="8">
 
               <p>在册：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}</font>&nbsp;人</p>
-              <p>在监：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total - FlnkIDList4.length) ? 0 : (crimalCount_outCrimalCount.Total - FlnkIDList4.length)}}</font>&nbsp;人</p>
+              <p>在监：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total - prisonerNotOnline.length) ? 0 : (crimalCount_outCrimalCount.Total - prisonerNotOnline.length)}}</font>&nbsp;人</p>
               <p>监外：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}</font>&nbsp;人</p>
               <p>
-                <font class="fontYellow" style="font-size:12pt">下次14:00-15:00</font>
+                <font v-if="personPlanObject.NextTime" class="fontYellow" style="font-size:12pt">下次:{{personPlanObject.NextTime}}</font>
               </p>
             </el-col>
             <el-col :span="3">
@@ -23,10 +23,10 @@
             </el-col>
             <el-col :span="8">
               <p>工具：<font class="fontBlue">{{isNaN(toolList["total"]) ? 0 : toolList["total"]}}</font>&nbsp;件</p>
-              <p>固定：<font class="fontBlue">200</font>&nbsp;件</p>
-              <p>流动：<font class="fontBlue">50</font>&nbsp;件</p>
+              <p>固定：<font class="fontBlue">{{isNaN(toolCheckSituation.OutsideCnt) ? 0 : toolCheckSituation.OutsideCnt+toolCheckSituation.OutsideUnCnt}}</font>&nbsp;件</p>
+              <p>流动：<font class="fontBlue">{{isNaN(toolCheckSituation.InsideCnt) ? 0 : toolCheckSituation.InsideUnCnt+toolCheckSituation.InsideUnCnt}}</font>&nbsp;件</p>
               <p>
-                <font class="fontBlue" style="font-size:12pt">下次14:00-15:00</font>
+                <font v-if="toolPlanObject.NextTime" class="fontBlue" style="font-size:12pt">下次{{toolPlanObject.NextTime}}</font>
               </p>
             </el-col>
           </div>
@@ -48,10 +48,10 @@
               <img src="../assets/toolIcon.png">
             </el-col>
             <el-col :span="8">
-              <p>领出工具：<font class="fontBlue">3</font>&nbsp;件</p>
-              <p>今日报废：<font class="fontBlue">1</font>&nbsp;件</p>
-              <p>异常工具：<font class="fontBlue">5</font>&nbsp;件</p>
-              <p>今日报损：<font class="fontBlue">2</font>&nbsp;件</p>
+              <p>领出工具：<font class="fontBlue">{{toolStatus.UsedToolsCount}}</font>&nbsp;件</p>
+              <p>今日报废：<font class="fontBlue">{{toolStatus.DestroyToolsCount}}</font>&nbsp;件</p>
+              <p>异常工具：<font class="fontBlue">{{toolStatus.ErrorToolsCount}}</font>&nbsp;件</p>
+              <p>今日报损：<font class="fontBlue">{{toolStatus.brokenToolsCount}}</font>&nbsp;件</p>
             </el-col>
           </div>
         </div>
@@ -93,8 +93,8 @@
 
       <el-col :span="24">
         <div class="flow_persons">
-          <h4 class="home_title">流动人员：{{FlnkIDList2.length}}人</h4>
-          <el-col :span="6" v-for="(item,index) in FlnkIDList2.slice(float_personnelA-1,float_personnelB)" :key="index" style="padding:0px 30px">
+          <h4 class="home_title">流动人员：{{prisonerFlowing.length}}人</h4>
+          <el-col :span="6" v-for="(item,index) in prisonerFlowing.slice(float_personnelA-1,float_personnelB)" :key="index" style="padding:0px 30px">
             <div class="personCard" :class="{illegal: !item.isBlue}">
               <el-col :span="10" class="personPhoto">
                 <img :src="item.Photo">
@@ -131,18 +131,22 @@ export default {
       mapList: [], //所有地图数据集合
       mapScale: [], //地图图片缩放比例集合
       currentmapScale: 0, //当前播放的地图图片的缩放比例
-      LocationPointOffset: 0 //点位合并时使用的像素半径范围
+      LocationPointOffset: 0, //点位合并时使用的像素半径范围
+      toolStatus: {} //工具清点情况
     };
   },
   computed: {
     ...mapState({
       crimalCount_outCrimalCount: state =>
         state.home.crimalCount_outCrimalCount, //监区人数 && 外出人数（监外）
-      FlnkIDList4: state => state.home.FlnkIDList4, //在监人数（非在线）
-      FlnkIDList2: state => state.home.FlnkIDList2, //非法流动
+      toolList: state => state.toolList, //工具基础信息集合
+      prisonerFlowing: state => state.home.prisonerFlowing, //非法流动
       positionObjects: state => state.home.positionObjects, //点位数据(合并前)
       countObject: state => state.home.countObject, //区域各类人员数量统计对象
-      toolList: state => state.toolList //工具基础信息集合
+      personPlanObject: state => state.home.personPlanObject, //人员清点计划
+      prisonerNotOnline: state => state.home.prisonerNotOnline, //非在线的犯人
+      toolPlanObject: state => state.home.toolPlanObject, //工具清点计划
+      toolCheckSituation: state => state.toolcheck.toolCheckSituation //当前计划下的本监区清点情况
     }),
     /* 本区域情况-区域罪犯 数量*/
     orgCriminalCnt: function() {
@@ -183,6 +187,19 @@ export default {
     }
   },
   methods: {
+    /* 获取信息屏工具统计结果接口 */
+    getToolStatus: function() {
+      var vm = this;
+      /* 获取点位合并时使用的像素半径范围的配置 */
+      vm.$ajax({
+        data: { OrgID: localStorage.getItem("OrgID") },
+        url: BasicUrl + "InfoScreen/GetToolStatusByOrgID" + "?callback=?",
+        success: function(result) {
+          vm.toolStatus = result[0];
+        }
+      });
+    },
+
     /* 获取跟地图相关的配置信息 */
     getMapConfig: function() {
       var vm = this;
@@ -261,6 +278,12 @@ export default {
     vm.prefixMapUrl = MapUrl;
     vm.getMapList();
     vm.getMapConfig();
+    vm.getToolStatus();
+    setInterval(function() {
+      vm.getToolStatus();
+    }, 120000);
+
+    vm.$router.push({ path: "/toolcheck" });
   }
 };
 </script>
