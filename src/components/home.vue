@@ -190,7 +190,6 @@ export default {
     /* 获取信息屏工具统计结果接口 */
     getToolStatus: function() {
       var vm = this;
-      /* 获取点位合并时使用的像素半径范围的配置 */
       vm.$ajax({
         data: { OrgID: localStorage.getItem("OrgID") },
         url: BasicUrl + "InfoScreen/GetToolStatusByOrgID" + "?callback=?",
@@ -283,7 +282,7 @@ export default {
       vm.getToolStatus();
     }, 120000);
 
-    vm.$router.push({ path: "/toolcheck" });
+    vm.$router.push({ path: "/crimalcheck" });
   }
 };
 </script>

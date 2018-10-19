@@ -59,7 +59,7 @@ export default {
         success: function(result) {
           var dictList = {};
           for (var item of result) {
-            dictList[result.DictCodeName] = result.DictCode;
+            dictList[item.DictCodeName] = item.DictCode;
           }
           vm.$store.commit("setDict", dictList);
         }
@@ -153,13 +153,6 @@ export default {
           vm.$store.commit("setToolList", toolList_hash);
         }
       });
-    },
-
-    /* 首页渲染数据 */
-    homeData: function() {
-      let vm = this;
-
-      //人员流动总集合
     }
   },
   mounted() {
@@ -239,6 +232,17 @@ export default {
           })
         };
 
+        /* 请求当前工具清点明细 -41 */
+        var toolCheckDetail = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 41
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID")
+          })
+        };
+
         /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
         var toolCheckSituation = {
           Header: {
@@ -260,6 +264,8 @@ export default {
         vm.ws.send(JSON.stringify(getIsOnline));
         /* 流动人员 24号协议 */
         vm.ws.send(JSON.stringify(getPrisonerFlowing));
+        /* 请求当前工具清点明细 -41 */
+        vm.ws.send(JSON.stringify(toolCheckDetail));
         /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
         vm.ws.send(JSON.stringify(toolCheckSituation));
       }, 2000);
@@ -380,13 +386,15 @@ export default {
         }
 
         vm.$store.commit("setPrisonerFlowing", movePeople);
+      } else if (msg.Header.MsgType === 41) {
+        /* 当前工具清点明细  -41*/
+        var toolCheckDetail = JSON.parse(msg.Body);
+        vm.$store.commit("setToolCheckDetail", toolCheckDetail);
       } else if (msg.Header.MsgType === 43) {
         /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
         var toolCheckSituation = JSON.parse(msg.Body);
         vm.$store.commit("setToolCheckSituation", toolCheckSituation);
       }
-      /* 渲染所有数据 */
-      vm.homeData();
     };
 
     /* 关闭状态 */
