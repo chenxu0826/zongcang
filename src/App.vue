@@ -24,7 +24,9 @@ export default {
     menufooter: menufooter // 引入组件底部菜单
   },
   data() {
-    return {};
+    return {
+      movePeopleHashed: {} //哈希版的流动人员（正常外出和非法流动的集合）
+    };
   },
   computed: {
     ...mapState({
@@ -232,6 +234,28 @@ export default {
           })
         };
 
+        /* 获取当前监区点名人员明细 31号协议 */
+        var getPersonCheckDetail = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 31
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID")
+          })
+        };
+
+        /* 统计当前计划下各监区的清点情况 34号协议 */
+        var getPersonCheckSituation = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 34
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID")
+          })
+        };
+
         /* 请求当前工具清点明细 -41 */
         var toolCheckDetail = {
           Header: {
@@ -264,6 +288,10 @@ export default {
         vm.ws.send(JSON.stringify(getIsOnline));
         /* 流动人员 24号协议 */
         vm.ws.send(JSON.stringify(getPrisonerFlowing));
+        /* 获取当前监区未点人员明细 31号协议 */
+        vm.ws.send(JSON.stringify(getPersonCheckDetail));
+        /* 统计当前计划下各监区的清点情况 34号协议 */
+        vm.ws.send(JSON.stringify(getPersonCheckSituation));
         /* 请求当前工具清点明细 -41 */
         vm.ws.send(JSON.stringify(toolCheckDetail));
         /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
@@ -344,6 +372,7 @@ export default {
         }
 
         var movePeople = [];
+        var movePeopleHashed = {}; //哈希过的movePeople
         // 2、非法流动
         for (let i = 0; i < prisonerFlowing[1].People.length; i++) {
           let flowCrim = prisonerFlowing[1].People[i];
@@ -361,6 +390,7 @@ export default {
           runPeople.Photo = vm.criminalList[0][flowCrim.CriminalID].Photo;
           runPeople.isBlue = false;
           movePeople.push(runPeople);
+          movePeopleHashed[runPeople.CriminalID] = runPeople;
         }
         // 1、外出人数（监内）
         for (let i = 0; i < prisonerFlowing[0].People.length; i++) {
@@ -383,9 +413,35 @@ export default {
             vm.criminalList[0][prisonerFlowing[0].People[i].CriminalID].Photo;
           runPeople.isBlue = true;
           movePeople.push(runPeople); //这边取的非法流动其实是本监外出+非法流动
+          movePeopleHashed[runPeople.CriminalID] = runPeople;
         }
-
+        vm.movePeopleHashed = movePeopleHashed; //储存一个哈希版本以供其他协议匹配使用
         vm.$store.commit("setPrisonerFlowing", movePeople);
+      } else if (msg.Header.MsgType === 31) {
+        /* 获取当前监区未点人员明细 31号协议 */
+        var personCheckDetail = JSON.parse(msg.Body);
+        var personInsideUnChecked = []; //监内未点人员
+        var personOutsideUnChecked = []; //外出未点（包括正常外出未点和非法外出未点）
+
+        for (var item of personCheckDetail) {
+          item.PersonName = vm.criminalList[0][item.PersonID].CriminalName;
+          item.PersonPhoto = vm.criminalList[0][item.PersonID].Photo;
+          if (item.Status == vm.dict["监内未点"]) {
+            personInsideUnChecked.push(item);
+          } else if (
+            item.Status == vm.dict["外出未点"] ||
+            item.Status == vm.dict["非法流动未点"]
+          ) {
+            personOutsideUnChecked.push(vm.movePeopleHashed[item.PersonID]);
+          }
+        }
+        vm.$store.commit("setPersonSum", personCheckDetail.length);
+        vm.$store.commit("setPersonInsideUnChecked", personInsideUnChecked);
+        vm.$store.commit("setPersonOutsideUnChecked", personOutsideUnChecked);
+      } else if (msg.Header.MsgType === 34) {
+        /* 统计当前计划下各监区的清点情况 34号协议 */
+        var personCheckSituation = JSON.parse(msg.Body);
+        vm.$store.commit("setPersonCheckSituation", personCheckSituation);
       } else if (msg.Header.MsgType === 41) {
         /* 当前工具清点明细  -41*/
         var toolCheckDetail = JSON.parse(msg.Body);

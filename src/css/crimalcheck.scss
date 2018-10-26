@@ -2,6 +2,10 @@
   height: 933px;
   color: white;
 
+  .illegal {
+    box-shadow: 0 0 25px rgba(255, 54, 219, 0.9) inset;
+  }
+
   .title {
     text-align: left;
     color: #00CCFF;
