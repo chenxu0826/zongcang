@@ -282,7 +282,7 @@ export default {
       vm.getToolStatus();
     }, 120000);
 
-    vm.$router.push({ path: "/crimalcheck" });
+    vm.$router.push({ path: "/outwork" });
   }
 };
 </script>

@@ -138,6 +138,9 @@ export default {
     vm.echartSetOptionInterval = setInterval(function() {
       vm.echartSetOption(myChart);
     }, 500);
+  },
+  destoryed() {
+    clearInterval(vm.echartSetOptionInterval);
   }
 };
 </script>

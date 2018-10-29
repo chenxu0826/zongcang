@@ -223,11 +223,34 @@ export default {
           })
         };
 
+        /* 获取出收工明细 21号协议 */
+        var getOutWorkDetail = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 21
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID"),
+            AreaID: vm.getLocalStorage("AreaID")
+          })
+        };
+
         /* 流动人员 24号协议 */
         var getPrisonerFlowing = {
           Header: {
             MsgID: "201501260000000001",
             MsgType: 24
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage("OrgID")
+          })
+        };
+
+        /* 请求当前出收工状态 25号协议 */
+        var getCurrentOutWorkStatus = {
+          Header: {
+            MsgID: "201501260000000001",
+            MsgType: 25
           },
           Body: JSON.stringify({
             OrgID: vm.getLocalStorage("OrgID")
@@ -286,8 +309,12 @@ export default {
         vm.ws.send(JSON.stringify(getCount));
         /* 在线人员查询 （此条查的是非在线） 13号协议 */
         vm.ws.send(JSON.stringify(getIsOnline));
+        /* 获取出收工明细 21号协议 */
+        vm.ws.send(JSON.stringify(getOutWorkDetail));
         /* 流动人员 24号协议 */
         vm.ws.send(JSON.stringify(getPrisonerFlowing));
+        /* 请求当前出收工状态 25号协议 */
+        vm.ws.send(JSON.stringify(getCurrentOutWorkStatus));
         /* 获取当前监区未点人员明细 31号协议 */
         vm.ws.send(JSON.stringify(getPersonCheckDetail));
         /* 统计当前计划下各监区的清点情况 34号协议 */
@@ -359,6 +386,10 @@ export default {
           return;
         }
         vm.$store.commit("setPrisonerNotOnline", prisonerNotOnline);
+      } else if (msg.Header.MsgType === 21) {
+        /* 获取出收工明细 21号协议 */
+        var outWorkPersons = JSON.parse(msg.Body);
+        vm.$store.commit("setOutWorkPersons", outWorkPersons.People);
       } else if (msg.Header.MsgType === 24) {
         /* 流动人员 24号协议 */
         var prisonerFlowing = JSON.parse(msg.Body);
@@ -417,6 +448,17 @@ export default {
         }
         vm.movePeopleHashed = movePeopleHashed; //储存一个哈希版本以供其他协议匹配使用
         vm.$store.commit("setPrisonerFlowing", movePeople);
+      } else if (msg.Header.MsgType === 25) {
+        /* 请求当前出收工状态 25号协议 */
+        var currentOutWorkStatus = JSON.parse(msg.Body);
+        var outWorkStatus = {};
+        outWorkStatus.Count = vm.currentOutWorkStatus.Count;
+        if (vm.currentOutWorkStatus.Status == vm.dict["出工"]) {
+          outWorkStatus.Status = "出工";
+        } else if (vm.currentOutWorkStatus.Status == vm.dict["收工"]) {
+          outWorkStatus.Status = "收工";
+        }
+        vm.$store.commit("setCurrentOutWorkStatus", outWorkStatus);
       } else if (msg.Header.MsgType === 31) {
         /* 获取当前监区未点人员明细 31号协议 */
         var personCheckDetail = JSON.parse(msg.Body);

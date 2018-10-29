@@ -28,10 +28,10 @@
     </el-col>
     <el-col :span="12" class="navRight">
       <el-col :span="16" class="title floatRight">
-        上工中
+        {{currentOutWorkStatus.Status}}中
       </el-col>
       <el-col :span="8" class="title">
-        今日上工:196人
+        今日{{currentOutWorkStatus.Status}}:{{currentOutWorkStatus.Count}}人
       </el-col>
     </el-col>
   </el-row>
@@ -49,7 +49,9 @@ export default {
     };
   },
   computed: {
-    ...mapState({})
+    ...mapState({
+      currentOutWorkStatus: state => state.outwork.currentOutWorkStatus //当前出收工状态
+    })
   },
   beforeCreate() {},
   methods: {
