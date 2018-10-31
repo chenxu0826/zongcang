@@ -1,0 +1,74 @@
+.desktopCheck {
+  height: 933px;
+  color: white;
+
+  .title {
+    float: left;
+    margin-top: 5px;
+    color: #00CCFF;
+    font-size: 18pt;
+    font-weight: bold;
+  }
+
+  .content {
+    margin-left: 10px;
+    margin-top: 8px;
+    font-size: 16pt;
+    float: left;
+
+    font {
+      color: #FFFF66
+    }
+  }
+
+  .mychart {
+    width: 600px;
+    height: 35px;
+    float: right;
+  }
+
+  .cardSize1 {
+    width: 60px;
+    font-size: 1pt;
+    padding: 5px 5px;
+
+    .cardHeight {
+      height: 40px;
+    }
+
+    img {
+      width: 30px;
+      height: 40px;
+    }
+  }
+
+  .cardSize2 {
+    width: 60px;
+    font-size: 1pt;
+    padding: 5px 5px;
+
+    .cardHeight {
+      height: 60px;
+    }
+
+    img {
+      width: 30px;
+      height: 40px;
+    }
+  }
+
+  .cardSize2 {
+    width: 70px;
+    font-size: 1pt;
+    padding: 5px 5px;
+
+    .cardHeight {
+      height: 60px;
+    }
+
+    img {
+      width: 30px;
+      height: 40px;
+    }
+  }
+}

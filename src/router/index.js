@@ -5,6 +5,7 @@ import outwork from '@/components/outwork/outwork'
 import crimalcheck from '@/components/crimalcheck/crimalcheck'
 import toolcheck from '@/components/toolcheck/toolcheck'
 import batchOut from '@/components/batchOut/batchOut'
+import desktopCheck from '@/components/desktopCheck/desktopCheck'
 
 Vue.use(Router)
 
@@ -38,6 +39,13 @@ export default new Router({
       path: '/batchOut',
       name: 'batchOut',
       component: batchOut
+    },
+    {
+      //桌面点名系统
+      path: '/desktopCheck',
+      name: 'desktopCheck',
+      component: desktopCheck
+
     }
   ]
 })

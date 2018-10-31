@@ -68,7 +68,7 @@ export default {
       /* 罪犯基础数据 */
       vm.$ajax({
         data: { OrgID: localStorage.getItem("OrgID") },
-        url: BasicUrl + "CriminalCnt/GetCriminalList" + "?callback=?",
+        url: BasicUrl + "CriminalCnt/GetCriminalListByOrgID" + "?callback=?",
         async: true,
         success: function(result) {
           vm.persons = result;

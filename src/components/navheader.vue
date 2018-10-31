@@ -6,7 +6,7 @@
       </el-col>
       <el-col :span="22">
         <el-col :span="11">
-          <p class="bold">南京监狱现场管控系统</p>
+          <p class="bold">{{appTitle}}</p>
         </el-col>
         <el-col :span="10" class="location">
           <p>({{siteName}})</p>
@@ -19,14 +19,14 @@
       </el-col>
       <el-col :span="22">
         <el-col :span="11">
-          <p class="bold">南京监狱现场管控系统</p>
+          <p class="bold">{{appTitle}}</p>
         </el-col>
         <el-col :span="10" class="location">
           <p>({{siteName}})</p>
         </el-col>
       </el-col>
     </el-col>
-    <el-col :span="12" class="navRight">
+    <el-col v-if="navRightVisable" :span="12" class="navRight">
       <el-col :span="16" class="title floatRight">
         {{currentOutWorkStatus.Status}}中
       </el-col>
@@ -50,6 +50,8 @@ export default {
   },
   computed: {
     ...mapState({
+      appTitle: state => state.navheader.appTitle, //软件名称，在desktopCheck下会发生改变
+      navRightVisable: state => state.navheader.navRightVisable, //右侧内容是否显示，在desktopCheck下会发生改变
       currentOutWorkStatus: state => state.outwork.currentOutWorkStatus //当前出收工状态
     })
   },
