@@ -27,7 +27,7 @@
           </p>
           <div style="text-align:left;margin-left:20%">
             <p>总人数：<font class="yellowFont">{{personCheckSituation.ShouldCnt}}</font>人</p>
-            <p>已清点：<font class="yellowFont">{{personCheckSituation.InsideCnt}}</font>人</p>
+            <p>已清点：<font class="yellowFont">{{personCheckSituation.InsideCnt+personCheckSituation.OutsideCnt}}</font>人</p>
             <p>未清点：<font class="yellowFont">{{personCheckSituation.InsideUnCnt+personCheckSituation.OutsideUnCnt+personCheckSituation.Abnormal}}</font>人</p>
           </div>
 
@@ -84,15 +84,15 @@ export default {
   methods: {
     echartSetOption: function(myChart) {
       var vm = this;
+
       var chartData =
-        vm.personCheckSituation.ShouldCnt == 0
-          ? 0
-          : (parseInt(
-              vm.personCheckSituation.InsideCnt /
-                vm.personCheckSituation.ShouldCnt
-            ) *
-              100) /
-            100;
+      vm.personCheckSituation.ShouldCnt == 0?0:
+        parseInt(
+          ((vm.personCheckSituation.InsideCnt +
+            vm.personCheckSituation.OutsideCnt) /
+            vm.personCheckSituation.ShouldCnt) *
+            100
+        ) / 100;
 
       var option = {
         series: [

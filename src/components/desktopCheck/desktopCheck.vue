@@ -4,11 +4,17 @@
     <el-col :span="1" style="height:10px"></el-col>
     <el-col :span="22" style="margin-top: 20px;">
       <el-col :span="24">
-        <img src="../../assets/personIcon.png" style="width: 40px;float:left;margin-left:20px">
         <div class="title">计划清点</div>
-        <div class="content">总人数：<font>200</font>人，已清点：<font>120</font>人，未清点：<font>80</font>人</div>
-        <div style="margin-left:50px;font-size:20pt;font-weight:bold;float:left;">倒计时：<font>200</font>&nbsp;秒</div>
+        <img src="../../assets/personIcon.png" style="width: 35px;float:left;margin-left:200px">
+        <div style="float: left; margin-top: 5px;font-size: 14pt;">清点中</div>
         <div id="myChart" class="mychart"></div>
+        <div class="content">总人数：<font style="font-weight:bold;">375</font>人，已清点：<font style="font-weight:bold;color:#00FFCC">0</font>人，未清点：<font style="font-weight:bold;color:#FFFF66">375</font>人</div>
+        <div style="margin-left:50px;font-size:16pt;font-weight:bold;float:left;">
+          <img src="../../assets/countdown.png" style="width: 30px;float:left;margin-left:190px;margin-top:4px">
+          <font style="font-weight:bold;color:#FF6699;font-size:25pt;margin-left:10px;">200</font>
+        </div>
+        <div style="margin-left:5px;font-size:15pt;float:left;margin-top:5px">秒</div>
+
       </el-col>
     </el-col>
     <el-col :span="1" style="height:10px"></el-col>
@@ -23,13 +29,13 @@
       <el-col :span="22">
 
         <div v-for="(item,index) in test" :key="index" style="float:left;" :class="cardSize">
-          <div class="cardHeight" style="background: rgba(0, 0, 0, 0.2);padding:5px">
+          <div class="cardHeight" style="background: rgba(0, 0, 0, 0.2);padding:10px 5px 5px 5px">
             <el-col :span="24">
               <img src="../../assets/crimal_1_03.jpg">
             </el-col>
-            <!-- <el-col :span="24">
+            <el-col :span="24">
               张三犯
-            </el-col> -->
+            </el-col>
           </div>
         </div>
 
@@ -54,10 +60,12 @@ export default {
     };
   },
   computed: {
-    ...mapState({}),
+    ...mapState({
+      personInsideUnChecked: state => state.crimalcheck.personInsideUnChecked //监内未点人员
+    }),
     cardSize: function() {
       var vm = this;
-      if (vm.test.length > 101) {
+      if (vm.test.length > 20) {
         return "cardSize1";
       }
     }
@@ -142,7 +150,8 @@ export default {
               normal: {
                 show: true,
                 textStyle: {
-                  color: "#fff" //百分比颜色
+                  fontSize: 15,
+                  color: "black" //百分比颜色
                 },
                 position: "inside",
                 //百分比格式
@@ -165,8 +174,7 @@ export default {
   mounted() {
     var vm = this;
     vm.changeDisplay();
-
-    for (var i = 0; i < 350; i++) {
+    for (var i = 0; i < 75; i++) {
       vm.test.push("11");
     }
     var myChart = vm.$echarts.init(document.getElementById("myChart"));

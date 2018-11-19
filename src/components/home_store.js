@@ -7,7 +7,8 @@ export default {
     'countObject': {}, //区域各类人员数量统计对象
     'personPlanObject': {}, //人员清点计划
     'toolPlanObject': {}, //工具清点计划
-    'prisonerNotOnline': [] //非在线的犯人
+    'prisonerNotOnline': [], //非在线的犯人
+    'Iswebsocket': 0, //是否建立websocket
   },
   mutations: {
     setCrimalCount_outCrimalCount(state, Payload) {
@@ -30,6 +31,9 @@ export default {
     },
     setPrisonerNotOnline(state, Payload) {
       state.prisonerNotOnline = Payload;
+    },
+    setIswebsocket(state, Payload) {
+      state.Iswebsocket = Payload;
     },
   }
 }

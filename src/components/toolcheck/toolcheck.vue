@@ -83,14 +83,17 @@ export default {
       var vm = this;
       var toolCheckDetailNotCalled = [];
       vm.toolCheckDetailAbnormal = [];
+      if(vm.toolList.length == 0){
+      }
       for (var item of vm.toolCheckDetail) {
         if (
-          item.CountStatus == vm.dick["未清点"] ||
+          item.CountStatus == vm.dict["未清点"] ||
           item.ToolStatus != "正常"
         ) {
+          
           item.ToolName = vm.toolList[item.ToolGuid].ToolName;
           item.Photo = vm.toolList[item.ToolGuid].Photo;
-          if (item.CountStatus == vm.dick["未清点"]) {
+          if (item.CountStatus == vm.dict["未清点"]) {
             toolCheckDetailNotCalled.push(item);
           }
           if (item.ToolStatus != "正常") {
@@ -108,8 +111,8 @@ export default {
         vm.toolCheckDetail.length == 0
           ? 0
           : (parseInt(
-              vm.toolCheckDetail.length -
-                vm.toolCheckDetailNotCalled.length / vm.toolCheckDetail.length
+              (vm.toolCheckDetail.length - vm.toolCheckDetailNotCalled.length) /
+                vm.toolCheckDetail.length
             ) *
               100) /
             100;

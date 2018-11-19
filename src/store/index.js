@@ -14,6 +14,7 @@ export default new vuex.Store({
   state: {
     "dict": {}, //字典数据集合
     "criminalList": [], //罪犯基础信息集合
+    'policeList': [], //全部警员数据
     "toolList": {} //工具基础信息集合
   },
   modules: {
@@ -33,6 +34,9 @@ export default new vuex.Store({
     },
     setToolList(state, Payload) {
       state.toolList = Payload;
+    },
+    setPoliceList(state, Payload) {
+      state.policeList = Payload;
     },
   }
 })

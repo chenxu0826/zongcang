@@ -6,6 +6,7 @@ import crimalcheck from '@/components/crimalcheck/crimalcheck'
 import toolcheck from '@/components/toolcheck/toolcheck'
 import batchOut from '@/components/batchOut/batchOut'
 import desktopCheck from '@/components/desktopCheck/desktopCheck'
+import desktopCheckIdle from '@/components/desktopCheckIdle/desktopCheckIdle'
 
 Vue.use(Router)
 
@@ -45,6 +46,12 @@ export default new Router({
       path: '/desktopCheck',
       name: 'desktopCheck',
       component: desktopCheck
+
+    }, {
+      //桌面点名系统待机画面
+      path: '/desktopCheckIdle',
+      name: 'desktopCheckIdle',
+      component: desktopCheckIdle
 
     }
   ]

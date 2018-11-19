@@ -66,13 +66,13 @@ export default {
         success: function(result) {
           vm.prisonSelect = result;
           if (
-            vm.prisonSelect[0].AreaName == "" ||
-            vm.prisonSelect[0].AreaName == undefined ||
-            vm.prisonSelect[0].AreaName == null
+            vm.prisonSelect[0].OrgName == "" ||
+            vm.prisonSelect[0].OrgName == undefined ||
+            vm.prisonSelect[0].OrgName == null
           ) {
             vm.siteName = "初始化信息屏位置失败";
           } else {
-            vm.siteName = vm.prisonSelect[0].AreaName;
+            vm.siteName = vm.prisonSelect[0].OrgName;
           }
           vm.setLocalStorage("OrgID", vm.prisonSelect[0].OrgID);
           vm.setLocalStorage("DoorID", vm.prisonSelect[0].Door);

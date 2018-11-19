@@ -146,7 +146,8 @@ export default {
       personPlanObject: state => state.home.personPlanObject, //人员清点计划
       prisonerNotOnline: state => state.home.prisonerNotOnline, //非在线的犯人
       toolPlanObject: state => state.home.toolPlanObject, //工具清点计划
-      toolCheckSituation: state => state.toolcheck.toolCheckSituation //当前计划下的本监区清点情况
+      toolCheckSituation: state => state.toolcheck.toolCheckSituation, //当前计划下的本监区清点情况
+      Iswebsocket: state => state.home.Iswebsocket,
     }),
     /* 本区域情况-区域罪犯 数量*/
     orgCriminalCnt: function() {
@@ -167,7 +168,7 @@ export default {
       var vm = this;
       var positionObjectsMerged = [];
       for (var i = 0; i < vm.positionObjects.length; i++) {
-        if (vm.positionObjects[i].merged != ture) {
+        if (vm.positionObjects[i].merged != true) {
           vm.positionObjects[i].count = 1;
           for (var j = i + 1; j < vm.positionObjects.length; j++) {
             //两点之间的距离
@@ -282,7 +283,17 @@ export default {
       vm.getToolStatus();
     }, 120000);
 
-    vm.$router.push({ path: "/batchOut" });
+    // vm.$router.push({ path: "/batchOut" });
+
+
+    //5秒钟没有数据 刷新界面
+    setInterval(function() {
+      //todo暂时取消5秒刷新页面
+      if (vm.Iswebsocket == 0) {
+        // vm.$router.push({ path: "/" });
+        // window.location.reload();
+      }
+    }, 5000);
   }
 };
 </script>
