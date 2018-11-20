@@ -1,120 +1,132 @@
 .home {
   height: 933px !important;
-}
 
-.fontYellow {
-  color: #FFFF66;
-  font-weight: bold;
-}
-
-.fontBlue {
-  color: #66FFCC;
-  font-weight: bold;
-}
-
-.body {
-  height: 100%;
-  color: white;
-  padding: 25px;
-  overflow: hidden;
-  padding-top: 30px;
-
-  .home_title {
-    color: #00CCFF;
-    margin: 10px 20px;
-    font-size: 20px;
-    text-align: left;
+  .fontYellow {
+    color: #FFFF66;
     font-weight: bold;
   }
 
-  .prison_situation {
-    height: 290px;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
-    text-align: left;
-    overflow: auto;
-    margin-bottom: 20px;
-
-    .content {
-      p {
-        font-size: 18px;
-        line-height: 48px;
-        margin: 0;
-      }
-
-      img {
-        width: 30px;
-        margin: 10px 20px;
-      }
-    }
+  .fontBlue {
+    color: #66FFCC;
+    font-weight: bold;
   }
 
-  .member_distribute {
-    height: 600px;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+  .body {
+    height: 100%;
+    color: white;
+    padding: 25px;
     overflow: hidden;
-    text-align: left;
-    margin-left: 20px;
-    position: relative;
-  }
+    padding-top: 30px;
 
-  .flow_persons {
-    height: 240px;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
-
-    overflow: hidden;
-    text-align: left;
-    position: relative;
-
-    .illegal {
-      box-shadow: 0 0 25px rgba(255, 54, 219, 0.9) inset;
+    .home_title {
+      color: #00CCFF;
+      margin: 10px 20px;
+      font-size: 20px;
+      text-align: left;
+      font-weight: bold;
     }
 
-    .personCard {
+    .prison_situation {
+      height: 290px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+      text-align: left;
+      overflow: auto;
+      margin-bottom: 20px;
 
-      background: rgba(0, 0, 0, 0.2);
-      width: 100%;
-      height: 175px;
-      border-radius: 5px;
-
-
-
-      .personPhoto {
-        padding: 20px 65px;
+      .content {
+        p {
+          font-size: 18px;
+          line-height: 48px;
+          margin: 0;
+        }
 
         img {
-          width: 100px;
-          height: 135px;
+          width: 30px;
+          margin: 10px 20px;
         }
       }
     }
 
-    p {
-      font-size: 10pt;
-      line-height: 7px
+    .member_distribute {
+      height: 600px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      text-align: left;
+      margin-left: 20px;
+      position: relative;
     }
 
+    .flow_persons {
+      height: 260px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      text-align: left;
+      position: relative;
+
+      .illegal {
+        box-shadow: 0 0 25px rgba(255, 54, 219, 0.9) inset;
+      }
+
+      .personCard {
+        background: rgba(0, 0, 0, 0.2);
+        width: 100%;
+        height: 175px;
+        border-radius: 5px;
+
+        .personPhoto {
+          padding: 20px 65px;
+
+          img {
+            width: 100px;
+            height: 135px;
+          }
+        }
+      }
+
+      p {
+        font-size: 10pt;
+        line-height: 7px
+      }
+    }
   }
 
-
-}
-
-.map {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 40px;
-  bottom: 0;
-
-  img {
-    display: block;
-  }
-
-  ;
-
-  .getCenter {
+  .map {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    left: 0;
+    right: 0;
+    top: 40px;
+    bottom: 0;
+
+    img {
+      display: block;
+    }
+
+    .getCenter {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translateX(-50%) translateY(-50%);
+    }
+  }
+
+  .pageDiv {
+    display: flex;
+    justify-content: center;
+
+    .pageIconFirst {
+      margin: 0px 5px;
+      border-radius: 50%;
+      background-color: white;
+      width: 13px;
+      height: 13px
+    }
+
+    .pageIcon {
+      margin: 0px 5px;
+      border-radius: 50%;
+      border: 2px solid white;
+      width: 10px;
+      height: 10px
+    }
   }
 }

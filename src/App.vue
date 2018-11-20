@@ -494,6 +494,10 @@ export default {
             runPeople.Polices = flowCrim.Polices;
             runPeople.Reason = flowCrim.Reason;
             runPeople.Status = flowCrim.Status;
+            runPeople.FlnkID =
+              vm.criminalList[0][
+                prisonerFlowing[0].People[i].CriminalID
+              ].FlnkID;
             runPeople.CriminalID =
               vm.criminalList[0][flowCrim.CriminalID].CriminalID;
             runPeople.CriminalName =
@@ -501,7 +505,7 @@ export default {
             runPeople.Photo = vm.criminalList[0][flowCrim.CriminalID].Photo;
             runPeople.isBlue = false;
             movePeople.push(runPeople);
-            movePeopleHashed[runPeople.CriminalID] = runPeople;
+            movePeopleHashed[runPeople.FlnkID] = runPeople;
           }
         }
         if (prisonerFlowing[0] != undefined) {
@@ -524,6 +528,10 @@ export default {
             runPeople.Polices = str;
             runPeople.Reason = prisonerFlowing[0].People[i].Reason;
             runPeople.Status = prisonerFlowing[0].People[i].Status;
+            runPeople.FlnkID =
+              vm.criminalList[0][
+                prisonerFlowing[0].People[i].CriminalID
+              ].FlnkID;
             runPeople.CriminalID =
               vm.criminalList[0][
                 prisonerFlowing[0].People[i].CriminalID
@@ -536,7 +544,7 @@ export default {
               vm.criminalList[0][prisonerFlowing[0].People[i].CriminalID].Photo;
             runPeople.isBlue = true;
             movePeople.push(runPeople); //这边取的非法流动其实是本监外出+非法流动
-            movePeopleHashed[runPeople.CriminalID] = runPeople;
+            movePeopleHashed[runPeople.FlnkID] = runPeople;
           }
         }
         vm.movePeopleHashed = movePeopleHashed; //储存一个哈希版本以供其他协议匹配使用

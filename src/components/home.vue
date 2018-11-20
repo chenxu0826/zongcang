@@ -26,7 +26,7 @@
               <p>固定：<font class="fontBlue">{{isNaN(toolCheckSituation.OutsideCnt) ? 0 : toolCheckSituation.OutsideCnt+toolCheckSituation.OutsideUnCnt}}</font>&nbsp;件</p>
               <p>流动：<font class="fontBlue">{{isNaN(toolCheckSituation.InsideCnt) ? 0 : toolCheckSituation.InsideUnCnt+toolCheckSituation.InsideUnCnt}}</font>&nbsp;件</p>
               <p>
-                <font v-if="toolPlanObject.NextTime" class="fontBlue" style="font-size:12pt">下次{{toolPlanObject.NextTime}}</font>
+                <font v-if="toolPlanObject.NextTime" class="fontBlue" style="font-size:12pt">下次:{{toolPlanObject.NextTime}}</font>
               </p>
             </el-col>
           </div>
@@ -111,6 +111,9 @@
               </el-col>
             </div>
           </el-col>
+          <el-col :span="24" class="pageDiv" style="margin-top:10px">
+            <div v-for="(item,index) in prisonerFlowingPage" :key="index" :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"></div>
+          </el-col>
         </div>
       </el-col>
     </div>
@@ -147,8 +150,22 @@ export default {
       prisonerNotOnline: state => state.home.prisonerNotOnline, //非在线的犯人
       toolPlanObject: state => state.home.toolPlanObject, //工具清点计划
       toolCheckSituation: state => state.toolcheck.toolCheckSituation, //当前计划下的本监区清点情况
-      Iswebsocket: state => state.home.Iswebsocket,
+      Iswebsocket: state => state.home.Iswebsocket
     }),
+    //流动人员的页码控制数组
+    prisonerFlowingPage: function() {
+      let vm = this;
+      let pageIconArray = [{ circle: "solid" }];
+      let flag = vm.prisonerFlowing.length / 4;
+      if (flag <= 1) {
+        return null;
+      } else {
+        for (let i = 0; i < parseInt(flag); i++) {
+          pageIconArray.push({ circle: "hollow" });
+        }
+        return pageIconArray;
+      }
+    },
     /* 本区域情况-区域罪犯 数量*/
     orgCriminalCnt: function() {
       var vm = this;
@@ -284,7 +301,6 @@ export default {
     }, 120000);
 
     // vm.$router.push({ path: "/batchOut" });
-
 
     //5秒钟没有数据 刷新界面
     setInterval(function() {

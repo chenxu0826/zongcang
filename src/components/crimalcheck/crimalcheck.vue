@@ -5,15 +5,18 @@
     <el-col :span="14">
       <el-col :span="24" class="title">人员清点（未点{{personCheckSituation.InsideUnCnt}}人）</el-col>
 
-      <el-col :span="3" v-for="(item,index) in personInsideUnChecked" :key="index" style="padding:15px 5px;">
+      <el-col :span="3" v-for="(item,index) in personInsideUnChecked.slice(0,32)" :key="index" style="padding:15px 5px;">
         <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
           <el-col :span="24">
-            <img :src="item.PersonPhoto" style="width:100px">
+            <img :src="item.PersonPhoto" width="100" height="135">
           </el-col>
           <el-col :span="24">
             {{item.PersonName}}
           </el-col>
         </div>
+      </el-col>
+      <el-col :span="24" class="pageDiv">
+        <div v-for="(item,index) in InsideUnCheckedPage" :key="index" :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"></div>
       </el-col>
 
     </el-col>
@@ -37,27 +40,26 @@
         </el-col>
       </el-col>
 
-      <el-col :span="24" class="title" style="margin-top:50px">外出清点（未点{{personCheckSituation.OutsideUnCnt + personCheckSituation.Abnormal}}人）</el-col>
+      <el-col :span="24" class="title" style="margin-top:20px">外出清点（未点{{personCheckSituation.OutsideUnCnt + personCheckSituation.Abnormal}}人）</el-col>
       <el-col :span="24">
-        <el-col :span="12" style="padding:10px">
-          <el-col :span="24" v-for="(item,index) in personOutsideUnChecked" :key="index" style="background:rgba(0, 0, 0, 0.2);" :class="{illegal: !item.isBlue}">
-            <el-col :span=" 5" style="padding:20px">
-              <img :src="item.Photo" style="width:80px">
+        <el-col :span="24" style="padding:10px;height:535px">
+          <el-col class="personCard" :span="11" v-for="(item,index) in personOutsideUnChecked.slice(0,8)" :key="index" :class="{illegal: !item.isBlue}">
+            <el-col :span="10" style="padding:10px">
+              <img :src="item.Photo" width="80" height="95">
             </el-col>
-            <el-col :span="19" style="line-height:10px;padding:12px 0px 0px 30px">
+            <el-col :span="14" style="line-height:10px;padding:5px 0px 0px 0px">
               <p>姓名：{{item.CriminalName}}</p>
-              <p>番号：{{item.CriminalID}}</p>
               <p v-show="!item.isBlue">状态：{{item.Status}}</p>
               <p>当前区域：{{item.AreaName}}</p>
               <p v-show="item.isBlue">陪同民警：{{item.Polices}}</p>
-              <p>外出时间：</p>
-              <p>{{item.LeaveTime}}</p>
               <p v-show="item.isBlue">外出事由：{{item.Reason}}</p>
             </el-col>
           </el-col>
         </el-col>
       </el-col>
-
+      <el-col :span="24" class="pageDiv">
+        <div v-for="(item,index) in outsideUnCheckedPage" :key="index" :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"></div>
+      </el-col>
     </el-col>
     <el-col :span="1" style="height:10px"></el-col>
   </el-row>
@@ -79,20 +81,49 @@ export default {
       personCheckSituation: state => state.crimalcheck.personCheckSituation, //统计当前计划下监区的人员清点情况
       personInsideUnChecked: state => state.crimalcheck.personInsideUnChecked, //监内未点人员
       personOutsideUnChecked: state => state.crimalcheck.personOutsideUnChecked //外出未点（包括正常外出未点和非法外出未点）
-    })
+    }),
+    //监内未点人员的页码控制数组
+    InsideUnCheckedPage: function() {
+      let vm = this;
+      let pageIconArray = [{ circle: "solid" }];
+      let flag = vm.personInsideUnChecked.length / 8;
+      if (flag <= 1) {
+        return null;
+      } else {
+        for (let i = 0; i < parseInt(flag); i++) {
+          pageIconArray.push({ circle: "hollow" });
+        }
+        return pageIconArray;
+      }
+    },
+    //外出未点人员的页码控制数组
+    outsideUnCheckedPage: function() {
+      let vm = this;
+      let pageIconArray = [{ circle: "solid" }];
+      let flag = vm.personOutsideUnChecked.length / 8;
+      if (flag <= 1) {
+        return null;
+      } else {
+        for (let i = 0; i < parseInt(flag); i++) {
+          pageIconArray.push({ circle: "hollow" });
+        }
+        return pageIconArray;
+      }
+    }
   },
   methods: {
     echartSetOption: function(myChart) {
       var vm = this;
 
       var chartData =
-      vm.personCheckSituation.ShouldCnt == 0?0:
-        parseInt(
-          ((vm.personCheckSituation.InsideCnt +
-            vm.personCheckSituation.OutsideCnt) /
-            vm.personCheckSituation.ShouldCnt) *
-            100
-        ) / 100;
+        vm.personCheckSituation.ShouldCnt == 0
+          ? 0
+          : parseInt(
+              ((vm.personCheckSituation.InsideCnt +
+                vm.personCheckSituation.OutsideCnt) /
+                vm.personCheckSituation.ShouldCnt) *
+                100
+            ) / 100;
 
       var option = {
         series: [
@@ -132,7 +163,6 @@ export default {
   },
   mounted() {
     var vm = this;
-
     var myChart = vm.$echarts.init(document.getElementById("myChart"));
     vm.echartSetOption(myChart);
     vm.echartSetOptionInterval = setInterval(function() {
