@@ -4,10 +4,32 @@
 
   p {
     color: #00CCFF;
-    font-size: 60pt;
+    font-size: 45pt;
   }
+
   .fontYellow {
     color: #FFFF66;
     font-weight: bold;
+  }
+
+  .pageDiv {
+    display: flex;
+    justify-content: center;
+
+    .pageIconFirst {
+      margin: 0px 5px;
+      border-radius: 50%;
+      background-color: white;
+      width: 13px;
+      height: 13px
+    }
+
+    .pageIcon {
+      margin: 0px 5px;
+      border-radius: 50%;
+      border: 2px solid white;
+      width: 10px;
+      height: 10px
+    }
   }
 }

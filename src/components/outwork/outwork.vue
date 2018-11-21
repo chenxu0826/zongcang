@@ -1,15 +1,15 @@
 <template>
   <!--出收工-->
   <el-row class="outwork">
-    <el-col :span="24" style="height:210px">
-      <p>{{currentOutWorkStatus.Status}}中（已{{currentOutWorkStatus.Status}}<font class="fontYellow">{{outWorkPersons.length}}</font>人,剩余<font class="fontYellow">{{remainPersons.length}}</font>人）</p>
+    <el-col :span="24" style="height:110px;line-height:10px">
+      <p>{{currentOutWorkStatus.Status}}中（已{{currentOutWorkStatus.Status}}<font class="fontYellow">{{outWorkPersons.length==undefined?0:outWorkPersons.length}}</font>人,监区剩余<font class="fontYellow">{{remainPersons.length}}</font>人）</p>
     </el-col>
     <el-row>
       <el-col :span="1" style="height:10px">
 
       </el-col>
       <el-col :span="22">
-        <el-col v-for="(item,index) in remainPersons" :key="index" :span="2" style="padding:15px 5px;">
+        <el-col v-for="(item,index) in remainPersons.slice(0,48)" :key="index" :span="2" style="padding:5px 5px;">
           <div style="height:160px;background: rgba(0, 0, 0, 0.2);padding:10px">
             <el-col :span="24">
               <img :src="item.Photo" style="width:100px">
@@ -20,10 +20,10 @@
           </div>
         </el-col>
       </el-col>
-      <el-col :span="1" style="background-color:red">
-
-      </el-col>
     </el-row>
+    <el-col :span="24" class="pageDiv" style="margin-top:20px">
+      <div v-for="(item,index) in remainPersonsPage" :key="index" :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"></div>
+    </el-col>
 
   </el-row>
 
@@ -34,7 +34,7 @@ import { BasicUrl, IMG, ajaxUrl } from "../../config";
 import { mapState } from "vuex";
 
 export default {
-  name: "navheader",
+  name: "outwork",
   data() {
     return {
       persons: [] //应出收工的所有人
@@ -49,17 +49,34 @@ export default {
     //剩余应出收工的人
     remainPersons: function() {
       var vm = this;
-      for (i in vm.persons) {
+      var flag = vm.outWorkPersons instanceof Array;
+      for (var i in vm.persons) {
         vm.persons[i].Photo = IMG + vm.persons[i].Photo;
-        for (var item of vm.outWorkPersons) {
-          if (vm.persons[i].FlnkID == item) {
-            vm.persons.splice(i, 1);
-            i--;
+        if (flag) {
+          for (var item of vm.outWorkPersons) {
+            if (vm.persons[i].FlnkID == item) {
+              vm.persons.splice(i, 1);
+              i--;
+            }
           }
         }
       }
       return vm.persons;
-    }
+    },
+    //剩余应出收工的人的页码控制数组
+    remainPersonsPage: function() {
+      let vm = this;
+      let pageIconArray = [{ circle: "solid" }];
+      let flag = vm.remainPersons.length / 48;
+      if (flag <= 1) {
+        return null;
+      } else {
+        for (let i = 0; i < parseInt(flag); i++) {
+          pageIconArray.push({ circle: "hollow" });
+        }
+        return pageIconArray;
+      }
+    },
   },
   methods: {
     //获取应该出工的人（本监区的人）

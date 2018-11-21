@@ -7,6 +7,9 @@
     <el-col :span="24" style="display:flex;justify-content:center;font-size:65pt;margin-top:30px">
       09&nbsp;:&nbsp;30
     </el-col>
+    <div class="desktopCheckIdleImg">
+      <img src="../../assets/commandCenterIdle.png" width="900px"> 
+    </div>
     
 
   </el-row>

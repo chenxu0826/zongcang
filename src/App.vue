@@ -201,6 +201,7 @@ export default {
           }
           toolList_hash["total"] = result.length;
           //所有工具信息缓存
+          debugger
           vm.$store.commit("setToolList", toolList_hash);
         }
       });
