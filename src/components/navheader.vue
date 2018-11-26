@@ -8,7 +8,7 @@
         <el-col :span="11">
           <p class="bold">{{appTitle}}</p>
         </el-col>
-        <el-col :span="10" class="location">
+        <el-col :span="10" class="location" style="margin-top:5px">
           <p>({{siteName}})</p>
         </el-col>
       </el-col>

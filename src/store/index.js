@@ -8,6 +8,8 @@ import crimalcheck_store from '../components/crimalcheck/crimalcheck_store.js'
 import batchOut_store from '../components/batchOut/batchOut_store.js'
 import toolcheck_store from '../components/toolcheck/toolcheck_store.js'
 import outwork_store from '../components/outwork/outwork_store.js';
+import desktopCheck_store from '../components/desktopCheck/desktopCheck_store.js';
+import desktopCheckIdle_store from '../components/desktopCheckIdle/desktopCheckIdle_store.js';
 
 
 export default new vuex.Store({
@@ -24,6 +26,8 @@ export default new vuex.Store({
     batchOut: batchOut_store,
     toolcheck: toolcheck_store,
     outwork: outwork_store,
+    desktopCheck: desktopCheck_store,
+    desktopCheckIdle: desktopCheckIdle_store
   },
   mutations: {
     setDict(state, Payload) {

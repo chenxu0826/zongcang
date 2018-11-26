@@ -2,6 +2,31 @@
   height: 992px;
   color: white;
 
+  .ad {
+    position: absolute;
+  }
+
+  .pageDiv {
+    display: flex;
+    justify-content: center;
+
+    .pageIconFirst {
+      margin: 0px 5px;
+      border-radius: 50%;
+      background-color: white;
+      width: 13px;
+      height: 13px
+    }
+
+    .pageIcon {
+      margin: 0px 5px;
+      border-radius: 50%;
+      border: 2px solid white;
+      width: 10px;
+      height: 10px
+    }
+  }
+
   .title {
     float: left;
     margin-top: 5px;
@@ -27,7 +52,6 @@
 
   .cardSize1 {
     width: 107px;
-    font-size: 1pt;
     padding: 5px;
     font-size: 13pt;
     font-weight: bold;
@@ -43,32 +67,50 @@
   }
 
   .cardSize2 {
-    width: 60px;
-    font-size: 1pt;
-    padding: 5px 5px;
+    width: 135px;
+    padding: 5px;
+    font-size: 15pt;
+    font-weight: bold;
 
     .cardHeight {
-      height: 60px;
+      height: 190px;
     }
 
     img {
-      width: 30px;
-      height: 40px;
+      width: 110px;
+      height: 147px;
     }
   }
 
-  .cardSize2 {
-    width: 70px;
-    font-size: 1pt;
-    padding: 5px 5px;
+  .cardSize3 {
+    width: 185px;
+    padding: 5px;
+    font-size: 17pt;
+    font-weight: bold;
 
     .cardHeight {
-      height: 60px;
+      height: 265px;
     }
 
     img {
-      width: 30px;
-      height: 40px;
+      width: 165px;
+      height: 220px;
+    }
+  }
+
+  .cardSize4 {
+    width: 280px;
+    padding: 5px;
+    font-size: 25pt;
+    font-weight: bold;
+
+    .cardHeight {
+      height: 395px;
+    }
+
+    img {
+      width: 245px;
+      height: 327px;
     }
   }
 }

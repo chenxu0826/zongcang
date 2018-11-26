@@ -90,11 +90,6 @@ export default {
           item.CountStatus == vm.dict["未清点"] ||
           item.ToolStatus != "正常"
         ) {
-          var temp = vm.toolList[item.ToolGuid];
-          if (temp == undefined) {
-            debugger;
-          }
-
           item.ToolName = vm.toolList[item.ToolGuid].ToolName;
           item.Photo = vm.toolList[item.ToolGuid].Photo;
           if (item.CountStatus == vm.dict["未清点"]) {

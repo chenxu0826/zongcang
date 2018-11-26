@@ -300,14 +300,12 @@ export default {
       vm.getToolStatus();
     }, 120000);
 
-    // vm.$router.push({ path: "/batchOut" });
-
     //5秒钟没有数据 刷新界面
     setInterval(function() {
       //todo暂时取消5秒刷新页面
       if (vm.Iswebsocket == 0) {
-        // vm.$router.push({ path: "/" });
-        // window.location.reload();
+        vm.$router.push({ path: "/desktopCheckIdle" });
+        window.location.reload();
       }
     }, 5000);
   }

@@ -201,7 +201,6 @@ export default {
           }
           toolList_hash["total"] = result.length;
           //所有工具信息缓存
-          debugger
           vm.$store.commit("setToolList", toolList_hash);
         }
       });
@@ -409,7 +408,39 @@ export default {
       if (msg == null) {
         return;
       }
-      if (msg.Header.MsgType === 7) {
+
+      if (msg.Header.MsgType === 4) {
+        /* 通知客户端计划任务推送 -4 */
+        var plan = JSON.parse(msg.Body);
+        if (plan.OrgID == vm.getLocalStorage("OrgID")) {
+          if (plan.PlanType == vm.dict["人员清点计划"]) {
+            if (plan.CountType == vm.dict["计划清点"]) {
+              vm.$store.commit("setPlanType", "计划清点");
+            } else if (plan.CountType == vm.dict["通知清点"]) {
+              vm.$store.commit("setPlanType", "通知清点");
+            }
+
+            var endTime = Date.parse(new Date(plan.EndTime));
+            vm.$store.commit("setEndTime", endTime); //倒计时的秒数
+
+            vm.$router.push({ path: "/desktopCheck" });
+          }
+        }
+      } else if (msg.Header.MsgType === 73) {
+        /* 计划任务结束推送 -73 */
+        var planEnd = JSON.parse(msg.Body);
+        if (planEnd.OrgID == vm.getLocalStorage("OrgID")) {
+          if (planEnd.PlanType == vm.dict["人员清点计划"]) {
+            vm.$router.push({ path: "/desktopCheckIdle" });
+
+            // if (planEnd.CountType == vm.dict["计划清点"]) {
+
+            // } else if (planEnd.CountType == vm.dict["通知清点"]) {
+
+            // }
+          }
+        }
+      } else if (msg.Header.MsgType === 7) {
         /* 计划任务推送 -7 */
         var planObject = JSON.parse(msg.Body);
         if (
@@ -614,13 +645,12 @@ export default {
     vm.ws.onclose = function(event) {
       console.log("websocket----onclose");
       console.log(event);
-      if (vm.onlinestatus === false) {
-        setInterval(function() {
-          //todo暂时取消五秒刷新
-          // vm.$router.push({ path: "/" });
-          // window.location.reload();
-        }, 5000);
-      }
+
+      setInterval(function() {
+        //todo暂时取消五秒刷新
+        vm.$router.push({ path: "/desktopCheckIdle" });
+        window.location.reload();
+      }, 5000);
     };
 
     /* 错误信息 */
@@ -629,8 +659,8 @@ export default {
       console.log("WebSocketError!", evt);
       setInterval(function() {
         //todo暂时取消五秒刷新
-        // vm.$router.push({ path: "/" });
-        // window.location.reload();
+        vm.$router.push({ path: "/desktopCheckIdle" });
+        window.location.reload();
       }, 5000);
     };
   }
