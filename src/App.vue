@@ -548,16 +548,19 @@ export default {
             runPeople.Areas = prisonerFlowing[0].People[i].Areas;
             runPeople.LeaveTime = prisonerFlowing[0].People[i].LeaveTime;
 
-            var arr = prisonerFlowing[0].People[i].Polices.split(",");
-            var str = "";
-            for (var j = 0; j < arr.length; j++) {
-              if (j == arr.length - 1) {
-                str = str + vm.policeList[arr[j]].PoliceName + "";
-              } else {
-                str = str + vm.policeList[arr[j]].PoliceName + ",";
+            if (prisonerFlowing[0].People[i].Polices != null) {
+              var arr = prisonerFlowing[0].People[i].Polices.split(",");
+              var str = "";
+              for (var j = 0; j < arr.length; j++) {
+                if (j == arr.length - 1) {
+                  str = str + vm.policeList[arr[j]].PoliceName + "";
+                } else {
+                  str = str + vm.policeList[arr[j]].PoliceName + ",";
+                }
               }
+              runPeople.Polices = str;
             }
-            runPeople.Polices = str;
+
             runPeople.Reason = prisonerFlowing[0].People[i].Reason;
             runPeople.Status = prisonerFlowing[0].People[i].Status;
             runPeople.FlnkID =

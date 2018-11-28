@@ -32,7 +32,7 @@
             <el-col :span="24">
               <img :src="item.photo">
             </el-col>
-            <el-col :span="24">
+            <el-col :span="24" style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;word-break:keep-all;">
               {{item.name}}
             </el-col>
           </div>
@@ -50,7 +50,7 @@
     </el-row>
 
     <el-col :span="24" class="ad">
-      <div style="width:95%;text-align:right;margin:0px auto;color:yellow">技术支持:荣飞科技股份有限公司</div>
+      <div style="width:95%;text-align:right;margin:0px auto;color:yellow">技术支持：南京荣飞科技股份有限公司</div>
 
     </el-col>
 
@@ -75,7 +75,8 @@ export default {
       getPlanCheckDetailInterval: {}, //获取计划清点详细Interval
       getInformCheckStatisticsInterval: {}, //获取通知清点统计Interval
       getInformCheckDetailInterval: {}, //获取通知清点详细Interval
-      countDownInterval: {} //计算倒计时Interval
+      countDownInterval: {}, //计算倒计时Interval
+      getCurrentCheckInterval: {}
     };
   },
   computed: {
@@ -83,7 +84,8 @@ export default {
       dict: state => state.dict, //字典数据
       criminalList: state => state.criminalList, //全部罪犯信息
       planType: state => state.desktopCheck.planType, //清点类型----计划清点or通知清点
-      endTime: state => state.desktopCheck.endTime //结束时间（时间戳）
+      endTime: state => state.desktopCheck.endTime, //结束时间（时间戳）
+      timeOffset: state => state.desktopCheckIdle.timeOffset
     }),
     cardSize: function() {
       var vm = this;
@@ -178,7 +180,7 @@ export default {
     //改变界面上的某些内容来展示桌面点名系统
     changeDisplay: function() {
       var vm = this;
-      vm.$store.commit("setAppTitle", "监狱现场桌面点名系统");
+      vm.$store.commit("setAppTitle", "边城监狱点名系统");
       vm.$store.commit("setNavRightVisable", false);
     },
     echartSetOption: function(myChart) {
@@ -283,6 +285,38 @@ export default {
     var vm = this;
     vm.changeDisplay();
 
+    var getCurrentCheck = {
+      Header: {
+        MsgID: "201501260000000003",
+        MsgType: 77
+      },
+      Body: JSON.stringify({
+        OrgID: vm.getLocalStorage("OrgID")
+      })
+    };
+
+    vm.$ajax({
+      url: ajaxUrl,
+      data: JSON.stringify(getCurrentCheck),
+      success: function(result) {
+        if (result.length == 0 || result[0].IsEnd == 1) {
+          vm.$router.push({ path: "/desktopCheckIdle" });
+        }
+      }
+    });
+
+    vm.getCurrentCheckInterval = setInterval(function() {
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(getCurrentCheck),
+        success: function(result) {
+          if (result.length == 0 || result[0].IsEnd == 1) {
+            vm.$router.push({ path: "/desktopCheckIdle" });
+          }
+        }
+      });
+    }, 10000);
+
     var myChart = vm.$echarts.init(document.getElementById("myChart"));
     vm.echartSetOption(myChart);
     vm.echartSetOptionInterval = setInterval(function() {
@@ -291,13 +325,13 @@ export default {
 
     var nowTime = Date.parse(new Date());
 
-    if (vm.endTime - nowTime < 0) {
+    if (vm.endTime - (nowTime + vm.timeOffset) < 0) {
       clearInterval(vm.countDownInterval);
 
       vm.countDown = 0;
       return;
     }
-    vm.countDown = (vm.endTime - nowTime) / 1000;
+    vm.countDown = (vm.endTime - (nowTime + vm.timeOffset)) / 1000;
     vm.countDownInterval = setInterval(function() {
       var nowTime = Date.parse(new Date());
 
@@ -307,7 +341,7 @@ export default {
         vm.countDown = 0;
         return;
       }
-      vm.countDown = (vm.endTime - nowTime) / 1000;
+      vm.countDown = (vm.endTime - (nowTime + vm.timeOffset)) / 1000;
     }, 1000);
 
     if (vm.planType == "计划清点") {
@@ -409,7 +443,7 @@ export default {
       }, 3000);
     }
   },
-  destoryed() {
+  beforeDestroy: function() {
     var vm = this;
     clearInterval(vm.echartSetOptionInterval);
     clearInterval(vm.getPlanCheckStatisticsInterval);
@@ -417,6 +451,7 @@ export default {
     clearInterval(vm.getInformCheckStatisticsInterval);
     clearInterval(vm.getInformCheckDetailInterval);
     clearInterval(vm.countDownInterval);
+    clearInterval(vm.getCurrentCheckInterval);
   }
 };
 </script>

@@ -5,7 +5,7 @@
         <img src="../assets/hui.png" alt="">
       </el-col>
       <el-col :span="22">
-        <el-col :span="11">
+        <el-col :span="9">
           <p class="bold">{{appTitle}}</p>
         </el-col>
         <el-col :span="10" class="location" style="margin-top:5px">
@@ -18,7 +18,7 @@
         <img src="../assets/hu.png" alt="">
       </el-col>
       <el-col :span="22">
-        <el-col :span="11">
+        <el-col :span="9">
           <p class="bold">{{appTitle}}</p>
         </el-col>
         <el-col :span="10" class="location">
