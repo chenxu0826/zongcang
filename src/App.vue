@@ -423,7 +423,7 @@ export default {
             var endTime = Date.parse(new Date(plan.EndTime));
             vm.$store.commit("setEndTime", endTime); //倒计时的秒数
 
-            vm.$router.push({ path: "/desktopCheck" });
+            vm.$router.push({ path: "/" });
           }
         }
       } else if (msg.Header.MsgType === 73) {
@@ -431,7 +431,7 @@ export default {
         var planEnd = JSON.parse(msg.Body);
         if (planEnd.OrgID == vm.getLocalStorage("OrgID")) {
           if (planEnd.PlanType == vm.dict["人员清点计划"]) {
-            vm.$router.push({ path: "/desktopCheckIdle" });
+            vm.$router.push({ path: "/" });
 
             // if (planEnd.CountType == vm.dict["计划清点"]) {
 
@@ -651,7 +651,7 @@ export default {
 
       setInterval(function() {
         //todo暂时取消五秒刷新
-        vm.$router.push({ path: "/desktopCheckIdle" });
+        vm.$router.push({ path: "/" });
         window.location.reload();
       }, 5000);
     };
@@ -662,7 +662,7 @@ export default {
       console.log("WebSocketError!", evt);
       setInterval(function() {
         //todo暂时取消五秒刷新
-        vm.$router.push({ path: "/desktopCheckIdle" });
+        vm.$router.push({ path: "/" });
         window.location.reload();
       }, 5000);
     };

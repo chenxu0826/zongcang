@@ -75,7 +75,7 @@ export default {
             vm.siteName = vm.prisonSelect[0].OrgName;
           }
           vm.setLocalStorage("OrgID", vm.prisonSelect[0].OrgID);
-          vm.setLocalStorage("DoorID", vm.prisonSelect[0].Door);
+          vm.setLocalStorage("DoorID", vm.prisonSelect[0].AssociatedDoor);
           vm.setLocalStorage("AreaID", vm.prisonSelect[0].AreaID);
           vm.setLocalStorage("AreaType", vm.prisonSelect[0].AreaType);
           vm.setLocalStorage("MapFlnkID", vm.prisonSelect[0].MapFlnkID);
