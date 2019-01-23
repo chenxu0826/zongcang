@@ -15,7 +15,8 @@ export default new vuex.Store({
     "dict": {}, //字典数据集合
     "criminalList": [], //罪犯基础信息集合
     'policeList': [], //全部警员数据
-    "toolList": {} //工具基础信息集合
+    "toolList": {}, //工具基础信息集合
+    "currentPage": "" //当前的页面
   },
   modules: {
     home: home_store,
@@ -37,6 +38,9 @@ export default new vuex.Store({
     },
     setPoliceList(state, Payload) {
       state.policeList = Payload;
+    },
+    setCurrentPage(state, Payload) {
+      state.currentPage = Payload;
     },
   }
 })

@@ -1,17 +1,37 @@
 <template>
   <!--工具清点-->
   <el-row class="toolcheck">
-    <el-col :span="1" style="height:10px"></el-col>
+    <el-col
+      :span="1"
+      style="height:10px"
+    ></el-col>
     <el-col :span="14">
-      <el-col :span="24" class="title">工具清点（未点{{toolCheckDetailNotCalled.length}}件）</el-col>
+      <el-col
+        :span="24"
+        class="title"
+      >工具清点（未点{{toolCheckDetailNotCalled.length}}件）</el-col>
 
-      <el-col :span="3" class="card" v-for="(item,index) in toolCheckDetailNotCalled" :key="index">
-        <div v-if="item.IsInsideTool == 1" class="circle">流</div>
+      <el-col
+        :span="3"
+        class="card"
+        v-for="(item,index) in toolCheckDetailNotCalled"
+        :key="index"
+      >
+        <div
+          v-if="item.IsInsideTool == 1"
+          class="circle"
+        >流</div>
         <div class="content">
           <el-col :span="24">
-            <img :src="item.photo" style="width:100px;height:100px">
+            <img
+              :src="item.photo"
+              style="width:100px;height:100px"
+            >
           </el-col>
-          <el-col :span="24" style="line-height:10px">
+          <el-col
+            :span="24"
+            style="line-height:10px"
+          >
             <p>{{item.ToolID}}</p>
             <p>{{item.ToolName}}</p>
           </el-col>
@@ -19,13 +39,25 @@
       </el-col>
 
     </el-col>
-    <el-col :span="1" style="height:10px"></el-col>
+    <el-col
+      :span="1"
+      style="height:10px"
+    ></el-col>
     <el-col :span="7">
-      <el-col :span="24" class="title">清点概况</el-col>
-      <el-col :span="24" class="situationCard">
+      <el-col
+        :span="24"
+        class="title"
+      >清点概况</el-col>
+      <el-col
+        :span="24"
+        class="situationCard"
+      >
         <el-col :span="12">
           <p>
-            <img src="../../assets/toolIcon.png" style="width:50px;margin-top:10px;" />
+            <img
+              src="../../assets/toolIcon.png"
+              style="width:50px;margin-top:10px;"
+            />
           </p>
           <div style="text-align:left;margin-left:20%">
             <p>总工具：<font class="bludFont">{{toolCheckDetail.length}}</font>件</p>
@@ -35,26 +67,56 @@
 
         </el-col>
         <el-col :span="12">
-          <div id="myChart" style="width:250px;height:250px"></div>
+          <div
+            id="myChart"
+            style="width:250px;height:250px"
+          ></div>
         </el-col>
       </el-col>
 
-      <el-col :span="24" class="title" style="margin-top:50px">清点问题：{{toolCheckDetailAbnormal.length}}件</el-col>
-      <el-col :span="24" class="issueCard" v-for="(item,index) in toolCheckDetailAbnormal" :key="index">
-        <el-col :span="2" style="height:10px"></el-col>
-        <el-col :span="4" style="padding:20px"><img :src="item.photo"></el-col>
-        <el-col :span="2" style="height:10px"></el-col>
-        <el-col :span="7" class="content">
+      <el-col
+        :span="24"
+        class="title"
+        style="margin-top:50px"
+      >清点问题：{{toolCheckDetailAbnormal.length}}件</el-col>
+      <el-col
+        :span="24"
+        class="issueCard"
+        v-for="(item,index) in toolCheckDetailAbnormal"
+        :key="index"
+      >
+        <el-col
+          :span="2"
+          style="height:10px"
+        ></el-col>
+        <el-col
+          :span="4"
+          style="padding:20px"
+        ><img :src="item.photo"></el-col>
+        <el-col
+          :span="2"
+          style="height:10px"
+        ></el-col>
+        <el-col
+          :span="7"
+          class="content"
+        >
           <p>工具：{{item.ToolName}}</p>
           <p>编号：{{item.ToolID}}</p>
         </el-col>
-        <el-col :span="6" class="content">
+        <el-col
+          :span="6"
+          class="content"
+        >
           <p>使用人：{{item.User}}</p>
           <p>原因：{{item.ToolStatus}}</p>
         </el-col>
       </el-col>
     </el-col>
-    <el-col :span="1" style="height:10px"></el-col>
+    <el-col
+      :span="1"
+      style="height:10px"
+    ></el-col>
   </el-row>
 
 </template>
@@ -84,7 +146,9 @@ export default {
       var toolCheckDetailNotCalled = [];
       vm.toolCheckDetailAbnormal = [];
       if (vm.toolList.length == 0) {
+        return;
       }
+      debugger;
       for (var item of vm.toolCheckDetail) {
         if (
           item.CountStatus == vm.dict["未清点"] ||
@@ -159,7 +223,7 @@ export default {
       vm.echartSetOption(myChart);
     }, 500);
   },
-  destoryed() {
+  beforeDestroy:function() {
     clearInterval(vm.echartSetOptionInterval);
   }
 };

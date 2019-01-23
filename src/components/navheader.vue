@@ -28,7 +28,7 @@
     </el-col>
     <el-col v-if="navRightVisable" :span="12" class="navRight">
       <el-col :span="16" class="title floatRight">
-        {{currentOutWorkStatus.Status}}中
+        {{currentOutWorkStatus.Status}}
       </el-col>
       <el-col :span="8" class="title">
         今日{{currentOutWorkStatus.Status}}:{{currentOutWorkStatus.Count}}人

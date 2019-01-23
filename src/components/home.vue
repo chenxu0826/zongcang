@@ -11,11 +11,15 @@
             </el-col>
             <el-col :span="8">
 
-              <p>在册：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total) ? 0 : crimalCount_outCrimalCount.Total}}</font>&nbsp;人</p>
-              <p>在监：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.Total - prisonerNotOnline.length) ? 0 : (crimalCount_outCrimalCount.Total - prisonerNotOnline.length)}}</font>&nbsp;人</p>
-              <p>监外：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.OutCount) ? 0 : crimalCount_outCrimalCount.OutCount}}</font>&nbsp;人</p>
+              <p>在册：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.CriminalTotal) ? 0 : crimalCount_outCrimalCount.CriminalTotal}}</font>&nbsp;人</p>
+              <p>在监：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.CriminalZJTotal) ? 0 : (crimalCount_outCrimalCount.CriminalZJTotal)}}</font>&nbsp;人</p>
+              <p>监外：<font class="fontYellow">{{outOuterCriminalCount}}</font>&nbsp;人</p>
               <p>
-                <font v-if="personPlanObject.NextTime" class="fontYellow" style="font-size:12pt">下次:{{personPlanObject.NextTime}}</font>
+                <font
+                  v-if="personPlanObject.NextTime"
+                  class="fontYellow"
+                  style="font-size:12pt"
+                >下次:{{personPlanObject.NextTime}}</font>
               </p>
             </el-col>
             <el-col :span="3">
@@ -26,7 +30,11 @@
               <p>固定：<font class="fontBlue">{{isNaN(toolCheckSituation.OutsideCnt) ? 0 : toolCheckSituation.OutsideCnt+toolCheckSituation.OutsideUnCnt}}</font>&nbsp;件</p>
               <p>流动：<font class="fontBlue">{{isNaN(toolCheckSituation.InsideCnt) ? 0 : toolCheckSituation.InsideUnCnt+toolCheckSituation.InsideUnCnt}}</font>&nbsp;件</p>
               <p>
-                <font v-if="toolPlanObject.NextTime" class="fontBlue" style="font-size:12pt">下次:{{toolPlanObject.NextTime}}</font>
+                <font
+                  v-if="toolPlanObject.NextTime"
+                  class="fontBlue"
+                  style="font-size:12pt"
+                >下次:{{toolPlanObject.NextTime}}</font>
               </p>
             </el-col>
           </div>
@@ -62,19 +70,48 @@
           <el-col :span="3">
             <h4 class="home_title">地图结构</h4>
           </el-col>
-          <el-col id="mapTitle" style="line-height:40px;position:absolute;display:flex;justify-content:center;">
-            <font v-for="(item,index) in mapList" :key="index" style="margin:0 10px">
+          <el-col
+            id="mapTitle"
+            style="line-height:40px;position:absolute;display:flex;justify-content:center;"
+          >
+            <font
+              v-for="(item,index) in mapList"
+              :key="index"
+              style="margin:0 10px"
+            >
               {{item.MapName}}
             </font>
           </el-col>
 
           <div class="map">
-            <div class="getCenter" id="myMap">
-              <el-carousel indicator-position="none" arrow="never" :interval=10000 height="550px" style="width:1300px" @change="carouselChange">
-                <el-carousel-item v-for="(item,index) in mapList" :key="index" style="display:flex;justify-content:center;">
-                  <img :src="prefixMapUrl + item.MapUrl" :height="item.Height" :width="item.Width">
+            <div
+              class="getCenter"
+              id="myMap"
+            >
+              <el-carousel
+                indicator-position="none"
+                arrow="never"
+                :interval=10000
+                height="550px"
+                style="width:1300px"
+                @change="carouselChange"
+              >
+                <el-carousel-item
+                  v-for="(item,index) in mapList"
+                  :key="index"
+                  style="display:flex;justify-content:center;"
+                >
+                  <img
+                    :src="prefixMapUrl + item.MapUrl"
+                    :height="item.Height"
+                    :width="item.Width"
+                  >
                   <div :style="{width:item.Width,height:item.Height}">
-                    <div v-for="(item,index) in positionObjectsMerged" :key="index" :style="{ position:'absolute',top:item.Y*currentmapScale+'px',left:item.X*currentmapScale+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}"></div>
+                    <div
+                      v-for="(item,index) in positionObjectsMerged"
+                      :key="index"
+                      :style="{ position:'absolute',top:item.Y*currentmapScale+'px',left:item.X*currentmapScale+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}"
+                    ></div>
 
                   </div>
                 </el-carousel-item>
@@ -94,12 +131,26 @@
       <el-col :span="24">
         <div class="flow_persons">
           <h4 class="home_title">流动人员：{{prisonerFlowing.length}}人</h4>
-          <el-col :span="6" v-for="(item,index) in prisonerFlowing.slice(float_personnelA-1,float_personnelB)" :key="index" style="padding:0px 30px">
-            <div class="personCard" :class="{illegal: !item.isBlue}">
-              <el-col :span="10" class="personPhoto">
+          <el-col
+            :span="6"
+            v-for="(item,index) in prisonerFlowing.slice(float_personnelA-1,float_personnelB)"
+            :key="index"
+            style="padding:0px 30px"
+          >
+            <div
+              class="personCard"
+              :class="{illegal: !item.isBlue}"
+            >
+              <el-col
+                :span="10"
+                class="personPhoto"
+              >
                 <img :src="item.Photo">
               </el-col>
-              <el-col :span="14" style="padding:10px">
+              <el-col
+                :span="14"
+                style="padding:10px"
+              >
                 <p>姓名：{{item.CriminalName}}</p>
                 <p>番号：{{item.CriminalID}}</p>
                 <p v-show="!item.isBlue">状态：{{item.Status}}</p>
@@ -111,8 +162,16 @@
               </el-col>
             </div>
           </el-col>
-          <el-col :span="24" class="pageDiv" style="margin-top:10px">
-            <div v-for="(item,index) in prisonerFlowingPage" :key="index" :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"></div>
+          <el-col
+            :span="24"
+            class="pageDiv"
+            style="margin-top:10px"
+          >
+            <div
+              v-for="(item,index) in prisonerFlowingPage"
+              :key="index"
+              :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"
+            ></div>
           </el-col>
         </div>
       </el-col>
@@ -135,7 +194,12 @@ export default {
       mapScale: [], //地图图片缩放比例集合
       currentmapScale: 0, //当前播放的地图图片的缩放比例
       LocationPointOffset: 0, //点位合并时使用的像素半径范围
-      toolStatus: {} //工具清点情况
+      toolStatus: {}, //工具清点情况
+
+      outInnerCriminalCount: 0, //外出监内
+      outOuterCriminalCount: 0, //外出监外
+
+      getOrgOutCriminalDetailInterval: null
     };
   },
   computed: {
@@ -189,7 +253,7 @@ export default {
           vm.positionObjects[i].count = 1;
           for (var j = i + 1; j < vm.positionObjects.length; j++) {
             //两点之间的距离
-            var distance = Math.sprt(
+            var distance = Math.sqrt(
               Math.pow(vm.positionObjects[i].X - vm.positionObjects[j].X, 2) +
                 Math.pow(vm.positionObjects[i].Y - vm.positionObjects[j].Y, 2)
             );
@@ -205,6 +269,28 @@ export default {
     }
   },
   methods: {
+    //获取监区人员外出明细（监内&监外）
+    getOrgOutCriminalDetail: function() {
+      let vm = this;
+      let send = {
+        Header: {
+          MsgID: "201501260000000003",
+          MsgType: 82
+        },
+        Body: JSON.stringify({
+          OrgID: localStorage.getItem("OrgID")
+        })
+      };
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(send),
+        success: function(result) {
+          vm.outInnerCriminalCount = result.InnerPersons.length;
+          vm.outOuterCriminalCount = result.OuterPersons.length;
+        }
+      });
+    },
+
     /* 获取信息屏工具统计结果接口 */
     getToolStatus: function() {
       var vm = this;
@@ -293,6 +379,10 @@ export default {
   mounted() {
     var vm = this;
     vm.prefixMapUrl = MapUrl;
+    vm.getOrgOutCriminalDetail();
+    vm.getOrgOutCriminalDetailInterval = setInterval(function() {
+      vm.getOrgOutCriminalDetail();
+    }, 2000);
     vm.getMapList();
     vm.getMapConfig();
     vm.getToolStatus();
@@ -308,6 +398,11 @@ export default {
         window.location.reload();
       }
     }, 5000);
+  },
+  beforeDestroy: function() {
+    let vm = this;
+    clearInterval(vm.getOrgOutCriminalDetailInterval);
+    vm.getOrgOutCriminalDetailInterval = null;
   }
 };
 </script>

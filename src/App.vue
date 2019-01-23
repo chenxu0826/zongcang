@@ -32,7 +32,8 @@ export default {
     ...mapState({
       criminalList: state => state.criminalList, //全部罪犯信息
       policeList: state => state.policeList, //全部警员信息
-      dict: state => state.dict //字典数据
+      dict: state => state.dict, //字典数据
+      currentPage: state => state.currentPage //当前的页面
     })
   },
   methods: {
@@ -158,7 +159,7 @@ export default {
         }
       });
 
-      /* 监区人数 && 外出人数（监外） */
+      /* 监区人数 && 在监人数 */
       vm.$ajax({
         data: { OrgID: localStorage.getItem("OrgID") },
         url: BasicUrl + "CriminalCnt/GetCurOrgCriminalCount",
@@ -423,7 +424,11 @@ export default {
             var endTime = Date.parse(new Date(plan.EndTime));
             vm.$store.commit("setEndTime", endTime); //倒计时的秒数
 
-            vm.$router.push({ path: "/" });
+            vm.$store.commit("setCurrentPage", "/crimalcheck");
+            vm.$router.push({ path: "/crimalcheck" });
+          } else if (plan.PlanType == vm.dict["工具清点计划"]) {
+            vm.$store.commit("setCurrentPage", "/toolcheck");
+            vm.$router.push({ path: "/toolcheck" });
           }
         }
       } else if (msg.Header.MsgType === 73) {
@@ -431,13 +436,45 @@ export default {
         var planEnd = JSON.parse(msg.Body);
         if (planEnd.OrgID == vm.getLocalStorage("OrgID")) {
           if (planEnd.PlanType == vm.dict["人员清点计划"]) {
+            if (vm.currentPage == "/crimalcheck") {
+              vm.$router.push({ path: "/" });
+            }
+          } else if (planEnd.PlanType == vm.dict["工具清点计划"]) {
+            if (vm.currentPage == "/toolcheck") {
+              vm.$router.push({ path: "/" });
+            }
+          }
+        }
+      } else if (msg.Header.MsgType === 74) {
+        var plan = JSON.parse(msg.Body);
+        if (plan.OrgID != vm.getLocalStorage("OrgID")) {
+          return;
+        }
+        if (
+          plan.MoveType == vm.dict["出工"] ||
+          plan.MoveType == vm.dict["收工"]
+        ) {
+          vm.$store.commit("setCurrentPage", "/outwork");
+          vm.$router.push({ path: "/outwork" });
+        } else if (plan.MoveType == vm.dict["批量外出"]) {
+          vm.$store.commit("setCurrentPage", "/batchOut");
+          vm.$router.push({ path: "/batchOut" });
+        }
+      } else if (msg.Header.MsgType === 75) {
+        var plan = JSON.parse(msg.Body);
+        if (plan.OrgID != vm.getLocalStorage("OrgID")) {
+          return;
+        }
+        if (
+          plan.MoveType == vm.dict["出工"] ||
+          plan.MoveType == vm.dict["收工"]
+        ) {
+          if (vm.currentPage == "/outwork") {
             vm.$router.push({ path: "/" });
-
-            // if (planEnd.CountType == vm.dict["计划清点"]) {
-
-            // } else if (planEnd.CountType == vm.dict["通知清点"]) {
-
-            // }
+          }
+        } else if (plan.MoveType == vm.dict["批量外出"]) {
+          if (vm.currentPage == "/batchOut") {
+            vm.$router.push({ path: "/" });
           }
         }
       } else if (msg.Header.MsgType === 7) {
