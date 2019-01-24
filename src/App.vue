@@ -267,6 +267,8 @@ export default {
           })
         };
 
+        
+
         /* 请求当前区域下的各类人员数量 11号协议 */
         var getCount = {
           Header: {
@@ -274,13 +276,14 @@ export default {
             MsgType: 11
           },
           Body: JSON.stringify({
-            MapID: vm.getLocalStorage("MapID"),
+            MapID: vm.getLocalStorage("currentMapID"),
             OrgID: vm.getLocalStorage("OrgID"),
             AreaID: vm.getLocalStorage("AreaID"),
             AreaType: vm.getLocalStorage("AreaType"),
             PSType: vm.dict["罪犯"]
           })
         };
+        debugger;
 
         /* 在线人员查询 （此条查的是非在线） 13号协议 */
         var getIsOnline = {
