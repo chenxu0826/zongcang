@@ -5,15 +5,15 @@
 /* 上线版本 */
 // export const BasicUrl = 'http://' + window.location.host + '/api/'
 // export const BasicUrl = 'http://10.58.4.62:8889/api/' //开发临时使用
-export const BasicUrl = 'http://10.58.1.178:9503/api/' //开发临时使用
+export const BasicUrl = 'http://10.58.1.178:9503/api/' // 开发临时使用
 
 $.ajax({
-  type: "get",
-  contentType: "application/json; charset=utf-8",
-  dataType: "jsonp",
-  jsonp: "callback",
+  type: 'get',
+  contentType: 'application/json; charset=utf-8',
+  dataType: 'jsonp',
+  jsonp: 'callback',
   async: false,
-  url: BasicUrl + 'HomeIndex/GetGateWayConfig' + "?callback=?",
+  url: BasicUrl + 'HomeIndex/GetGateWayConfig' + '?callback=?',
   success: function (result) {
     localStorage.setItem('IP', result[0].GateWayIP)
     localStorage.setItem('WebSocketPort', result[0].WebSocketPort)
@@ -34,11 +34,11 @@ export const ajaxUrl = 'http://' + localStorage.getItem('IP') + ':' + localStora
 export const IMG = ''
 // export const MapUrl = 'http://' + window.location.host
 // export const MapUrl = "http://10.58.4.62:8889"
-export const MapUrl = "http://10.58.1.178:9503"
+export const MapUrl = 'http://10.58.1.178:9503'
 
 export default {
-  /*全局弹窗显示变量*/
-  install(Vue) {
+  /* 全局弹窗显示变量 */
+  install (Vue) {
     /* 全局本地获取 */
     Vue.prototype.getLocalStorage = (keyName) => {
       return (localStorage.getItem(keyName))

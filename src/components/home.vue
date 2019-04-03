@@ -1,72 +1,9 @@
 <template>
   <div class="home">
     <div class="body">
-      <el-col :span="7">
-        <!--监区概况-->
-        <div class="prison_situation">
-          <h4 class="home_title">监区概况</h4>
-          <div class="content">
-            <el-col :span="3">
-              <img src="../assets/personIcon.png">
-            </el-col>
-            <el-col :span="8">
-
-              <p>在册：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.CriminalTotal) ? 0 : crimalCount_outCrimalCount.CriminalTotal}}</font>&nbsp;人</p>
-              <p>在监：<font class="fontYellow">{{isNaN(crimalCount_outCrimalCount.CriminalZJTotal) ? 0 : (crimalCount_outCrimalCount.CriminalZJTotal)}}</font>&nbsp;人</p>
-              <p>监外：<font class="fontYellow">{{outOuterCriminalCount}}</font>&nbsp;人</p>
-              <p>
-                <font
-                  v-if="personPlanObject.NextTime"
-                  class="fontYellow"
-                  style="font-size:12pt"
-                >下次:{{personPlanObject.NextTime}}</font>
-              </p>
-            </el-col>
-            <el-col :span="3">
-              <img src="../assets/toolIcon.png">
-            </el-col>
-            <el-col :span="8">
-              <p>工具：<font class="fontBlue">{{isNaN(toolList["total"]) ? 0 : toolList["total"]}}</font>&nbsp;件</p>
-              <p>固定：<font class="fontBlue">{{isNaN(toolCheckSituation.OutsideCnt) ? 0 : toolCheckSituation.OutsideCnt+toolCheckSituation.OutsideUnCnt}}</font>&nbsp;件</p>
-              <p>流动：<font class="fontBlue">{{isNaN(toolCheckSituation.InsideCnt) ? 0 : toolCheckSituation.InsideUnCnt+toolCheckSituation.InsideUnCnt}}</font>&nbsp;件</p>
-              <p>
-                <font
-                  v-if="toolPlanObject.NextTime"
-                  class="fontBlue"
-                  style="font-size:12pt"
-                >下次:{{toolPlanObject.NextTime}}</font>
-              </p>
-            </el-col>
-          </div>
-        </div>
-        <!--本监区情况-->
-        <div class="prison_situation">
-          <h4 class="home_title">本区域情况</h4>
-          <div class="content">
-            <el-col :span="3">
-              <img src="../assets/personIcon.png">
-            </el-col>
-            <el-col :span="8">
-              <p>区域罪犯：<font class="fontYellow">{{orgCriminalCnt}}</font>&nbsp;人</p>
-              <p>外监来犯：<font class="fontYellow">{{isNaN(countObject.CriminalF) ? 0 : countObject.CriminalF}}</font>&nbsp;人</p>
-              <p>值班民警：<font class="fontYellow">{{isNaN(countObject.Police) ? 0 : countObject.Police}}</font>&nbsp;人</p>
-              <p>外来人员：<font class="fontYellow">{{isNaN(countObject.Outsider) ? 0 : countObject.Outsider}}</font>&nbsp;人</p>
-            </el-col>
-            <el-col :span="3">
-              <img src="../assets/toolIcon.png">
-            </el-col>
-            <el-col :span="8">
-              <p>领出工具：<font class="fontBlue">{{toolStatus.UsedToolsCount}}</font>&nbsp;件</p>
-              <p>今日报废：<font class="fontBlue">{{toolStatus.DestroyToolsCount}}</font>&nbsp;件</p>
-              <p>异常工具：<font class="fontBlue">{{toolStatus.ErrorToolsCount}}</font>&nbsp;件</p>
-              <p>今日报损：<font class="fontBlue">{{toolStatus.brokenToolsCount}}</font>&nbsp;件</p>
-            </el-col>
-          </div>
-        </div>
-      </el-col>
 
       <el-col :span="17">
-        <div class="member_distribute">
+        <!--<div class="member_distribute">
           <el-col :span="3">
             <h4 class="home_title">地图结构</h4>
           </el-col>
@@ -116,23 +53,80 @@
                   </div>
                 </el-carousel-item>
               </el-carousel>
-              <!-- <img :src="mapPhoto" ref="myImg"> -->
-              <!--统计显示-->
-              <!-- 位置原因点位有所偏移，暂行进行点位数据强制偏移，后期查找出原因进行修改 -->
-              <!-- <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale-20+'px',left:item.X*mapScale-30+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}">
+              &lt;!&ndash; <img :src="mapPhoto" ref="myImg"> &ndash;&gt;
+              &lt;!&ndash;统计显示&ndash;&gt;
+              &lt;!&ndash; 位置原因点位有所偏移，暂行进行点位数据强制偏移，后期查找出原因进行修改 &ndash;&gt;
+              &lt;!&ndash; <div v-on:click="select(item.AreaID)" v-for="(item,index) in chartsChange" :key="index" :style="{ position:'absolute',top:item.Y*mapScale-20+'px',left:item.X*mapScale-30+'px',fontSize:'30px',color:'yellow',fontWeight:'bold'}">
                 {{item.CriminalCnt}}
-              </div> -->
+              </div> &ndash;&gt;
             </div>
           </div>
 
+        </div>-->
+
+        <div class="map-w">
+            <div class="urinal">
+              <ul class="urinal-num">
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+              </ul>
+              <ul class="urinal-pic">
+                <li><img src="../assets/urinal-has.png" alt="图片"></li>
+                <li><img src="../assets/urinal-has.png" alt="图片"></li>
+                <li><img src="../assets/urinal-has.png" alt="图片"></li>
+                <li><img src="../assets/urinal-has.png" alt="图片"></li>
+                <li><img src="../assets/urinal-none.png" alt="图片"></li>
+              </ul>
+            </div>
+
+            <div class="waiting">待如厕：张三、李四、王五</div>
+
+          <div class="latrine-pit">
+            <ul class="latrine-pit-num">
+              <li>1</li>
+            </ul>
+            <ul class="latrine-pit-pic">
+              <li><img src="../assets/latrine-pit-has.png" alt="图片"></li>
+            </ul>
+            <ul class="latrine-pit-num">
+              <li>2</li>
+              <li>3</li>
+              <li>4</li>
+              <li>5</li>
+            </ul>
+            <ul class="latrine-pit-pic">
+              <li><img src="../assets/latrine-pit-has.png" alt="图片"></li>
+              <li><img src="../assets/latrine-pit-has.png" alt="图片"></li>
+              <li><img src="../assets/latrine-pit-has.png" alt="图片"></li>
+              <li><img src="../assets/latrine-pit-none.png" alt="图片"></li>
+            </ul>
+          </div>
+        </div>
+
+      </el-col>
+
+      <el-col :span="7">
+        <!--如厕概况-->
+        <div class="prison_situation">
+          <div class="content">
+            <!--   <el-col :span="3">
+                 <img src="../assets/personIcon.png">
+               </el-col>-->
+            <p>今日如厕：<font class="fontYellow">200</font>&nbsp;人</p>
+            <p>当前如厕：<font class="fontYellow">10</font>&nbsp;人</p>
+            <p>小便池位：<font class="fontYellow">4</font>&nbsp;人</p>
+            <p>大便坑位：<font class="fontYellow">5</font>&nbsp;人</p>
+          </div>
         </div>
       </el-col>
 
       <el-col :span="24">
         <div class="flow_persons">
-          <h4 class="home_title">流动人员：{{prisonerFlowing.length}}人</h4>
           <el-col
-            :span="6"
+            :span="3"
             v-for="(item,index) in prisonerFlowing.slice(float_personnelA-1,float_personnelB)"
             :key="index"
             style="padding:0px 30px"
@@ -149,19 +143,35 @@
               </el-col>
               <el-col
                 :span="14"
-                style="padding:10px"
               >
-                <p>姓名：{{item.CriminalName}}</p>
-                <p>番号：{{item.CriminalID}}</p>
-                <p v-show="!item.isBlue">状态：{{item.Status}}</p>
-                <p>当前区域：{{item.AreaName}}</p>
-                <p v-show="item.isBlue">陪同民警：{{item.Polices}}</p>
-                <p>外出时间：</p>
-                <p>{{item.LeaveTime}}</p>
-                <p v-show="item.isBlue">外出事由：{{item.Reason}}</p>
+                <p>{{item.CriminalName}} {{item.LeaveTime}}</p>
               </el-col>
             </div>
           </el-col>
+
+          <!--demo-->
+          <el-col
+            :span="3"
+            style="padding:0px 30px"
+          >
+            <div
+              class="personCard"
+            >
+              <el-col
+                :span="10"
+                class="personPhoto"
+              >
+                <img src="../assets/crimal_1_03.jpg">
+              </el-col>
+              <el-col
+                :span="14"
+              >
+                <p>张三 00:01</p>
+              </el-col>
+            </div>
+          </el-col>
+
+
           <el-col
             :span="24"
             class="pageDiv"
@@ -176,6 +186,15 @@
         </div>
       </el-col>
     </div>
+
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :modal-append-to-body="false"
+      :show-close="false"
+      width="50%">
+      <span style="font-size:2.8rem;color:#fff;">李四未授权进入厕所！</span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -199,7 +218,9 @@ export default {
       outInnerCriminalCount: 0, // 外出监内
       outOuterCriminalCount: 0, // 外出监外
 
-      getOrgOutCriminalDetailInterval: null
+      getOrgOutCriminalDetailInterval: null,
+
+      dialogVisible: false // 提示框
     }
   },
   computed: {
@@ -389,15 +410,18 @@ export default {
     setInterval(function () {
       vm.getToolStatus()
     }, 120000)
-
+    vm.dialogVisible = true
+   /* setTimeout(function () {
+      vm.dialogVisible = false
+    }, 3000) */
     // 5秒钟没有数据 刷新界面
-    setInterval(function () {
+    /* setInterval(function () {
       // todo暂时取消5秒刷新页面
       if (vm.Iswebsocket == 0) {
-        // vm.$router.push({ path: "/" });
-        // window.location.reload();
+        vm.$router.push({ path: "/" });
+        window.location.reload();
       }
-    }, 5000)
+    }, 5000) */
   },
   beforeDestroy: function () {
     let vm = this

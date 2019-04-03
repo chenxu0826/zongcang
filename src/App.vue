@@ -690,7 +690,7 @@ export default {
       setInterval(function () {
         // todo暂时取消五秒刷新
         vm.$router.push({ path: '/' })
-        window.location.reload()
+        // window.location.reload()
       }, 5000)
     }
 
@@ -701,7 +701,7 @@ export default {
       setInterval(function () {
         // todo暂时取消五秒刷新
         vm.$router.push({ path: '/' })
-        window.location.reload()
+        // window.location.reload()
       }, 5000)
     }
   }
