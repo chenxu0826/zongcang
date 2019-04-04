@@ -281,7 +281,6 @@ export default {
             PSType: vm.dict['罪犯']
           })
         }
-        debugger
 
         /* 在线人员查询 （此条查的是非在线） 13号协议 */
         var getIsOnline = {
@@ -374,32 +373,45 @@ export default {
           })
         }
 
+        /* 未经允许如厕推送 -106 */
+        var illegalIntoToilet = {
+          Header: {
+            MsgID: '201501260000000001',
+            MsgType: 106
+          },
+          Body: JSON.stringify({
+            OrgID: vm.getLocalStorage('OrgID')
+          })
+        }
+
         /* 保持心跳-参数-01 */
-        vm.ws.send(JSON.stringify(keep_heart))
+        // vm.ws.send(JSON.stringify(keep_heart))
         /* 获取当前监区正在执行的计划任务(人员清点计划) 07号协议 */
-        vm.ws.send(JSON.stringify(GetPersonCheckPlan))
+        // vm.ws.send(JSON.stringify(GetPersonCheckPlan))
         /* 获取当前监区正在执行的计划任务(工具清点计划) 07号协议 */
-        vm.ws.send(JSON.stringify(GetToolCheckPlan))
+        // vm.ws.send(JSON.stringify(GetToolCheckPlan))
         /* 请求指定楼层下各类人员的详细位置 10号协议 */
-        vm.ws.send(JSON.stringify(GetPositionByMap))
+        // vm.ws.send(JSON.stringify(GetPositionByMap))
         /* 请求当前区域下的各类人员数量 11号协议 */
-        vm.ws.send(JSON.stringify(getCount))
+        // vm.ws.send(JSON.stringify(getCount))
         /* 在线人员查询 （此条查的是非在线） 13号协议 */
-        vm.ws.send(JSON.stringify(getIsOnline))
+        // vm.ws.send(JSON.stringify(getIsOnline))
         /* 获取出收工明细 21号协议 */
-        vm.ws.send(JSON.stringify(getOutWorkDetail))
+        // vm.ws.send(JSON.stringify(getOutWorkDetail))
         /* 流动人员 24号协议 */
-        vm.ws.send(JSON.stringify(getPrisonerFlowing))
+        // vm.ws.send(JSON.stringify(getPrisonerFlowing))
         /* 请求当前出收工状态 72号协议 */
-        vm.ws.send(JSON.stringify(getCurrentOutWorkStatus))
+        // vm.ws.send(JSON.stringify(getCurrentOutWorkStatus))
         /* 获取当前监区未点人员明细 31号协议 */
-        vm.ws.send(JSON.stringify(getPersonCheckDetail))
+        // vm.ws.send(JSON.stringify(getPersonCheckDetail))
         /* 统计当前计划下各监区的清点情况 34号协议 */
-        vm.ws.send(JSON.stringify(getPersonCheckSituation))
+        // vm.ws.send(JSON.stringify(getPersonCheckSituation))
         /* 请求当前工具清点明细 -41 */
-        vm.ws.send(JSON.stringify(toolCheckDetail))
+        // vm.ws.send(JSON.stringify(toolCheckDetail))
         /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
-        vm.ws.send(JSON.stringify(toolCheckSituation))
+        // vm.ws.send(JSON.stringify(toolCheckSituation))
+        /* 未经允许如厕推送 -106 */
+        vm.ws.send(JSON.stringify(illegalIntoToilet))
       }, 2000)
     }
 
@@ -407,6 +419,7 @@ export default {
     vm.ws.onmessage = function (event) {
       console.log('websocket----onmessage')
       var msg = JSON.parse(event.data)
+      console.log(msg)
       if (msg == null) {
         return
       }
@@ -679,6 +692,15 @@ export default {
         /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
         var toolCheckSituation = JSON.parse(msg.Body)
         vm.$store.commit('setToolCheckSituation', toolCheckSituation)
+      } else if (msg.Header.MsgType === 106) {
+        if (msg.Body == '[]') {
+          console.log('106号协议为空')
+          return
+        }
+        /* 未经允许如厕推送 -106 */
+        var illegalIntoToilet = JSON.parse(msg.Body)
+        console.log(illegalIntoToilet)
+        vm.$store.commit('setIllegalIntoToilet', illegalIntoToilet)
       }
     }
 
@@ -690,7 +712,7 @@ export default {
       setInterval(function () {
         // todo暂时取消五秒刷新
         vm.$router.push({ path: '/' })
-        // window.location.reload()
+        window.location.reload()
       }, 5000)
     }
 
@@ -701,7 +723,7 @@ export default {
       setInterval(function () {
         // todo暂时取消五秒刷新
         vm.$router.push({ path: '/' })
-        // window.location.reload()
+        window.location.reload()
       }, 5000)
     }
   }

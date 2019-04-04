@@ -51,6 +51,7 @@ export default {
     /* websocket地址配置 */
     if (localStorage.getItem('IP') != null) {
       Vue.prototype.ws = new WebSocket('ws:' + localStorage.getItem('IP') + ':' + localStorage.getItem('WebSocketPort'))
+      // Vue.prototype.ws = new WebSocket('ws:10.58.4.61:20001')
     }
   }
 }

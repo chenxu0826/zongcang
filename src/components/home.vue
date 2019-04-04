@@ -115,7 +115,7 @@
             <!--   <el-col :span="3">
                  <img src="../assets/personIcon.png">
                </el-col>-->
-            <p>今日如厕：<font class="fontYellow">200</font>&nbsp;人</p>
+            <p>今日如厕：<font class="fontYellow">{{todayFinishCount}}</font>&nbsp;人</p>
             <p>当前如厕：<font class="fontYellow">10</font>&nbsp;人</p>
             <p>小便池位：<font class="fontYellow">4</font>&nbsp;人</p>
             <p>大便坑位：<font class="fontYellow">5</font>&nbsp;人</p>
@@ -127,7 +127,7 @@
         <div class="flow_persons">
           <el-col
             :span="3"
-            v-for="(item,index) in prisonerFlowing.slice(float_personnelA-1,float_personnelB)"
+            v-for="(item,index) in personInToilet"
             :key="index"
             style="padding:0px 30px"
           >
@@ -192,7 +192,7 @@
       :modal-append-to-body="false"
       :show-close="false"
       width="50%">
-      <span style="font-size:2.8rem;color:#fff;">李四未授权进入厕所！</span>
+      <span style="font-size:2.8rem;color:#fff;">{{crimalName}}未授权进入厕所！</span>
     </el-dialog>
 
   </div>
@@ -220,7 +220,10 @@ export default {
 
       getOrgOutCriminalDetailInterval: null,
 
-      dialogVisible: false // 提示框
+      dialogVisible: false, // 提示框
+      crimalName: '李四',
+      personInToilet:[],
+      todayFinishCount : 0
     }
   },
   computed: {
@@ -235,7 +238,8 @@ export default {
       prisonerNotOnline: state => state.home.prisonerNotOnline, // 非在线的犯人
       toolPlanObject: state => state.home.toolPlanObject, // 工具清点计划
       toolCheckSituation: state => state.toolcheck.toolCheckSituation, // 当前计划下的本监区清点情况
-      Iswebsocket: state => state.home.Iswebsocket
+      Iswebsocket: state => state.home.Iswebsocket,
+      IllegalIntoToilet: state => state.home.IllegalIntoToilet // 未经允许如厕推送
     }),
     // 流动人员的页码控制数组
     prisonerFlowingPage: function () {
@@ -290,6 +294,49 @@ export default {
     }
   },
   methods: {
+    // 获取如厕信息
+    getCriminalToiletInfo: function () {
+      let vm = this
+      let send = {
+        Header: {
+          MsgID: '201501260000000003',
+          MsgType: 108
+        },
+        Body: JSON.stringify({
+          OrgID: localStorage.getItem('OrgID')
+        })
+      }
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(send),
+        success: function (result) {
+          vm.personInToilet = result.InToiletPeople
+          vm.todayFinishCount = result.TodayFinishCount
+        }
+      })
+    },
+
+    // 获取厕所人体检测设备状态
+    getToiletCheckDeviceStateInfo: function () {
+      let vm = this
+      let send = {
+        Header: {
+          MsgID: '201501260000000003',
+          MsgType: 107
+        },
+        Body: JSON.stringify({
+          OrgID: localStorage.getItem('OrgID')
+        })
+      }
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(send),
+        success: function (result) {
+          console.log(result)
+        }
+      })
+    },
+
     // 获取监区人员外出明细（监内&监外）
     getOrgOutCriminalDetail: function () {
       let vm = this
@@ -400,28 +447,30 @@ export default {
   mounted () {
     var vm = this
     vm.prefixMapUrl = MapUrl
-    vm.getOrgOutCriminalDetail()
-    vm.getOrgOutCriminalDetailInterval = setInterval(function () {
-      vm.getOrgOutCriminalDetail()
-    }, 2000)
-    vm.getMapList()
-    vm.getMapConfig()
-    vm.getToolStatus()
+    // vm.getOrgOutCriminalDetail()
+    // vm.getOrgOutCriminalDetailInterval = setInterval(function () {
+    //   vm.getOrgOutCriminalDetail()
+    // }, 2000)
+    // vm.getMapList()
+    // vm.getMapConfig()
+    // vm.getToolStatus()
+    vm.getCriminalToiletInfo()
+    vm.getToiletCheckDeviceStateInfo()
     setInterval(function () {
       vm.getToolStatus()
     }, 120000)
     vm.dialogVisible = true
-   /* setTimeout(function () {
+    setTimeout(function () {
       vm.dialogVisible = false
-    }, 3000) */
+    }, 3000)
     // 5秒钟没有数据 刷新界面
-    /* setInterval(function () {
+    setInterval(function () {
       // todo暂时取消5秒刷新页面
       if (vm.Iswebsocket == 0) {
-        vm.$router.push({ path: "/" });
-        window.location.reload();
+        // vm.$router.push({ path: '/' })
+        // window.location.reload()
       }
-    }, 5000) */
+    }, 5000)
   },
   beforeDestroy: function () {
     let vm = this
