@@ -458,16 +458,19 @@ export default {
     setInterval(function () {
       vm.getToolStatus()
     }, 120000)
-    vm.dialogVisible = true
-    setTimeout(function () {
-      vm.dialogVisible = false
-    }, 3000)
+    // 有未经许可的人进入
+    if (vm.IllegalIntoToilet) {
+      vm.dialogVisible = true
+      setTimeout(function () {
+        vm.dialogVisible = false
+      }, 3000)
+    }
     // 5秒钟没有数据 刷新界面
     setInterval(function () {
       // todo暂时取消5秒刷新页面
       if (vm.Iswebsocket == 0) {
-        // vm.$router.push({ path: '/' })
-        // window.location.reload()
+        vm.$router.push({ path: '/' })
+        window.location.reload()
       }
     }, 5000)
   },
