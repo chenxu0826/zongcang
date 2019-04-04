@@ -9,7 +9,7 @@ export default {
     'toolPlanObject': {}, // 工具清点计划
     'prisonerNotOnline': [], // 非在线的犯人
     'Iswebsocket': 0, // 是否建立websocket
-    'IllegalIntoToilet': {} // 未经允许如厕推送
+    'IllegalIntoToilet': '' // 未经允许如厕推送
   },
   mutations: {
     setCrimalCount_outCrimalCount (state, Payload) {

@@ -192,7 +192,7 @@
       :modal-append-to-body="false"
       :show-close="false"
       width="50%">
-      <span style="font-size:2.8rem;color:#fff;">{{crimalName}}未授权进入厕所！</span>
+      <span style="font-size:2.8rem;color:#fff;">{{IllegalIntoToilet}}未授权进入厕所！</span>
     </el-dialog>
 
   </div>
@@ -221,9 +221,8 @@ export default {
       getOrgOutCriminalDetailInterval: null,
 
       dialogVisible: false, // 提示框
-      crimalName: '李四',
-      personInToilet:[],
-      todayFinishCount : 0
+      personInToilet: [],
+      todayFinishCount: 0
     }
   },
   computed: {
@@ -239,7 +238,7 @@ export default {
       toolPlanObject: state => state.home.toolPlanObject, // 工具清点计划
       toolCheckSituation: state => state.toolcheck.toolCheckSituation, // 当前计划下的本监区清点情况
       Iswebsocket: state => state.home.Iswebsocket,
-      IllegalIntoToilet: state => state.home.IllegalIntoToilet // 未经允许如厕推送
+      IllegalIntoToilet: state => state.home.IllegalIntoToilet// 未经允许如厕推送
     }),
     // 流动人员的页码控制数组
     prisonerFlowingPage: function () {
