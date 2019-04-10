@@ -2,7 +2,7 @@
   <div class="home">
     <div class="body">
 
-      <el-col :span="17">
+      <el-col>
         <!--<div class="member_distribute">
           <el-col :span="3">
             <h4 class="home_title">地图结构</h4>
@@ -65,7 +65,77 @@
         </div>-->
 
         <div class="map-w">
-            <div class="urinal">
+          <div class="flow_persons">
+            <div class="urineNum">
+              小便池位：<font class="fontYellow">{{urineList.length}}</font>&nbsp;人
+            </div>
+            <div class="urineList">
+              <el-col
+                :span="4"
+                v-for="(item,index) in urineList"
+                :key="index"
+                style="padding:0px 30px"
+              >
+                <div
+                  class="personCard"
+                  :class="item.Type == 0 ? 'illegal' : 'shit'"
+                >
+                  <el-col
+                    :span="10"
+                    class="personPhoto"
+                  >
+                    <img :src="item.PhotoPath">
+                  </el-col>
+                  <div class="photo-font">
+                    <p>{{item.Name}}</p>
+                    <p>{{item.InToiletStartTime}}</p>
+                  </div>
+                </div>
+              </el-col>
+            </div>
+            <div class="shitNum">
+              大便坑位：<font class="fontYellow">{{shitList.length}}</font>&nbsp;人
+            </div>
+            <div class="shitList">
+              <el-col
+                :span="4"
+                v-for="(item,index) in shitList"
+                :key="index"
+                style="padding:0px 30px;margin:0 1rem"
+              >
+                <div
+                  class="personCard"
+                  :class="item.Type == 0 ? 'illegal' : 'shit'"
+                >
+                  <el-col
+                    :span="10"
+                    class="personPhoto"
+                  >
+                    <img :src="item.PhotoPath">
+                  </el-col>
+                  <div class="photo-font">
+                    <p>{{item.Name}}</p>
+                    <p>{{item.InToiletStartTime}}</p>
+                  </div>
+                </div>
+              </el-col>
+            </div>
+
+
+          <!--<el-col
+            :span="24"
+            class="pageDiv"
+            style="margin-top:10px"
+          >
+            <div
+              v-for="(item,index) in prisonerFlowingPage"
+              :key="index"
+              :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"
+            ></div>
+          </el-col>-->
+        </div>
+        </div>
+            <!--<div class="urinal">
               <ul class="urinal-num">
                 <li>1</li>
                 <li>2</li>
@@ -82,7 +152,10 @@
               </ul>
             </div>
 
-            <div class="waiting">待如厕：张三、李四、王五</div>
+            <div class="waiting">
+              <span>待如厕：</span>
+              <span v-for="(item,index) in waitToiletNameList">&nbsp;{{item}}&nbsp;、</span>
+            </div>
 
           <div class="latrine-pit">
             <ul class="latrine-pit-num">
@@ -104,86 +177,86 @@
               <li><img src="../assets/latrine-pit-none.png" alt="图片"></li>
             </ul>
           </div>
-        </div>
+        </div>-->
 
       </el-col>
 
-      <el-col :span="7">
-        <!--如厕概况-->
+      <!--<el-col :span="7">
+        &lt;!&ndash;如厕概况&ndash;&gt;
         <div class="prison_situation">
           <div class="content">
-            <!--   <el-col :span="3">
+            &lt;!&ndash;   <el-col :span="3">
                  <img src="../assets/personIcon.png">
-               </el-col>-->
+               </el-col>&ndash;&gt;
             <p>今日如厕：<font class="fontYellow">{{todayFinishCount}}</font>&nbsp;人</p>
-            <p>当前如厕：<font class="fontYellow">10</font>&nbsp;人</p>
-            <p>小便池位：<font class="fontYellow">4</font>&nbsp;人</p>
-            <p>大便坑位：<font class="fontYellow">5</font>&nbsp;人</p>
+            <p>当前如厕：<font class="fontYellow">{{inToiletPeople.length}}</font>&nbsp;人</p>
+            <p>小便池位：<font class="fontYellow">{{urineNum}}</font>&nbsp;人(白)</p>
+            <p>大便坑位：<font class="fontYellow">{{shitNum}}</font>&nbsp;人(红）</p>
           </div>
         </div>
-      </el-col>
+      </el-col>-->
 
       <el-col :span="24">
-        <div class="flow_persons">
-          <el-col
-            :span="3"
-            v-for="(item,index) in personInToilet"
-            :key="index"
-            style="padding:0px 30px"
-          >
-            <div
-              class="personCard"
-              :class="{illegal: !item.isBlue}"
-            >
-              <el-col
-                :span="10"
-                class="personPhoto"
-              >
-                <img :src="item.Photo">
-              </el-col>
-              <el-col
-                :span="14"
-              >
-                <p>{{item.CriminalName}} {{item.LeaveTime}}</p>
-              </el-col>
-            </div>
-          </el-col>
-
-          <!--demo-->
-          <el-col
-            :span="3"
-            style="padding:0px 30px"
-          >
-            <div
-              class="personCard"
-            >
-              <el-col
-                :span="10"
-                class="personPhoto"
-              >
-                <img src="../assets/crimal_1_03.jpg">
-              </el-col>
-              <el-col
-                :span="14"
-              >
-                <p>张三 00:01</p>
-              </el-col>
-            </div>
-          </el-col>
-
-
-          <el-col
-            :span="24"
-            class="pageDiv"
-            style="margin-top:10px"
-          >
-            <div
-              v-for="(item,index) in prisonerFlowingPage"
-              :key="index"
-              :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"
-            ></div>
-          </el-col>
+        <div class="waiting">
+          <div class="total-toilet">今日如厕：<font class="fontYellow">{{todayFinishCount}}</font>&nbsp;人</div>
+          <span>待如厕：</span>
+          <span v-for="(item,index) in waitToiletNameList">&nbsp;{{item}}&nbsp;{{index+1 == waitToiletNameList.length ? '' : '、'}}</span>
         </div>
+<!--        <div class="flow_persons">-->
+<!--          <el-col-->
+<!--            :span="3"-->
+<!--            v-for="(item,index) in inToiletPeople"-->
+<!--            :key="index"-->
+<!--            style="padding:0px 30px"-->
+<!--          >-->
+<!--            <div-->
+<!--              class="personCard"-->
+<!--            >-->
+<!--              <el-col-->
+<!--                :span="10"-->
+<!--                class="personPhoto"-->
+<!--              >-->
+<!--                <img :src="'http://10.58.1.178:9503' + item.PhotoPath">-->
+<!--              </el-col>-->
+<!--                <p>{{item.Name}} {{item.InToiletStartTime}}</p>-->
+<!--            </div>-->
+<!--          </el-col>-->
+
+<!--          &lt;!&ndash;demo&ndash;&gt;-->
+<!--          &lt;!&ndash;<el-col-->
+<!--            :span="3"-->
+<!--            style="padding:0px 30px"-->
+<!--          >-->
+<!--            <div-->
+<!--              class="personCard"-->
+<!--            >-->
+<!--              <el-col-->
+<!--                :span="10"-->
+<!--                class="personPhoto"-->
+<!--              >-->
+<!--                <img src="../assets/crimal_1_03.jpg">-->
+<!--              </el-col>-->
+<!--              <el-col-->
+<!--                :span="14"-->
+<!--              >-->
+<!--                <p>张三 00:01</p>-->
+<!--              </el-col>-->
+<!--            </div>-->
+<!--          </el-col>&ndash;&gt;-->
+
+
+<!--          <el-col-->
+<!--            :span="24"-->
+<!--            class="pageDiv"-->
+<!--            style="margin-top:10px"-->
+<!--          >-->
+<!--            <div-->
+<!--              v-for="(item,index) in prisonerFlowingPage"-->
+<!--              :key="index"-->
+<!--              :class="{pageIconFirst:item.circle == 'solid',pageIcon:item.circle == 'hollow'}"-->
+<!--            ></div>-->
+<!--          </el-col>-->
+<!--        </div>-->
       </el-col>
     </div>
 
@@ -192,7 +265,7 @@
       :modal-append-to-body="false"
       :show-close="false"
       width="50%">
-      <span style="font-size:2.8rem;color:#fff;">{{IllegalIntoToilet}}未授权进入厕所！</span>
+      <span style="font-size:2.8rem;color:#fff;">{{IllegalIntoToilet.CriminalName}}未授权进入厕所！</span>
     </el-dialog>
 
   </div>
@@ -221,8 +294,12 @@ export default {
       getOrgOutCriminalDetailInterval: null,
 
       dialogVisible: false, // 提示框
-      personInToilet: [],
-      todayFinishCount: 0
+      inToiletPeople: [],
+      todayFinishCount: 0,
+      urinalList: [],
+      waitToiletNameList: [],
+      urineList: [],
+      shitList: []
     }
   },
   computed: {
@@ -293,6 +370,31 @@ export default {
     }
   },
   methods: {
+    // 计算时间差
+    formateData (date) {
+      var date1 = date  // 开始时间
+      var date2 = new Date()    // 结束时间
+      var date3 = date2.getTime() - new Date(date1).getTime()   // 时间差的毫秒数
+
+      if (date3 < 0) {
+        return '00:00'
+      }
+      // ------------------------------
+      // 计算出相差天数
+      // var days = Math.floor(date3 / (24 * 3600 * 1000))
+
+      // 计算出小时数
+      var leave1 = date3 % (24 * 3600 * 1000)    // 计算天数后剩余的毫秒数
+      // var hours = Math.floor(leave1 / (3600 * 1000))
+      // 计算相差分钟数
+      var leave2 = leave1 % (3600 * 1000)        // 计算小时数后剩余的毫秒数
+      var minutes = Math.floor(leave2 / (60 * 1000))
+      // 计算相差秒数
+      var leave3 = leave2 % (60 * 1000)      // 计算分钟数后剩余的毫秒数
+      var seconds = Math.round(leave3 / 1000)
+      seconds
+      return ((minutes < 10 ? '0' + minutes : minutes) + ' :' + (seconds < 10 ? '0' + seconds : seconds))
+    },
     // 获取如厕信息
     getCriminalToiletInfo: function () {
       let vm = this
@@ -309,8 +411,22 @@ export default {
         url: ajaxUrl,
         data: JSON.stringify(send),
         success: function (result) {
-          vm.personInToilet = result.InToiletPeople
+          if (result && result.InToiletPeople && result.InToiletPeople.length >= 0) {
+            vm.urineList = []
+            vm.shitList = []
+            result.InToiletPeople.map((item) => {
+              item.InToiletStartTime = vm.formateData(item.InToiletStartTime)
+              if (item.Type == 0) {
+                vm.urineList.push(item)
+              }
+              if (item.Type == 1) {
+                vm.shitList.push(item)
+              }
+            })
+          }
           vm.todayFinishCount = result.TodayFinishCount
+          vm.inToiletPeople = result.InToiletPeople
+          vm.waitToiletNameList = result.WaitToiletNameList
         }
       })
     },
@@ -443,6 +559,15 @@ export default {
       })
     }
   },
+  watch: {
+    IllegalIntoToilet (val) {
+      var vm = this
+      vm.dialogVisible = true
+      setTimeout(function () {
+        vm.dialogVisible = false
+      }, 10000)
+    }
+  },
   mounted () {
     var vm = this
     vm.prefixMapUrl = MapUrl
@@ -454,17 +579,13 @@ export default {
     // vm.getMapConfig()
     // vm.getToolStatus()
     vm.getCriminalToiletInfo()
-    vm.getToiletCheckDeviceStateInfo()
+    setInterval(() => {
+      vm.getCriminalToiletInfo()
+    }, 5000)
+    // vm.getToiletCheckDeviceStateInfo()
     setInterval(function () {
       vm.getToolStatus()
     }, 120000)
-    // 有未经许可的人进入
-    if (vm.IllegalIntoToilet) {
-      vm.dialogVisible = true
-      setTimeout(function () {
-        vm.dialogVisible = false
-      }, 3000)
-    }
     // 5秒钟没有数据 刷新界面
     setInterval(function () {
       // todo暂时取消5秒刷新页面

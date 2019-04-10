@@ -425,6 +425,7 @@ export default {
       }
 
       if (msg.Header.MsgType === 4) {
+        return
         /* 通知客户端计划任务推送 -4 */
         var plan = JSON.parse(msg.Body)
         if (plan.OrgID == vm.getLocalStorage('OrgID')) {

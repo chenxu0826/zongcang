@@ -3,9 +3,9 @@
 /* 基础数据接口地址 */
 
 /* 上线版本 */
-// export const BasicUrl = 'http://' + window.location.host + '/api/'
+export const BasicUrl = 'http://' + window.location.host + '/api/'
 // export const BasicUrl = 'http://10.58.4.62:8889/api/' //开发临时使用
-export const BasicUrl = 'http://10.58.1.178:9503/api/' // 开发临时使用
+// export const BasicUrl = 'http://10.58.1.178:9503/api/' // 开发临时使用
 
 $.ajax({
   type: 'get',
@@ -29,12 +29,13 @@ $.ajax({
 
 /* 服务请求接口地址 */
 export const ajaxUrl = 'http://' + localStorage.getItem('IP') + ':' + localStorage.getItem('TcpPort')
+// export const ajaxUrl = 'http://10.58.4.61:20001'
 
 /* 静态资源地址 */
 export const IMG = ''
-// export const MapUrl = 'http://' + window.location.host
+export const MapUrl = 'http://' + window.location.host
 // export const MapUrl = "http://10.58.4.62:8889"
-export const MapUrl = 'http://10.58.1.178:9503'
+// export const MapUrl = 'http://10.58.1.178:9503'
 
 export default {
   /* 全局弹窗显示变量 */
@@ -50,6 +51,7 @@ export default {
 
     /* websocket地址配置 */
     if (localStorage.getItem('IP') != null) {
+      // console.log('ws:' + localStorage.getItem('IP') + ':' + localStorage.getItem('WebSocketPort'))
       Vue.prototype.ws = new WebSocket('ws:' + localStorage.getItem('IP') + ':' + localStorage.getItem('WebSocketPort'))
       // Vue.prototype.ws = new WebSocket('ws:10.58.4.61:20001')
     }
