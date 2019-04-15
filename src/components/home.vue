@@ -67,14 +67,14 @@
         <div class="map-w">
           <div class="flow_persons">
             <div class="urineNum">
-              小便池位：<font class="fontYellow">{{urineList.length}}</font>&nbsp;人
+              小号池位：<font class="fontYellow">{{urineList.length}}</font>&nbsp;人
             </div>
             <div class="urineList">
               <el-col
                 :span="4"
                 v-for="(item,index) in urineList"
                 :key="index"
-                style="padding:0px 30px"
+                style="padding:0px 30px;margin: 0px 1rem;"
               >
                 <div
                   class="personCard"
@@ -94,7 +94,7 @@
               </el-col>
             </div>
             <div class="shitNum">
-              大便坑位：<font class="fontYellow">{{shitList.length}}</font>&nbsp;人
+              大号坑位：<font class="fontYellow">{{shitList.length}}</font>&nbsp;人
             </div>
             <div class="shitList">
               <el-col
@@ -191,7 +191,7 @@
             <p>今日如厕：<font class="fontYellow">{{todayFinishCount}}</font>&nbsp;人</p>
             <p>当前如厕：<font class="fontYellow">{{inToiletPeople.length}}</font>&nbsp;人</p>
             <p>小便池位：<font class="fontYellow">{{urineNum}}</font>&nbsp;人(白)</p>
-            <p>大便坑位：<font class="fontYellow">{{shitNum}}</font>&nbsp;人(红）</p>
+            <p>大号坑位：<font class="fontYellow">{{shitNum}}</font>&nbsp;人(红）</p>
           </div>
         </div>
       </el-col>-->
@@ -200,7 +200,7 @@
         <div class="waiting">
           <div class="total-toilet">今日如厕：<font class="fontYellow">{{todayFinishCount}}</font>&nbsp;人</div>
           <span>待如厕：</span>
-          <span v-for="(item,index) in waitToiletNameList">&nbsp;{{item}}&nbsp;{{index+1 == waitToiletNameList.length ? '' : '、'}}</span>
+          <marquee><span v-for="(item,index) in waitToiletNameList">&nbsp;{{item}}&nbsp;{{index+1 == waitToiletNameList.length ? '' : '、'}}</span></marquee>
         </div>
 <!--        <div class="flow_persons">-->
 <!--          <el-col-->
