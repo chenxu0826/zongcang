@@ -121,93 +121,52 @@
   }
 
   .map-w{
-    height: 680px;
+    height: 240px;
+    padding: 3rem;
     //background: url("../assets/map.png") no-repeat center center;
     background-size: contain;
     -webkit-box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
     position: relative;
-    .urinal{
-      .urinal-num{
-        overflow: hidden;
-        margin: 0 auto;
-        width: 700px;
-        padding-top: 2rem;
-        li{
-          float:left;
-          width:120px;
-          list-style: none;
-          margin-left: 1rem;
-          font-size: 1.2rem;
-        }
+    .operate{
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      .total{
+        text-align: left;
+        font-size: 1.8rem;
+        color: #09f;
       }
-      .urinal-pic{
-        overflow: hidden;
-        margin: 0 auto;
-        width: 700px;
-        li{
-          float:left;
-          width:120px;
-          height:120px;
-          list-style: none;
-          margin-left: 1rem;
-          img{
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
-    }
-    .latrine-pit{
-      .latrine-pit-num{
-        overflow: hidden;
-        margin: 0 2rem;
-        padding-top: 2rem;
-        li{
-          float:left;
-          width: 135px;
-          list-style: none;
-          margin-left: 1rem;
-          font-size: 1.2rem;
-        }
-      }
-      .latrine-pit-pic{
-        overflow: hidden;
-        margin: 0 2rem;
-        li{
+      .con-info{
+        width: 60%;
+        float: left;
+        .line-info{
           float: left;
-          width: 135px;
-          height: 130px;
-          list-style: none;
-          margin-left: 1rem;
-          img{
-            width: 100%;
-            height: 100%;
-          }
+          font-size: 1.8rem;
+          color: #fff;
+          width: 33%;
+          text-align: left;
+          line-height: 5rem;
+        }
+      }
+
+      .buttons{
+        display: block;
+        position: absolute;
+        bottom: 3rem;
+        right: 2rem;
+
+        .button{
+          width: 180px;
+          background: #aeaeae;
+        }
+
+        .active{
+          background: #09f;
         }
       }
     }
   }
-
-  //.map {
-  //  position: absolute;
-  //  left: 0;
-  //  right: 0;
-  //  top: 40px;
-  //  bottom: 0;
-  //
-  //  img {
-  //    display: block;
-  //  }
-  //
-  //  .getCenter {
-  //    position: absolute;
-  //    left: 50%;
-  //    top: 50%;
-  //    transform: translateX(-50%) translateY(-50%);
-  //  }
-  //}
-
   .pageDiv {
     display: flex;
     justify-content: center;
@@ -229,6 +188,23 @@
     }
   }
 }
+.bot{
+  position: absolute;
+  bottom: 7rem;
+  padding: 0 5rem;
+  .bot-left{
+    text-align: left;
+    font-size: 1.8rem;
+  }
+  .bot-right{
+    text-align:right;
+    font-size: 1.8rem;
+    .button{
+      width: 150px;
+    }
+  }
+}
+
 .waiting{
   font-size: 3rem;
   color: #6fc;
@@ -252,4 +228,7 @@
 .el-dialog__body,.el-dialog__header{
   background: #ff6d00 !important;
   padding: 0 0 50px;
+}
+.el-table--enable-row-hover .el-table__body tr:hover>td{
+  background-color: #212e3e !important;
 }

@@ -1,11 +1,11 @@
 <template>
   <el-row class="navheader">
-    <el-col :span="12" class="logo" v-if="true == true">
+    <el-col :span="21" class="logo" v-if="true == true">
       <el-col :span="2">
         <img src="../assets/hui.png" alt="">
       </el-col>
       <el-col :span="22">
-        <el-col :span="10">
+        <el-col :span="5">
           <p class="bold">{{appTitle}}</p>
         </el-col>
         <el-col :span="10" class="location" style="margin-top:5px">
@@ -13,12 +13,12 @@
         </el-col>
       </el-col>
     </el-col>
-    <el-col :span="12" class="logo logo-hui" v-else>
+    <el-col :span="21" class="logo logo-hui" v-else>
       <el-col :span="2">
         <img src="../assets/hu.png" alt="">
       </el-col>
       <el-col :span="22">
-        <el-col :span="10">
+        <el-col :span="5">
           <p class="bold">{{appTitle}}</p>
         </el-col>
         <el-col :span="10" class="location">
@@ -26,14 +26,11 @@
         </el-col>
       </el-col>
     </el-col>
-<!--    <el-col v-if="navRightVisable" :span="12" class="navRight">-->
-<!--      <el-col :span="16" class="title floatRight">-->
-<!--        {{currentOutWorkStatus.Status}}-->
-<!--      </el-col>-->
-<!--      <el-col :span="8" class="title">-->
-<!--        今日{{currentOutWorkStatus.Status}}:{{currentOutWorkStatus.Count}}人-->
-<!--      </el-col>-->
-<!--    </el-col>-->
+    <el-col v-if="navRightVisable" :span="3" class="navRight">
+      <el-col :span="24" class="title">
+        拆卡员：张三
+      </el-col>
+    </el-col>
   </el-row>
 </template>
 

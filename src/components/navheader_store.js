@@ -1,6 +1,6 @@
 export default {
   state: {
-    'appTitle': '边城监狱智慧卫生间', // 软件名称，在desktopCheck下会发生改变
+    'appTitle': '箱包车间收卡终端', // 软件名称，在desktopCheck下会发生改变
     'navRightVisable': true // 右侧内容是否显示，在desktopCheck下会发生改变
 
   },
