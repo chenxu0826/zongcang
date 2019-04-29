@@ -19,9 +19,9 @@
                 <el-button
                   type="primary"
                   class="button"
-                  :class="{active:item == buttonSel}"
-                  @click="buttonSel = item"
-                >{{item}}</el-button>
+                  :class="{active:item.index == buttonSel}"
+                  @click="buttonSel = item.index"
+                >{{item.label}}</el-button>
               </template>
             </div>
           </div>
@@ -73,7 +73,7 @@
           label="处理"
           width="180">
           <template slot-scope="scope">
-            取消
+            <a href="javascript:void(0);">取消</a>
           </template>
         </el-table-column>
         </el-table>
@@ -85,14 +85,14 @@
         </el-col>
        <el-col :span="18">
          <div class="bot-right">
-           <el-button type="primary" class="button">提交</el-button>
+           <el-button type="primary" class="button" @click="cllectCards">提交</el-button>
            <el-button type="primary" class="button">取消</el-button>
          </div>
        </el-col>
 
       </el-col>
     </div>
-
+    <input type="text" id="cardNoInput" ref="cardNoInput" @keyup.enter="cardNoEnter" :value="cardNoInput" style="opacity: 0;height: 0;">
   </div>
 </template>
 
@@ -135,9 +135,19 @@ export default {
         BagCount: 20,
         Date: date
       }],
-      buttonList: ['成品收卡', '跑货收卡', '暂停收卡'],
-      buttonSel: '成品收卡',
-      inputNum: ''
+      buttonList: [{
+        index: 1,
+        label: '成品收卡'
+      }, {
+        index: 2,
+        label: '跑货收卡'
+      }, {
+        index: 3,
+        label: '暂停收卡'
+      }],
+      buttonSel: 1,
+      inputNum: '',
+      cardNoInput: ''
     }
   },
   computed: {
@@ -219,6 +229,55 @@ export default {
     }
   },
   methods: {
+    // 成品批量收卡
+    cllectCards () {
+      let vm = this
+      let send = {
+        Header: {
+          MsgID: '201501260000000003',
+          MsgType: 309
+        },
+        Body: JSON.stringify({
+          ReturnType: vm.buttonSel,
+          Cards: vm.cardDetailList
+        })
+      }
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(send),
+        success: function (result) {
+          console.log(result)
+        }
+      })
+    },
+    // 请求当前工票状态
+    getCardStatu (num) {
+      let vm = this
+      let send = {
+        Header: {
+          MsgID: '201501260000000003',
+          MsgType: 308
+        },
+        Body: JSON.stringify({
+          CardID: num
+        })
+      }
+      vm.$ajax({
+        url: ajaxUrl,
+        data: JSON.stringify(send),
+        success: function (result) {
+          vm.cardDetailObj = result
+        }
+      })
+    },
+    // 刷工号登录疵品
+    cardNoEnter (e) {
+      let vm = this
+      vm.cardNoInput = e.target.value
+      vm.getCardStatu(e.target.value)
+      vm.$refs.numInput.blur()
+      e.target.value = ''
+    },
     // 修改table tr行的背景色
     tableRowStyle ({ row, rowIndex }) {
       if (row.Status == 0) {
