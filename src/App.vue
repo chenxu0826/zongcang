@@ -6,6 +6,53 @@
     <router-view></router-view>
 
     <menufooter></menufooter>
+
+    <!-- 民警登录框 -->
+    <div
+      class="alertTip"
+      v-show="loginShow"
+    >
+      <div class="alertBody">
+        <div style="overflow-y:auto;">
+          <img
+            class="loginLogo"
+            width="90px"
+            src="./assets/hui.png"
+          >
+          <div
+            class="title"
+            style="margin-top:150px"
+          >{{prisonName}}</div>
+          <div class="title">{{appName}}</div>
+          <div style="width:60%;margin:40px auto">
+            <el-input
+              placeholder="请输入账号"
+              v-model="username"
+            >
+            </el-input>
+          </div>
+          <div style="width:60%;margin:40px auto">
+            <el-input
+              placeholder="请输入密码"
+              v-model="password"
+              type="password"
+              @keyup.enter.native="loginSubmit()"
+            >
+            </el-input>
+          </div>
+          <el-button
+            type="primary"
+            style="width:60%"
+            @click="loginSubmit()"
+          >登&nbsp;&nbsp;&nbsp;&nbsp;录</el-button>
+
+          <div class="alertText">
+            {{loginAlertText}}
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -25,6 +72,10 @@ export default {
   },
   data () {
     return {
+      username: '',
+      password: '',
+      loginShow: true, // 是否显示登录框
+      loginAlertText: '', // 登录框提示文字
       movePeopleHashed: {} // 哈希版的流动人员（正常外出和非法流动的集合）
     }
   },
@@ -37,6 +88,43 @@ export default {
     })
   },
   methods: {
+    /* 登录信息提交 */
+    loginSubmit: function () {
+      let vm = this
+      if (vm.username == '') {
+        vm.loginAlertText = '请输入账号'
+        setTimeout(function () {
+          vm.loginAlertText = ''
+        }, 3000)
+        return
+      }
+      if (vm.password == '') {
+        vm.loginAlertText = '请输入密码'
+        setTimeout(function () {
+          vm.loginAlertText = ''
+        }, 3000)
+        return
+      }
+      vm.$ajax({
+        data: {
+          UserID: vm.username,
+          UserPwd: vm.password
+        },
+        url: BasicUrl + 'HomeIndex/CheckUser',
+        success: function (result) {
+          if (result == null) {
+            vm.loginAlertText = '账户名或密码错误'
+            setTimeout(function () {
+              vm.loginAlertText = ''
+            }, 3000)
+            return
+          }
+          vm.$store.commit('setPoliceName', result[0].PoliceName)
+          $('#cardNoInput').focus()
+          vm.loginShow = false
+        }
+      })
+    },
     /* 自适应各种屏幕 */
     changeSize: function () {
       var oldWidth = 1920

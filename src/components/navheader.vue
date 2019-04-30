@@ -28,7 +28,7 @@
     </el-col>
     <el-col v-if="navRightVisable" :span="3" class="navRight">
       <el-col :span="24" class="title">
-        拆卡员：张三
+        拆卡员：{{policeName}}
       </el-col>
     </el-col>
   </el-row>
@@ -47,6 +47,7 @@ export default {
   },
   computed: {
     ...mapState({
+      policeName: state => state.navheader.policeName,
       appTitle: state => state.navheader.appTitle, // 软件名称，在desktopCheck下会发生改变
       navRightVisable: state => state.navheader.navRightVisable, // 右侧内容是否显示，在desktopCheck下会发生改变
       currentOutWorkStatus: state => state.outwork.currentOutWorkStatus // 当前出收工状态
