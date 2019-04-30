@@ -81,6 +81,8 @@ export default {
   },
   computed: {
     ...mapState({
+      prisonName: state => state.navheader.prisonName,
+      appName: state => state.navheader.appName,
       criminalList: state => state.criminalList, // 全部罪犯信息
       policeList: state => state.policeList, // 全部警员信息
       dict: state => state.dict, // 字典数据

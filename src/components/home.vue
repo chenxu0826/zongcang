@@ -20,7 +20,7 @@
                   type="primary"
                   class="button"
                   :class="{active:item.index == buttonSel}"
-                  @click="buttonSel = item.index"
+                  @click="selectButton(item)"
                 >{{item.label}}</el-button>
               </template>
             </div>
@@ -73,7 +73,7 @@
           label="处理"
           width="180">
           <template slot-scope="scope">
-            <a href="javascript:void(0);">取消</a>
+            <a href="javascript:void(0);" @click="deleteRow(scope.$index, cardDetailList)">取消</a>
           </template>
         </el-table-column>
         </el-table>
@@ -86,13 +86,13 @@
        <el-col :span="18">
          <div class="bot-right">
            <el-button type="primary" class="button" @click="cllectCards">提交</el-button>
-           <el-button type="primary" class="button">取消</el-button>
+           <el-button type="primary" class="button" @click="cardDetailList = []">取消</el-button>
          </div>
        </el-col>
 
       </el-col>
     </div>
-    <input type="text" id="cardNoInput" ref="cardNoInput" @keyup.enter="cardNoEnter" :value="cardNoInput" style="opacity: 0;height: 0;">
+    <input type="text" id="cardNoInput" ref="cardNoInput" @keyup.enter="cardNoEnter" :value="cardNoInput" style="opacity:0;">
   </div>
 </template>
 
@@ -229,6 +229,19 @@ export default {
     }
   },
   methods: {
+    // 选择收卡类型
+    selectButton (item) {
+      let vm = this
+      vm.buttonSel = item.index
+      if (vm.buttonSel == 1 || vm.buttonSel == 2) {
+        vm.cardNoInput = ''
+        vm.$refs.cardNoInput.focus()
+      }
+    },
+    // 取消一列
+    deleteRow (index, rows) {
+      rows.splice(index, 1)
+    },
     // 成品批量收卡
     cllectCards () {
       let vm = this
@@ -266,7 +279,7 @@ export default {
         url: ajaxUrl,
         data: JSON.stringify(send),
         success: function (result) {
-          vm.cardDetailObj = result
+          vm.cardDetailObj.push(result)
         }
       })
     },
@@ -275,8 +288,7 @@ export default {
       let vm = this
       vm.cardNoInput = e.target.value
       vm.getCardStatu(e.target.value)
-      vm.$refs.numInput.blur()
-      e.target.value = ''
+      vm.cardNoInput = ''
     },
     // 修改table tr行的背景色
     tableRowStyle ({ row, rowIndex }) {
