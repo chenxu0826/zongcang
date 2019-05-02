@@ -145,7 +145,7 @@ export default {
         index: 3,
         label: '暂停收卡'
       }],
-      buttonSel: 1,
+      buttonSel: '',
       inputNum: '',
       cardNoInput: ''
     }
@@ -286,6 +286,7 @@ export default {
     // 刷工号登录疵品
     cardNoEnter (e) {
       let vm = this
+      console.log(e.target.value)
       vm.cardNoInput = e.target.value
       vm.getCardStatu(e.target.value)
       vm.cardNoInput = ''
