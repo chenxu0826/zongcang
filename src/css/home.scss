@@ -158,11 +158,13 @@
 
         .button{
           width: 180px;
-          background: #aeaeae;
+          background: #09f;
+          font-size: 1.2rem;
         }
 
         .active{
-          background: #09f;
+          background: #001c58;
+          border:1px solid #001c58;
         }
       }
     }
@@ -201,6 +203,7 @@
     font-size: 1.8rem;
     .button{
       width: 150px;
+      font-size: 1.2rem;
     }
   }
 }
