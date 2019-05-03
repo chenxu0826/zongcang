@@ -11,7 +11,7 @@
                 <div class="line-info">款号：{{cardDetailObj.Style}}</div>
                 <div class="line-info">线别：{{cardDetailObj.Line}}</div>
                 <div class="line-info">工票号：{{cardDetailObj.CardNo}}</div>
-                <div class="line-info">卡号：{{cardDetailObj.CardID}}</div>
+                <div class="line-info">卡号：{{cardDetailObj.InnerCardCode}}</div>
                 <div class="line-info">件数：{{cardDetailObj.BagCount}}</div>
               </div>
             <div class="buttons">
@@ -19,7 +19,7 @@
                 <el-button
                   type="primary"
                   class="button"
-                  :class="{active:item.index == buttonSel}"
+                  :class="{active:item.index == buttonSel && isFocus}"
                   @click="selectButton(item)"
                 >{{item.label}}</el-button>
               </template>
@@ -32,7 +32,7 @@
         <el-table
           :data="cardDetailList"
           border
-          style="width:100%;"
+          style="width:100%;font-size: 1.2rem;"
           :row-style="tableRowStyle"
           :header-cell-style="tableHeaderColor"
           :cell-mouse-enter="cellMouseEnter">
@@ -92,7 +92,16 @@
 
       </el-col>
     </div>
-    <input type="text" id="cardNoInput" ref="cardNoInput" @keyup.enter="cardNoEnter" :value="cardNoInput" style="opacity:0;">
+    <input
+      type="text"
+      id="cardNoInput"
+      ref="cardNoInput"
+      @keyup.enter="cardNoEnter"
+      :value="cardNoInput"
+      style="opacity:0;"
+      @focus="isFocus = true"
+      @blur="isFocus = false"
+    >
   </div>
 </template>
 
@@ -104,50 +113,23 @@ import moment from 'moment'
 export default {
   name: 'home',
   data () {
-    let date = moment().format('YYYY-MM-DD HH:mm:ss')
     return {
-      cardDetailObj: {
-        Style: '001220',
-        Line: '一组',
-        CardNo: 2342903458123,
-        CardID: 100001,
-        BagCount: 20
-      },
-      cardDetailList: [{
-        Style: '001220',
-        Line: '一组',
-        CardNo: 2342903458123,
-        CardID: 100001,
-        BagCount: 19,
-        Date: date
-      }, {
-        Style: '001220',
-        Line: '二组',
-        CardNo: 2342903458123,
-        CardID: 100001,
-        BagCount: 20,
-        Date: date
-      }, {
-        Style: '001220',
-        Line: '三组',
-        CardNo: 2342903458123,
-        CardID: 100001,
-        BagCount: 20,
-        Date: date
-      }],
+      cardDetailObj: {},
+      cardDetailList: [],
       buttonList: [{
         index: 1,
         label: '成品收卡'
       }, {
         index: 2,
-        label: '跑货收卡'
+        label: '辅线收卡'
       }, {
         index: 3,
         label: '暂停收卡'
       }],
       buttonSel: '',
       inputNum: '',
-      cardNoInput: ''
+      cardNoInput: '',
+      isFocus: false
     }
   },
   computed: {
@@ -232,6 +214,10 @@ export default {
     // 选择收卡类型
     selectButton (item) {
       let vm = this
+      if (item.index !== vm.buttonSel && vm.cardDetailList.length > 0) {
+        vm.$message('请先提交或清空列表')
+        return false
+      }
       vm.buttonSel = item.index
       if (vm.buttonSel == 1 || vm.buttonSel == 2) {
         vm.cardNoInput = ''
@@ -259,7 +245,9 @@ export default {
         url: ajaxUrl,
         data: JSON.stringify(send),
         success: function (result) {
-          console.log(result)
+          if (result.Result == 1) {
+            vm.cardDetailList = []
+          }
         }
       })
     },
@@ -279,7 +267,13 @@ export default {
         url: ajaxUrl,
         data: JSON.stringify(send),
         success: function (result) {
-          vm.cardDetailObj.push(result)
+          vm.cardDetailObj = result
+          if (result.Status === 1 && ((result.TypeID === 107002 && vm.buttonSel === 1) || (result.TypeID !== 107002 && vm.buttonSel === 2))) {
+            result.Date = moment().format('YYYY-MM-DD HH:mm:ss')
+            vm.cardDetailList.push(result)
+          } else {
+            vm.$message('收卡失败，请重试')
+          }
         }
       })
     },
