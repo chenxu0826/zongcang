@@ -155,11 +155,13 @@
         position: absolute;
         bottom: 3rem;
         right: 2rem;
+        width: 200px;
 
         .button{
           width: 180px;
           background: #09f;
           font-size: 1.2rem;
+          margin:0.5rem;
         }
 
         .active{
