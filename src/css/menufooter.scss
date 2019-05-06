@@ -4,11 +4,15 @@ a {
 }
 
 .menufooter {
-  
+
   background: rgba(0, 0, 0, 0.2);
   line-height: 60px;
   height: 60px;
   color: #FFCC66;
   font-size: 26px;
   font-weight: bold;
+  img{
+    float: left;
+    margin-left: 2rem;
+  }
 }

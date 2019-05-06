@@ -2,6 +2,7 @@
   <div class="menufooter">
     <!-- 滚动字幕功能第一版不加 -->
     <!-- 滚动字幕内容————滚动字幕内容————滚动字幕内容————滚动字幕内容————滚动字幕内容———— -->
+    <img src="../assets/rf-xiao.png" alt="小logo">
   </div>
 </template>
 

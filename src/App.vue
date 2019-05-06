@@ -501,7 +501,7 @@ export default {
         /* 工具清点计划---统计当前计划下各监区的清点情况 -43 */
         // vm.ws.send(JSON.stringify(toolCheckSituation))
         /* 未经允许如厕推送 -106 */
-        vm.ws.send(JSON.stringify(illegalIntoToilet))
+        // vm.ws.send(JSON.stringify(illegalIntoToilet))
       }, 2000)
     }
 

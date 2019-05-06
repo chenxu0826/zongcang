@@ -270,7 +270,16 @@ export default {
           vm.cardDetailObj = result
           if (result.Status === 1 && ((result.TypeID === 107002 && vm.buttonSel === 1) || (result.TypeID !== 107002 && vm.buttonSel === 2))) {
             result.Date = moment().format('YYYY-MM-DD HH:mm:ss')
-            vm.cardDetailList.push(result)
+            // 去重
+            let cardListArr = []
+            for (let key in vm.cardDetailList) {
+              cardListArr.push(vm.cardDetailList[key].CardNo)
+            }
+            if (cardListArr.indexOf(result.CardNo) !== -1) {
+              vm.$message('请勿重复提交')
+            } else {
+              vm.cardDetailList.push(result)
+            }
           } else {
             vm.$message('收卡失败，请重试')
           }
@@ -280,7 +289,7 @@ export default {
     // 刷工号登录疵品
     cardNoEnter (e) {
       let vm = this
-      console.log(e.target.value)
+      // console.log(e.target.value)
       vm.cardNoInput = e.target.value
       vm.getCardStatu(e.target.value)
       vm.cardNoInput = ''
