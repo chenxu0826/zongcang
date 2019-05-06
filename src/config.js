@@ -3,9 +3,9 @@
 /* 基础数据接口地址 */
 
 /* 上线版本 */
-// export const BasicUrl = 'http://' + window.location.host + '/api/'
+export const BasicUrl = 'http://' + window.location.host + '/api/'
 // export const BasicUrl = 'http://10.58.4.62:8889/api/' //开发临时使用
-export const BasicUrl = 'http://10.58.1.178:9503/api/' // 开发临时使用
+// export const BasicUrl = 'http://10.58.1.178:9503/api/' // 开发临时使用
 
 $.ajax({
   type: 'get',
