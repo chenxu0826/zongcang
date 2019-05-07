@@ -328,8 +328,8 @@ html {
 background-color:#f8f8f8;
 }
 ::-webkit-scrollbar {
-width:9px;
-  height:9px;
+width:28px;
+  height:28px;
 }
 ::-webkit-scrollbar-thumb {
 background-color:#dddddd;

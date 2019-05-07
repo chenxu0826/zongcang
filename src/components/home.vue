@@ -246,6 +246,7 @@ export default {
         data: JSON.stringify(send),
         success: function (result) {
           if (result.Result == 1) {
+            vm.$message('提交成功')
             vm.cardDetailList = []
           }
         }
@@ -268,7 +269,7 @@ export default {
         data: JSON.stringify(send),
         success: function (result) {
           vm.cardDetailObj = result
-          if (result.Status === 1 && ((result.TypeID === 107002 && vm.buttonSel === 1) || (result.TypeID !== 107002 && vm.buttonSel === 2))) {
+          if (result.Status === 1 && ((result.TypeID === 107002 && vm.buttonSel === 1) || (result.TypeID !== 107002 && vm.buttonSel === 2) || (result.TypeID === 107004 && vm.buttonSel === 1))) {
             result.Date = moment().format('YYYY-MM-DD HH:mm:ss')
             // 去重
             let cardListArr = []
