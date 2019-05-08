@@ -83,11 +83,19 @@ export default {
     ...mapState({
       prisonName: state => state.navheader.prisonName,
       appName: state => state.navheader.appName,
+      policeName: state => state.navheader.policeName,
       criminalList: state => state.criminalList, // 全部罪犯信息
       policeList: state => state.policeList, // 全部警员信息
       dict: state => state.dict, // 字典数据
       currentPage: state => state.currentPage // 当前的页面
     })
+  },
+  watch: {
+    policeName (val) {
+      if (val == '未登录') {
+        this.loginShow = true
+      }
+    }
   },
   methods: {
     // 免登陆
