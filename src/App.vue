@@ -74,7 +74,7 @@ export default {
     return {
       username: '',
       password: '',
-      loginShow: true, // 是否显示登录框
+      loginShow: false, // 是否显示登录框
       loginAlertText: '', // 登录框提示文字
       movePeopleHashed: {} // 哈希版的流动人员（正常外出和非法流动的集合）
     }
@@ -90,6 +90,30 @@ export default {
     })
   },
   methods: {
+    // 免登陆
+    loginAuto: function () {
+      let vm = this
+      vm.$ajax({
+        data: {
+          UserID: vm.getLocalStorage('UserID'),
+          UserPwd: vm.getLocalStorage('Pwd')
+        },
+        url: BasicUrl + 'HomeIndex/CheckUser',
+        success: function (result) {
+          if (result == null) {
+            vm.loginAlertText = '账户名或密码错误'
+            setTimeout(function () {
+              vm.loginAlertText = ''
+            }, 3000)
+            return
+          }
+          vm.$store.commit('setPoliceName', result[0].PoliceName)
+          vm.setLocalStorage('WorkID', result[0].FlnkID)
+          $('#cardNoInput').focus()
+          vm.loginShow = false
+        }
+      })
+    },
     /* 登录信息提交 */
     loginSubmit: function () {
       let vm = this
@@ -299,6 +323,7 @@ export default {
   },
   mounted () {
     var vm = this
+    vm.loginAuto()
     vm.changeSize()
     vm.dictInit()
     vm.allBaseDataInit()
@@ -475,7 +500,7 @@ export default {
         }
 
         /* 保持心跳-参数-01 */
-        // vm.ws.send(JSON.stringify(keep_heart))
+        vm.ws.send(JSON.stringify(keep_heart))
         /* 获取当前监区正在执行的计划任务(人员清点计划) 07号协议 */
         // vm.ws.send(JSON.stringify(GetPersonCheckPlan))
         /* 获取当前监区正在执行的计划任务(工具清点计划) 07号协议 */
@@ -502,7 +527,7 @@ export default {
         // vm.ws.send(JSON.stringify(toolCheckSituation))
         /* 未经允许如厕推送 -106 */
         // vm.ws.send(JSON.stringify(illegalIntoToilet))
-      }, 2000)
+      }, 30000)
     }
 
     /* websocket接收信息 */
@@ -523,7 +548,7 @@ export default {
       setInterval(function () {
         // todo暂时取消五秒刷新
         // vm.$router.push({ path: '/' })
-        // window.location.reload()
+        window.location.reload()
       }, 5000)
     }
 
@@ -534,7 +559,7 @@ export default {
       setInterval(function () {
         // todo暂时取消五秒刷新
         // vm.$router.push({ path: '/' })
-        // window.location.reload()
+        window.location.reload()
       }, 5000)
     }
   }

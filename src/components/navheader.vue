@@ -92,12 +92,24 @@ export default {
           window.location.reload()
         }
       })
+    },
+    getBindUserInfo: function () {
+      var vm = this
+      vm.$ajax({
+        url: BasicUrl + 'Product/GetBindUserInfo',
+        async: true,
+        success: function (result) {
+          vm.setLocalStorage('UserID', result[0].UserID)
+          vm.setLocalStorage('Pwd', result[0].Pwd)
+        }
+      })
     }
   },
   mounted () {
     var vm = this
     vm.pageReloadByTime()
     vm.initPrison()
+    vm.getBindUserInfo()
   }
 }
 </script>
